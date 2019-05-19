@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\TerrainGenerator",
+    "\\TerrainGenerator\\Commands",
+    "\\TerrainGenerator\\Models",
+    "\\TerrainGenerator\\Utilities",
+    "\\TerrainGenerator\\ViewModels",
+    "\\TerrainGenerator\\Views"
+  ],
+  "SelectedNode": "\\TerrainGenerator\\Views\\NoiseController.xaml",
+  "PreviewInSolutionExplorer": false
+}
