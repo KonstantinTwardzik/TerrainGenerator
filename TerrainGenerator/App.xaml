@@ -17,6 +17,7 @@
 
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="{StaticResource LightestColor}"/>
+            <Setter Property="Focusable" Value="False"/>
         </Style>
 
         <Style TargetType="{x:Type ScrollBar}">

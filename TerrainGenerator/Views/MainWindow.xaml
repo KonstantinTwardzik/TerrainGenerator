@@ -31,7 +31,10 @@
         <KeyBinding Modifiers="Ctrl" Key="D2" Command="{Binding DetailResolutionCommand}" CommandParameter="512"/>
         <KeyBinding Modifiers="Ctrl" Key="D3" Command="{Binding DetailResolutionCommand}" CommandParameter="1024"/>
         <KeyBinding Modifiers="Ctrl" Key="D4" Command="{Binding DetailResolutionCommand}" CommandParameter="2048"/>
-        <KeyBinding Modifiers="Alt" Key="N" Command="{Binding CalculateNoiseCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="H" Command="{Binding HelpCommand}"/>
+        
+        <KeyBinding Modifiers="Alt" Key="N" Command="{Binding NoiseCommand}"/>
+        <KeyBinding Modifiers="Alt" Key="E" Command="{Binding ErodeCommand}"/>
     </Window.InputBindings>
     
     <Grid Background="{StaticResource PrimaryColor}">
@@ -57,8 +60,8 @@
                 <MenuItem Header="_Quit" Command="{Binding QuitCommand}" InputGestureText="Ctrl+Q"/>
             </MenuItem>
             <MenuItem Header="_Edit">
-                <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding CalculateNoiseCommand}"/>
-                <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E"/>
+                <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding NoiseCommand}"/>
+                <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E" Command="{Binding ErodeCommand}"/>
                 <MenuItem Header="_Generate Colors" InputGestureText="Alt+C"/>
                 <Separator/>
                 <MenuItem Header="_Generate All" InputGestureText="Alt+A"/>
@@ -72,7 +75,7 @@
                 </MenuItem>
                 <MenuItem Header="_Height">
                     <StackPanel Orientation="Horizontal">
-                        <Slider  Minimum="0.01" Maximum="2" Width="130" Margin="2" TickPlacement="BottomRight" TickFrequency="0.5" Value="{Binding TerrainMeshProperty.GeneralHeight}"/>
+                        <Slider  Minimum="0.01" Maximum="1" Width="130" Margin="2" TickPlacement="BottomRight" TickFrequency="0.5" Value="{Binding TerrainMeshProperty.GeneralHeight}"/>
                         <Button Width="60" Height="25"  Command="{Binding UpdateMeshCommand}">Set</Button>
                     </StackPanel>
                 </MenuItem>
@@ -82,7 +85,7 @@
                 <MenuItem Header="_Working" />
                 <MenuItem Header="_Spectate" />
             </MenuItem>
-            <MenuItem Header="_Help"/>
+            <MenuItem Header="_Help" InputGestureText="Ctrl+H" Command="{Binding HelpCommand}"/>
 
         </Menu>
 
@@ -100,7 +103,7 @@
         <!--TERRAIN OPTIONEN-->
         <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="4">
             <ScrollViewer>
-                <views:NoiseController/>
+                <views:TerrainSettings/>
             </ScrollViewer>
         </Border>
 

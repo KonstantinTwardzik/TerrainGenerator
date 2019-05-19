@@ -37,7 +37,6 @@ D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\bin\Debug\HelixToolkit.Wp
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\bin\Debug\HelixToolkit.Wpf.xml
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerator.csprojAssemblyReference.cache
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\Views\MainWindow.g.cs
-D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\Views\NoiseController.g.cs
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\Views\ViewportCamera3D.g.cs
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\App.g.cs
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\GeneratedInternalTypeHelper.g.cs
@@ -45,7 +44,6 @@ D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerato
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerator_MarkupCompile.lref
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\App.baml
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\Views\MainWindow.baml
-D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\Views\NoiseController.baml
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\Views\ViewportCamera3D.baml
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerator.g.resources
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerator.Properties.Resources.resources
@@ -54,3 +52,5 @@ D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerato
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerator.csproj.CopyComplete
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerator.exe
 D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\TerrainGenerator.pdb
+D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\Views\TerrainSettings.baml
+D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\Views\TerrainSettings.g.cs

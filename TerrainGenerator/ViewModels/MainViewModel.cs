@@ -9,22 +9,50 @@ namespace TerrainGenerator.ViewModels
     internal class MainViewModel : INotifyPropertyChanged
     {
         #region Attributes 
+        private TerrainMesh _terrainMesh;
+        private HeightLogic _heightLogic;
         private bool _res256;
         private bool _res512;
         private bool _res1024;
         private bool _res2048;
+
+        //Open Simplex Noise
+        private double _osnScale;
+        private int _osnOctaves;
+        private double _osnOctaveWeight;
+        private double _osnScaleX;
+        private double _osnScaleZ;
+        private int _osnSeed;
+
+        //Hydraulic Erosion
+        private int _heIterations;
+
 
         #endregion
 
         #region Properties
         public TerrainMesh TerrainMeshProperty
         {
-            get; set;
+            get
+            {
+                return _terrainMesh;
+            }
+            set
+            {
+                _terrainMesh = value;
+            }
         }
 
         public HeightLogic HeightLogicProperty
         {
-            get; set;
+            get
+            {
+                return _heightLogic;
+            }
+            set
+            {
+                _heightLogic = value;
+            }
         }
 
         public bool Res256
@@ -79,29 +107,96 @@ namespace TerrainGenerator.ViewModels
             }
         }
 
-        public float PerlinScale
+        public double OSNScale
         {
-            get; set;
+            get
+            {
+                return _osnScale;
+            }
+            set
+            {
+                _osnScale = value;
+                OnPropertyChanged("OSNScale");
+            }
         }
 
-        public int PerlinOctaves
+        public int OSNOctaves
         {
-            get; set;
+            get
+            {
+                return _osnOctaves;
+            }
+            set
+            {
+                _osnOctaves = value;
+                OnPropertyChanged("OSNOctaves");
+            }
         }
 
-        public float PerlinScaleX
+        public double OSNOctaveWeight
         {
-            get; set;
+            get
+            {
+                return _osnOctaveWeight;
+            }
+            set
+            {
+                _osnOctaveWeight = value;
+                OnPropertyChanged("OSNOctaveWeight");
+            }
         }
 
-        public float PerlinScaleZ
+
+        public double OSNScaleX
         {
-            get; set;
+            get
+            {
+                return _osnScaleX;
+            }
+            set
+            {
+                _osnScaleX = value;
+                OnPropertyChanged("OSNScaleX");
+            }
         }
 
-        public int PerlinSeed
+        public double OSNScaleZ
         {
-            get; set;
+            get
+            {
+                return _osnScaleZ;
+            }
+            set
+            {
+                _osnScaleZ = value;
+                OnPropertyChanged("OSNScaleZ");
+            }
+        }
+
+        public int OSNSeed
+        {
+            get
+            {
+                return _osnSeed;
+            }
+            set
+            {
+                _osnSeed = value;
+                OnPropertyChanged("OSNSeed");
+            }
+        }
+
+        public int HEIterations
+        {
+            get
+            {
+                return _heIterations;
+            }
+            set
+            {
+                _heIterations = value;
+                OnPropertyChanged("HEIterations");
+            }
         }
         #endregion
 
@@ -120,11 +215,14 @@ namespace TerrainGenerator.ViewModels
             _res1024 = true;
             _res2048 = true;
 
-            PerlinScale = 0.5f;
-            PerlinOctaves = 3;
-            PerlinScaleX = 0.5f;
-            PerlinScaleZ = 0.5f;
-            PerlinSeed = 500;
+            _osnScale = 0.5f;
+            _osnOctaves = 6;
+            _osnOctaveWeight = 0.6;
+            _osnScaleX = 0.5f;
+            _osnScaleZ = 0.5f;
+            _osnSeed = 500;
+
+            _heIterations = 100000;
         }
 
         private void InitLogic()
@@ -135,11 +233,13 @@ namespace TerrainGenerator.ViewModels
 
         private void InitCommands()
         {
-            CalculateNoiseCommand = new CalculateNoiseCommand(this);
+            NoiseCommand = new NoiseCommand(this);
+            ErodeCommand = new ErodeCommand(this);
             QuitCommand = new QuitCommand(this);
             NewCommand = new NewCommand(this);
             UpdateMeshCommand = new UpdateMeshCommand(this);
             DetailResolutionCommand = new DetailResolutionCommand(this);
+            HelpCommand = new HelpCommand(this);
         }
 
         #region Button Handling
@@ -148,11 +248,17 @@ namespace TerrainGenerator.ViewModels
             get { return true; }
         }
 
-        public ICommand CalculateNoiseCommand
+        public ICommand NoiseCommand
         {
             get;
             private set;
         }
+
+        public ICommand ErodeCommand
+        {
+            get;
+            private set;
+        } 
 
         public ICommand QuitCommand
         {
@@ -178,6 +284,12 @@ namespace TerrainGenerator.ViewModels
             private set;
         }
 
+        public ICommand HelpCommand
+        {
+            get;
+            private set;
+        }
+
         public void QuitApplication()
         {
             System.Windows.Application.Current.Shutdown();
@@ -185,8 +297,12 @@ namespace TerrainGenerator.ViewModels
 
         public void NewTerrain()
         {
-            System.Windows.Forms.Application.Restart();
-            System.Windows.Application.Current.Shutdown();
+            //System.Windows.Forms.Application.Restart();
+            //System.Windows.Application.Current.Shutdown();
+            _heightLogic.TerrainSize = 512;
+            _heightLogic.ResetHeights();
+            _terrainMesh.UpdateMesh();
+            InitProperties();
         }
 
         public void UpdateMesh()
@@ -223,13 +339,35 @@ namespace TerrainGenerator.ViewModels
                     Res2048 = false;
                     break;
             }
+
             HeightLogicProperty.InitHeights(resolution);
             TerrainMeshProperty.InitMesh();
+
+            if (_heightLogic.isNoised)
+            {
+                Noise();
+            }
+            if (_heightLogic.isEroded)
+            {
+                Erode();
+            }
+
         }
 
-        public void CalculateNoise()
+        public void OpenWebsite()
         {
-            HeightLogicProperty.OpenSimplexNoise(PerlinScale, PerlinOctaves, PerlinScaleX, PerlinScaleZ, PerlinSeed);
+            System.Diagnostics.Process.Start("https://github.com/KonstantinTwardzik/TerrainGenerator");
+        }
+
+        public void Noise()
+        {
+            HeightLogicProperty.OpenSimplexNoise(_osnScale, _osnOctaves, _osnOctaveWeight, _osnScaleX, _osnScaleZ, _osnSeed);
+            TerrainMeshProperty.UpdateMesh();
+        }
+
+        public void Erode()
+        {
+            HeightLogicProperty.Erode(_heIterations);
             TerrainMeshProperty.UpdateMesh();
         }
         #endregion

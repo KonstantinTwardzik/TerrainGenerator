@@ -11,12 +11,12 @@ namespace TerrainGenerator.ViewModels
         #region Attributes
         private int _terrainSize;
         private MeshGeometry3D _meshGeometry3D;
-        private float _generalHeight = 1;
+        private double _generalHeight = 0.5;
         private HeightLogic _heightLogic;
         #endregion
 
         #region Properties
-        public float GeneralHeight
+        public double GeneralHeight
         {
             get
             {
@@ -291,7 +291,6 @@ namespace TerrainGenerator.ViewModels
             }
         }
         #endregion
-
 
         public void UpdateMesh()
         {

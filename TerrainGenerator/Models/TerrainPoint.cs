@@ -15,7 +15,6 @@ namespace TerrainGenerator.Models
         private int _xPosition;
         private int _zPosition;
         private double _height;
-        private int[] _neighbours;
         #endregion
 
         #region Properties
@@ -54,25 +53,13 @@ namespace TerrainGenerator.Models
                 _height = value;
             }
         }
-        public int[] Neighbours
-        {
-            get
-            {
-                return _neighbours;
-            }
-            set
-            {
-                _neighbours = value;
-            }
-        }
         #endregion
 
-        public TerrainPoint(int xPos, int zPos, double height, int[] neighbours)
+        public TerrainPoint(int xPos, int zPos, double height)
         {
             _xPosition = xPos;
             _zPosition = zPos;
             _height = height;
-            _neighbours = neighbours;
         }
     }
 }

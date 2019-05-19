@@ -19,9 +19,9 @@ namespace TerrainGenerator.Views
     /// <summary>
     /// Interaktionslogik für NoiseController.xaml
     /// </summary>
-    public partial class NoiseController : UserControl
+    public partial class TerrainSettings : UserControl
     {
-        public NoiseController()
+        public TerrainSettings()
         {
             InitializeComponent();
             this.DataContext = Application.Current.MainWindow.DataContext;

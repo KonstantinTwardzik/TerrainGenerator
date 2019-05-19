@@ -9,7 +9,11 @@ namespace TerrainGenerator.ViewModels
         #region Attributes
         private int _terrainSize;
         private TerrainPoint[] _terrainPoints;
-        private OpenSimplexNoise osn;
+        private OpenSimplexNoise _openSimplexNoise;
+        private HydraulicErosion _hydraulicErosion;
+        public bool isNoised;
+        public bool isEroded;
+        public bool isColored;
         #endregion
 
         #region Properties
@@ -40,15 +44,18 @@ namespace TerrainGenerator.ViewModels
 
         public HeightLogic(int terrainSize)
         {
-            osn = new OpenSimplexNoise();
             InitHeights(terrainSize);
+            _openSimplexNoise = new OpenSimplexNoise();
+            _hydraulicErosion = new HydraulicErosion();
+            isNoised = false;
+            isEroded = false;
+            isColored = false;
         }
 
         public void InitHeights(int terrainSize)
         {
             _terrainSize = terrainSize;
             GenerateTerrainPoints();
-
         }
 
         private void GenerateTerrainPoints()
@@ -58,31 +65,99 @@ namespace TerrainGenerator.ViewModels
             {
                 for (int z = 0; z < _terrainSize; z++)
                 {
-                    _terrainPoints[x + z * _terrainSize] = new TerrainPoint(x, z, 0, FindNeighbours());
+                    _terrainPoints[x + z * _terrainSize] = new TerrainPoint(x, z, 0);
                 }
             }
         }
 
-        private int[] FindNeighbours()
+        public void ResetHeights()
         {
+            for (int x = 0; x < _terrainSize; x++)
+            {
 
-            return new int[3];
+                for (int z = 0; z < _terrainSize; z++)
+                {
+                    _terrainPoints[x + z * _terrainSize].Height = 0;
+                }
+            }
+
+            isNoised = false;
         }
 
-        public void OpenSimplexNoise(float perlinScale, int perlinOctaves, float perlinScaleX, float perlinScaleZ, int perlinSeed)
+        public void OpenSimplexNoise(double perlinScale, int perlinOctaves, double perlinOctaveWeight, double perlinScaleX, double perlinScaleZ, int perlinSeed)
         {
+            double weight = 1;
+            double octaveMultiplier = 1;
+            double sizeCompensator = 1;
+
+            switch (_terrainSize)
+            {
+                case 256:
+                    sizeCompensator = 8;
+                    break;
+                case 512:
+                    sizeCompensator = 4;
+                    break;
+                case 1024:
+                    sizeCompensator = 2;
+                    break;
+                case 2048:
+                    sizeCompensator = 1;
+                    break;
+
+            }
+            ResetHeights();
+
+            for (int o = 0; o < perlinOctaves; o++)
+            {
+                for (int x = 0; x < _terrainSize; x++)
+                {
+                    for (int z = 0; z < _terrainSize; z++)
+                    {
+                        double value = 0;
+                        double xValue = ((((0.0005f / perlinScale) / perlinScaleX) * (x * sizeCompensator) + perlinSeed) * octaveMultiplier);
+                        double zValue = ((((0.0005f / perlinScale) / perlinScaleZ) * (z * sizeCompensator) + perlinSeed) * octaveMultiplier);
+                        if (o == 0)
+                        {
+                            value = (((_openSimplexNoise.Evaluate(xValue, zValue) * weight) + 1) / 2);
+                        }
+                        else
+                        {
+                            value = ((_openSimplexNoise.Evaluate(xValue, zValue) * weight) / 2);
+                        }
+
+                        _terrainPoints[x + z * _terrainSize].Height += value;
+                    }
+                }
+                weight /= 2 - (perlinOctaveWeight - 0.5);
+                octaveMultiplier = o * 2;
+            }
+            isNoised = true;
+        }
+
+        public void Erode(int heIterations)
+        {
+            double[] map = new double[_terrainPoints.Length];
             for (int x = 0; x < _terrainSize; x++)
             {
                 for (int z = 0; z < _terrainSize; z++)
                 {
-                    double xValue = ((0.0025f / perlinScale) / perlinScaleX) * x + perlinSeed;
-                    double zValue = ((0.0025f / perlinScale) / perlinScaleZ) * z + perlinSeed;
-                    double value = osn.Evaluate(xValue, zValue);
-                    if (value < 0)
-                        value = 0;
-                    _terrainPoints[x + z * _terrainSize].Height = value;
+                    map[x + z * _terrainSize] = _terrainPoints[x + z * _terrainSize].Height;
                 }
             }
+
+
+            double[] values = _hydraulicErosion.Erode(map, _terrainSize, heIterations, false);
+
+            for (int x = 0; x < _terrainSize; x++)
+            {
+                for (int z = 0; z < _terrainSize; z++)
+                {
+                    _terrainPoints[x + z * _terrainSize].Height = values[x + z * _terrainSize];
+                }
+            }
+
+            isEroded = true;
         }
     }
 

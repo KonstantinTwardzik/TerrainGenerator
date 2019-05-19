@@ -4,11 +4,11 @@ using TerrainGenerator.ViewModels;
 
 namespace TerrainGenerator.Commands
 {
-    internal class CalculateNoiseCommand : ICommand
+    internal class HelpCommand : ICommand
     {
         private MainViewModel _mainViewModel;
 
-        public CalculateNoiseCommand(MainViewModel mainViewModel)
+        public HelpCommand(MainViewModel mainViewModel)
         {
             _mainViewModel = mainViewModel;
         }
@@ -16,7 +16,7 @@ namespace TerrainGenerator.Commands
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value;  }
+            remove { CommandManager.RequerySuggested -= value; }
         }
 
         public bool CanExecute(object parameter)
@@ -26,7 +26,7 @@ namespace TerrainGenerator.Commands
 
         public void Execute(object parameter)
         {
-            _mainViewModel.CalculateNoise();
+            _mainViewModel.OpenWebsite();
         }
     }
 }
