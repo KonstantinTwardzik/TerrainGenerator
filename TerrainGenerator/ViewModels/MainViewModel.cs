@@ -210,19 +210,19 @@ namespace TerrainGenerator.ViewModels
 
         private void InitProperties()
         {
-            _res256 = true;
-            _res512 = false;
-            _res1024 = true;
-            _res2048 = true;
+            Res256 = true;
+            Res512 = false;
+            Res1024 = true;
+            Res2048 = true;
 
-            _osnScale = 0.5f;
-            _osnOctaves = 6;
-            _osnOctaveWeight = 0.6;
-            _osnScaleX = 0.5f;
-            _osnScaleZ = 0.5f;
-            _osnSeed = 500;
+            OSNScale = 0.5f;
+            OSNOctaves = 6;
+            OSNOctaveWeight = 0.6;
+            OSNScaleX = 0.5f;
+            OSNScaleZ = 0.5f;
+            OSNSeed = 500;
 
-            _heIterations = 100000;
+            HEIterations = 100000;
         }
 
         private void InitLogic()

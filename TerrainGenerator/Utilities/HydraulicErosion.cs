@@ -17,6 +17,7 @@ namespace TerrainGenerator.Utilities
         private double depositSpeed = 0.3f;
         private double evaporateSpeed = 0.01f;
         private double gravity = 4;
+        private int minDropletLifetime = 20;
         private int maxDropletLifetime = 30;
 
         private double initialWaterVolume = 1;
@@ -55,8 +56,8 @@ namespace TerrainGenerator.Utilities
             for (int iteration = 0; iteration < numIterations; iteration++)
             {
                 // Create water droplet at random point on map
-                double posX = prng.Next(0, mapSize - 1);
-                double posZ = prng.Next(0, mapSize - 1);
+                double posX = prng.Next(0, mapSize -1 );
+                double posZ = prng.Next(0, mapSize -1);
                 double dirX = 0;
                 double dirY = 0;
                 double speed = initialSpeed;
@@ -85,8 +86,11 @@ namespace TerrainGenerator.Utilities
                         dirX /= len;
                         dirY /= len;
                     }
+
                     posX += dirX;
                     posZ += dirY;
+
+
 
                     // Stop simulating droplet if it's not moving or has flowed over edge of map
                     if ((dirX == 0 && dirY == 0) || posX < 0 || posX >= mapSize - 1 || posZ < 0 || posZ >= mapSize - 1)
@@ -134,7 +138,7 @@ namespace TerrainGenerator.Utilities
                     }
 
                     // Update droplet's speed and water content
-                    speed = (double)Math.Sqrt(speed * speed + deltaHeight * gravity);
+                    speed = Math.Sqrt(speed * speed + deltaHeight * gravity);
                     water *= (1 - evaporateSpeed);
                 }
             }
@@ -143,6 +147,7 @@ namespace TerrainGenerator.Utilities
 
         private HeightAndGradient CalculateHeightAndGradient(double[] nodes, int mapSize, double posX, double posZ)
         {
+            //Error sometime PoxX & PosZ NaN
             int coordX = (int)posX;
             int coordZ = (int)posZ;
 
@@ -158,11 +163,15 @@ namespace TerrainGenerator.Utilities
             double heightSE = nodes[nodeIndexNW + mapSize + 1];
 
             // Calculate droplet's direction of flow with bilinear interpolation of height difference along the edges
+            
+            //Sometimes gets NaN
             double gradientX = (heightNE - heightNW) * (1 - y) + (heightSE - heightSW) * y;
             double gradientY = (heightSW - heightNW) * (1 - x) + (heightSE - heightNE) * x;
+            //Console.WriteLine("GradientX: " + gradientX);
 
             // Calculate height with bilinear interpolation of the heights of the nodes of the cell
             double height = heightNW * (1 - x) * (1 - y) + heightNE * x * (1 - y) + heightSW * (1 - x) * y + heightSE * x * y;
+
 
             return new HeightAndGradient() { height = height, gradientX = gradientX, gradientY = gradientY };
         }
