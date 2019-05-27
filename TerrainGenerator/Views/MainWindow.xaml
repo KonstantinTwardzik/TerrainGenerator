@@ -31,9 +31,12 @@
         <KeyBinding Modifiers="Ctrl" Key="D2" Command="{Binding DetailResolutionCommand}" CommandParameter="512"/>
         <KeyBinding Modifiers="Ctrl" Key="D3" Command="{Binding DetailResolutionCommand}" CommandParameter="1024"/>
         <KeyBinding Modifiers="Ctrl" Key="D4" Command="{Binding DetailResolutionCommand}" CommandParameter="2048"/>
-        <KeyBinding Modifiers="Alt" Key="N" Command="{Binding CalculateNoiseCommand}"/>
+        <KeyBinding Modifiers="Ctrl" Key="H" Command="{Binding HelpCommand}"/>
+
+        <KeyBinding Modifiers="Alt" Key="N" Command="{Binding NoiseCommand}"/>
+        <KeyBinding Modifiers="Alt" Key="E" Command="{Binding ErodeCommand}"/>
     </Window.InputBindings>
-    
+
     <Grid Background="{StaticResource PrimaryColor}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -52,13 +55,13 @@
                 <MenuItem Header="_Open" InputGestureText="Ctrl+O" IsEnabled="False" />
                 <MenuItem Header="_Save" InputGestureText="Ctrl+S" IsEnabled="False"/>
                 <Separator/>
-                <MenuItem Header="_Export" InputGestureText="Ctrl+E" IsEnabled="False"/>
+                <MenuItem Header="_Export Maps" InputGestureText="Ctrl+E" IsEnabled="False"/>
                 <Separator />
                 <MenuItem Header="_Quit" Command="{Binding QuitCommand}" InputGestureText="Ctrl+Q"/>
             </MenuItem>
             <MenuItem Header="_Edit">
-                <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding CalculateNoiseCommand}"/>
-                <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E"/>
+                <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding NoiseCommand}"/>
+                <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E" Command="{Binding ErodeCommand}"/>
                 <MenuItem Header="_Generate Colors" InputGestureText="Alt+C"/>
                 <Separator/>
                 <MenuItem Header="_Generate All" InputGestureText="Alt+A"/>
@@ -72,8 +75,8 @@
                 </MenuItem>
                 <MenuItem Header="_Height">
                     <StackPanel Orientation="Horizontal">
-                        <Slider  Minimum="0.01" Maximum="2" Width="130" Margin="2" TickPlacement="BottomRight" TickFrequency="0.5" Value="{Binding TerrainMeshProperty.GeneralHeight}"/>
-                        <Button Width="60" Height="25"  Command="{Binding UpdateMeshCommand}">Set</Button>
+                        <Slider  Minimum="0.01" Maximum="1" Width="130" Margin="2" TickPlacement="BottomRight" TickFrequency="0.5" Value="{Binding TerrainMeshProperty.GeneralHeight}"/>
+                        <Button Width="60" Height="25"  BorderBrush="{StaticResource TertiaryColor}" Background="{StaticResource PrimaryColor}" Command="{Binding UpdateMeshCommand}">Set</Button>
                     </StackPanel>
                 </MenuItem>
 
@@ -82,25 +85,25 @@
                 <MenuItem Header="_Working" />
                 <MenuItem Header="_Spectate" />
             </MenuItem>
-            <MenuItem Header="_Help"/>
+            <MenuItem Header="_Help" InputGestureText="Ctrl+H" Command="{Binding HelpCommand}"/>
 
         </Menu>
 
         <!--INFO TEXT OBEN RECHTS-->
         <StackPanel Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="1" Height="20" Margin="0,2,5,0" HorizontalAlignment="Right" Orientation="Horizontal">
-            <TextBlock ><Run Text="Version 0.04"/></TextBlock>
+            <TextBlock ><Run Text="Version 0.11"/></TextBlock>
             <Image Source="../Assets/TG32.png" Margin="5,0,0,1"/>
         </StackPanel>
 
         <!--3D VIEWPORT-->
-        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="4">
+        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="3">
             <views:ViewportCamera3D/>
         </Border>
 
         <!--TERRAIN OPTIONEN-->
-        <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="4">
+        <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="3">
             <ScrollViewer>
-                <views:NoiseController/>
+                <views:TerrainSettings/>
             </ScrollViewer>
         </Border>
 

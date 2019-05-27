@@ -1,0 +1,322 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             x:Class="TerrainGenerator.Views.TerrainSettings"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+
+        <!--Slider-->
+        <Style TargetType="Slider">
+            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="TickPlacement" Value="BottomRight"/>
+            <Setter Property="Width" Value="178"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="Margin" Value="4,0,4,4"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="0,10,0,0"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource TertiaryColor}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LighterBlue}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="{x:Type TreeView}" TargetType="TreeView">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeView">
+                        <Border Name="Border" CornerRadius="1" BorderThickness="1" BorderBrush="{StaticResource TertiaryColor}">
+                            <ScrollViewer Focusable="False" CanContentScroll="False" Padding="0">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid Width="15" Height="15" Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Collapsed">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Hidden}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Expanded">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked" />
+                                    <VisualState x:Name="Indeterminate" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Path x:Name="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" Data="M 4 0 L 8 4 L 4 8 Z" Fill="{StaticResource TertiaryColor}"/>
+                            <Path x:Name="Expanded" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" Data="M 0 4 L 8 4 L 4 8 Z" Visibility="Hidden" Fill="{StaticResource LighterBlue}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TreeViewItemFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border>
+                            <Rectangle Margin="0,0,0,0" StrokeThickness="0" Stroke="Black" StrokeDashArray="1 2" Opacity="0" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="{x:Type TreeViewItem}" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+            <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+            <Setter Property="Padding" Value="6,3,3,3" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="240" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#383838" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="SelectedInactive">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#383838" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="ExpansionStates">
+                                    <VisualState x:Name="Expanded">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                 Storyboard.TargetName="ItemsHost">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Collapsed" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ToggleButton x:Name="Expander" Grid.Row="0"  Grid.Column="1" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <Border x:Name="Bd" Grid.Column="0" Background="{TemplateBinding Background}" BorderBrush="{StaticResource LighterBlue}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                            </Border>
+                            <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Visibility="Collapsed" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="HasHeader" Value="false" />
+                                    <Condition Property="Width" Value="Auto" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PART_Header" Property="MinWidth" Value="75" />
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="HasHeader" Value="false" />
+                                    <Condition Property="Height" Value="Auto" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PART_Header" Property="MinHeight" Value="19" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <StackPanel Margin="1" >
+        <Label FontSize="16" FontWeight="Bold" Margin="3"  HorizontalAlignment="Center">Terrain Settings</Label>
+        <Border>
+            <StackPanel Margin="3">
+                <Label FontSize="14" FontWeight="Bold" Margin="0">Noises</Label>
+                <TreeView>
+                    <TreeViewItem Header="Open Simplex Noise">
+                        <Label >Scale</Label>
+                        <DockPanel>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScale, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNScale, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Octaves</Label>
+                        <DockPanel>
+                            <Slider Minimum="1" Maximum="10" TickFrequency="1" Value="{Binding HeightLogicProperty.OSNOctaves, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNOctaves, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Octave Weight</Label>
+                        <DockPanel>
+                            <Slider Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNOctaveWeight, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNOctaveWeight, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Scale X</Label>
+                        <DockPanel>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScaleX, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNScaleX, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Scale Z</Label>
+                        <DockPanel>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScaleZ, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNScaleZ, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Seed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding HeightLogicProperty.OSNSeed, Mode=TwoWay}" />
+                            <TextBox Text="{Binding HeightLogicProperty.OSNSeed, Mode=TwoWay}"/>
+                        </DockPanel>
+                    </TreeViewItem>
+                    <Button Content="Noise" Command="{Binding NoiseCommand}" Width="223" Height="50" Margin="4"/>
+                </TreeView>
+            </StackPanel>
+        </Border>
+
+        <Border>
+            <StackPanel Margin="3">
+                <Label FontSize="14" FontWeight="Bold" Margin="0">Erosions</Label>
+                <TreeView>
+                    <TreeViewItem Header="Hydraulic Erosion" >
+                        <Label >Iterations</Label>
+                        <DockPanel>
+                            <Slider Minimum="10000" Maximum="200000" TickFrequency="50000" LargeChange="50000" Value="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Droplet Lifetime</Label>
+                        <DockPanel>
+                            <Slider Minimum="1" Maximum="60" TickFrequency="5" LargeChange="5" Value="{Binding HeightLogicProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Erosion Radius</Label>
+                        <DockPanel>
+                            <Slider Minimum="1" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding HeightLogicProperty.HEErosionRadius, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEErosionRadius, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Inertia</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEInertia, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEInertia, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label  ToolTip="How much sediment can a droplet carry">Sediment Capacity Factor</Label>
+                        <DockPanel>
+                            <Slider Minimum="0.5" Maximum="4" TickFrequency="0.5" LargeChange="0.5" Value="{Binding HeightLogicProperty.HESedimentCapacityFactor, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HESedimentCapacityFactor, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Minimum Sediment Capacity</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEMinSedimentCapacity, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEMinSedimentCapacity, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label>Erode Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEErodeSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEErodeSpeed, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Deposit Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEDepositSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEDepositSpeed, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Evaporate Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Gravity</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding HeightLogicProperty.HEGravity, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEGravity, Mode=TwoWay}"/>
+                        </DockPanel>
+                    </TreeViewItem>
+                    <CheckBox IsChecked="{Binding HeightLogicProperty.HEErodeOver}" Margin="4">Erode on top of previous Erosion</CheckBox>
+                    <Button Content="Erode" Command="{Binding ErodeCommand}" Width="223" Height="50" Margin="4"/>
+                </TreeView>
+            </StackPanel>
+        </Border>
+
+        <Border>
+            <StackPanel Margin="3">
+                <Label FontSize="14" FontWeight="Bold" Margin="0">Colors</Label>
+                <TreeView>
+                    <TreeViewItem Header="Map Colors" >
+                        <TextBlock><Run Text="Thermal"/></TextBlock>
+                        <Slider Width="200"/>
+                        <TextBlock><Run Text="Hydro"/></TextBlock>
+                        <Slider Width="200"/>
+                        <TextBlock><Run Text="Amount"/></TextBlock>
+                        <Slider Width="200" />
+                        <TextBlock><Run Text="Curve"/></TextBlock>
+                        <Slider Width="200"/>
+                        <TextBlock><Run Text="Detail"/></TextBlock>
+                        <Slider Width="200"/>
+                    </TreeViewItem>
+                    <Button Content="Colorize" Width="223" Height="50" Margin="4"/>
+                </TreeView>
+            </StackPanel>
+        </Border>
+
+        <Button Content="Generate All"  Height="50" Margin="4"/>
+
+
+    </StackPanel>
+
+</UserControl>

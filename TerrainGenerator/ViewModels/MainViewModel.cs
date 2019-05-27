@@ -9,24 +9,40 @@ namespace TerrainGenerator.ViewModels
     internal class MainViewModel : INotifyPropertyChanged
     {
         #region Attributes 
+        private TerrainMesh _terrainMesh;
+        private HeightLogic _heightLogic;
         private bool _res256;
         private bool _res512;
         private bool _res1024;
         private bool _res2048;
-
         #endregion
 
         #region Properties
+        //MVVM 
         public TerrainMesh TerrainMeshProperty
         {
-            get; set;
+            get
+            {
+                return _terrainMesh;
+            }
+            set
+            {
+                _terrainMesh = value;
+            }
         }
-
         public HeightLogic HeightLogicProperty
         {
-            get; set;
+            get
+            {
+                return _heightLogic;
+            }
+            set
+            {
+                _heightLogic = value;
+            }
         }
 
+        //DetailResolution
         public bool Res256
         {
             get
@@ -39,7 +55,6 @@ namespace TerrainGenerator.ViewModels
                 OnPropertyChanged("Res256");
             }
         }
-
         public bool Res512
         {
             get
@@ -52,7 +67,6 @@ namespace TerrainGenerator.ViewModels
                 OnPropertyChanged("Res512");
             }
         }
-
         public bool Res1024
         {
             get
@@ -65,7 +79,6 @@ namespace TerrainGenerator.ViewModels
                 OnPropertyChanged("Res1024");
             }
         }
-
         public bool Res2048
         {
             get
@@ -78,106 +91,43 @@ namespace TerrainGenerator.ViewModels
                 OnPropertyChanged("Res2048");
             }
         }
-
-        public float PerlinScale
-        {
-            get; set;
-        }
-
-        public int PerlinOctaves
-        {
-            get; set;
-        }
-
-        public float PerlinScaleX
-        {
-            get; set;
-        }
-
-        public float PerlinScaleZ
-        {
-            get; set;
-        }
-
-        public int PerlinSeed
-        {
-            get; set;
-        }
         #endregion
 
+        #region Initialization
         public MainViewModel()
         {
             InitLogic();
             InitCommands();
             InitProperties();
-
         }
 
         private void InitProperties()
         {
-            _res256 = true;
-            _res512 = false;
-            _res1024 = true;
-            _res2048 = true;
-
-            PerlinScale = 0.5f;
-            PerlinOctaves = 3;
-            PerlinScaleX = 0.5f;
-            PerlinScaleZ = 0.5f;
-            PerlinSeed = 500;
+            Res256 = true;
+            Res512 = false;
+            Res1024 = true;
+            Res2048 = true;
         }
 
         private void InitLogic()
         {
-            HeightLogicProperty = new HeightLogic(512);
+            HeightLogicProperty = new HeightLogic();
             TerrainMeshProperty = new TerrainMesh(HeightLogicProperty);
         }
 
         private void InitCommands()
         {
-            CalculateNoiseCommand = new CalculateNoiseCommand(this);
+            NoiseCommand = new NoiseCommand(this);
+            ErodeCommand = new ErodeCommand(this);
             QuitCommand = new QuitCommand(this);
             NewCommand = new NewCommand(this);
             UpdateMeshCommand = new UpdateMeshCommand(this);
             DetailResolutionCommand = new DetailResolutionCommand(this);
+            HelpCommand = new HelpCommand(this);
         }
+        #endregion
 
         #region Button Handling
-        public bool CanExecute
-        {
-            get { return true; }
-        }
-
-        public ICommand CalculateNoiseCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand QuitCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand NewCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand UpdateMeshCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand DetailResolutionCommand
-        {
-            get;
-            private set;
-        }
-
         public void QuitApplication()
         {
             System.Windows.Application.Current.Shutdown();
@@ -185,8 +135,13 @@ namespace TerrainGenerator.ViewModels
 
         public void NewTerrain()
         {
-            System.Windows.Forms.Application.Restart();
-            System.Windows.Application.Current.Shutdown();
+            //System.Windows.Forms.Application.Restart();
+            //System.Windows.Application.Current.Shutdown();
+            _heightLogic.TerrainSize = 512;
+            UpdateDetailResolution(512);
+            _heightLogic.ResetHeights();
+            _terrainMesh.UpdateMesh();
+            InitProperties();
         }
 
         public void UpdateMesh()
@@ -223,14 +178,86 @@ namespace TerrainGenerator.ViewModels
                     Res2048 = false;
                     break;
             }
-            HeightLogicProperty.InitHeights(resolution);
+
+            HeightLogicProperty.ChangeDetailResolution(resolution);
             TerrainMeshProperty.InitMesh();
+
+            if (_heightLogic.isNoised)
+            {
+                Noise();
+            }
+            if (_heightLogic.isEroded)
+            {
+                Erode();
+            }
+
         }
 
-        public void CalculateNoise()
+        public void OpenWebsite()
         {
-            HeightLogicProperty.OpenSimplexNoise(PerlinScale, PerlinOctaves, PerlinScaleX, PerlinScaleZ, PerlinSeed);
+            System.Diagnostics.Process.Start("https://github.com/KonstantinTwardzik/TerrainGenerator");
+        }
+
+        public void Noise()
+        {
+            HeightLogicProperty.OpenSimplexNoise();
             TerrainMeshProperty.UpdateMesh();
+            HeightLogicProperty.ConvertToBitmapSource();
+        }
+
+        public void Erode()
+        {
+            HeightLogicProperty.Erode();
+            TerrainMeshProperty.UpdateMesh();
+        }
+        #endregion
+
+        #region ICommands
+        public bool CanExecute
+        {
+            get { return true; }
+        }
+
+        public ICommand NoiseCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand ErodeCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand QuitCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand NewCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand UpdateMeshCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand DetailResolutionCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand HelpCommand
+        {
+            get;
+            private set;
         }
         #endregion
 

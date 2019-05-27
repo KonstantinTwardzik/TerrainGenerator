@@ -5,18 +5,20 @@
              StartupUri="./Views/MainWindow.xaml">
 
     <Application.Resources>
-       
+
         <!--Application Colors.-->
         <SolidColorBrush x:Key="PrimaryColor">#333333</SolidColorBrush>
         <SolidColorBrush x:Key="SecondaryColor">#383838</SolidColorBrush>
         <SolidColorBrush x:Key="TertiaryColor">#666666</SolidColorBrush>
         <SolidColorBrush x:Key="LightestColor">#E5E8E5</SolidColorBrush>
-        <SolidColorBrush x:Key="DarkerBlue">#2B3840</SolidColorBrush>
+        <SolidColorBrush x:Key="LightestBlue">#72C1F2</SolidColorBrush>
         <SolidColorBrush x:Key="LighterBlue">#3A9EEB</SolidColorBrush>
+        <SolidColorBrush x:Key="DarkerBlue">#1F4373</SolidColorBrush>
         <SolidColorBrush x:Key="TestColor">#FF0000</SolidColorBrush>
 
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="{StaticResource LightestColor}"/>
+            <Setter Property="Focusable" Value="False"/>
         </Style>
 
         <Style TargetType="{x:Type ScrollBar}">
@@ -26,7 +28,7 @@
         </Style>
 
 
-        <!--Seperator-->
+        <!--Menu Seperator-->
         <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
             <Setter Property="Height" Value="1"/>
             <Setter Property="Margin" Value="0,2,0,2"/>
@@ -39,7 +41,7 @@
             </Setter>
         </Style>
 
-        <!--TopLevelItem-->
+        <!--Menu TopLevelItem-->
         <ControlTemplate  x:Key="{x:Static MenuItem.TopLevelItemTemplateKey}"  TargetType="MenuItem">
             <Border Name="Border" >
                 <Grid>
@@ -57,7 +59,7 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
-        <!-- TopLevelHeader -->
+        <!--Menu TopLevelHeader-->
         <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}" TargetType="MenuItem">
             <Border Name="Border" >
                 <Grid>
@@ -88,7 +90,7 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
-        <!--SubmenuItem-->
+        <!--Menu SubmenuItem-->
         <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}" TargetType="MenuItem">
             <Border Name="Border" >
                 <Grid>
@@ -127,7 +129,7 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
-        <!--SubmenuHeader-->
+        <!--Menu SubmenuHeader-->
         <ControlTemplate x:Key="{x:Static MenuItem.SubmenuHeaderTemplateKey}" TargetType="MenuItem">
             <Border Name="Border" >
                 <Grid>
@@ -159,7 +161,6 @@
                 <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="True">
                     <Setter TargetName="SubmenuBorder" Property="CornerRadius" Value="0,2,2,2"/>
                     <Setter TargetName="SubmenuBorder" Property="Padding" Value="2"/>
-    
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="false">
                     <Setter Property="Foreground" Value="{StaticResource TertiaryColor}"/>
@@ -175,23 +176,37 @@
         </Style>
 
         <Style TargetType="Border">
-            <Setter Property="CornerRadius" Value="2"/>
+            <Setter Property="CornerRadius" Value="1"/>
             <Setter Property="BorderBrush" Value="{StaticResource TertiaryColor}"/>
         </Style>
 
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="{StaticResource SecondaryColor}"/>
-            <Setter Property="Foreground" Value="{StaticResource LightestColor}"/>
+
+        <!--<Style TargetType="Button">
             <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{StaticResource SecondaryColor}" BorderBrush="{StaticResource TertiaryColor}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
-                <Trigger Property = "IsMouseOver" Value = "True">
-                    <Setter Property="Background" Value="{StaticResource LighterBlue}"/>
-                    <Setter Property="BorderThickness" Value="1"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DarkerBlue}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource LightestBlue}"/>
+                    
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
                 </Trigger>
             </Style.Triggers>
-        </Style>
+        </Style>-->
+
+
+
+
     </Application.Resources>
 </Application>
  

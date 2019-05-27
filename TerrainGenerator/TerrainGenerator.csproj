@@ -82,13 +82,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\CalculateNoiseCommand.cs" />
+    <Compile Include="Commands\NoiseCommand.cs" />
+    <Compile Include="Commands\ErodeCommand.cs" />
+    <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\NewCommand.cs" />
     <Compile Include="Commands\QuitCommand.cs" />
     <Compile Include="Commands\UpdateMeshCommand.cs" />
     <Compile Include="Commands\DetailResolutionCommand.cs" />
+    <Compile Include="Utilities\HydraulicErosion.cs" />
     <Compile Include="Utilities\OpenSimplexNoise.cs" />
-    <Compile Include="Models\TerrainPoint.cs" />
+    <Compile Include="Models\TerrainPoints.cs" />
     <Compile Include="ViewModels\HeightLogic.cs" />
     <Compile Include="ViewModels\TerrainMesh.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -100,8 +103,8 @@
     </Compile>
     <Compile Include="Utilities\MouseUtilities.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Views\NoiseController.xaml.cs">
-      <DependentUpon>NoiseController.xaml</DependentUpon>
+    <Compile Include="Views\TerrainSettings.xaml.cs">
+      <DependentUpon>TerrainSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewportCamera3D.xaml.cs">
       <DependentUpon>ViewportCamera3D.xaml</DependentUpon>
@@ -110,7 +113,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\NoiseController.xaml">
+    <Page Include="Views\TerrainSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -166,6 +169,9 @@
   <ItemGroup>
     <Resource Include="Assets\TG32.png" />
     <Resource Include="Assets\TG64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Gradient.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

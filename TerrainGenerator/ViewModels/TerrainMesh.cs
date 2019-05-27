@@ -2,21 +2,24 @@
 using System.Windows.Media.Media3D;
 using System.ComponentModel;
 using TerrainGenerator.Models;
-
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace TerrainGenerator.ViewModels
 {
     internal class TerrainMesh : INotifyPropertyChanged
     {
         #region Attributes
-        private int _terrainSize;
         private MeshGeometry3D _meshGeometry3D;
-        private float _generalHeight = 1;
         private HeightLogic _heightLogic;
+        private int _terrainSize;
+        private double _generalHeight = 0.5;
+        private ImageBrush _imageBrush;
         #endregion
 
         #region Properties
-        public float GeneralHeight
+        public double GeneralHeight
         {
             get
             {
@@ -39,6 +42,18 @@ namespace TerrainGenerator.ViewModels
                 _meshGeometry3D = value;
             }
         }
+
+        public ImageBrush ImageBrush
+        {
+            get
+            {
+                return _imageBrush;
+            }
+            set
+            {
+                _imageBrush = value;
+            }
+        }
         #endregion
 
         public TerrainMesh(HeightLogic heightLogic)
@@ -55,28 +70,29 @@ namespace TerrainGenerator.ViewModels
             _meshGeometry3D.TriangleIndices.Clear();
             GeneratePositions();
             GenerateTriangleIndices();
+            GenerateUVCoordinates();
+
+            _imageBrush = new ImageBrush();
+            _imageBrush.ImageSource = new BitmapImage(new Uri("../../Assets/Gradient.jpg", UriKind.Relative));
         }
 
         #region Generating 3D Mesh
         private void GeneratePositions()
         {
             Point3D point = new Point3D();
-            TerrainPoint terrainPoint;
-
             // Terrain Points
             for (int x = 0; x < _terrainSize; x++)
             {
                 for (int z = 0; z < _terrainSize; z++)
                 {
-                    terrainPoint = _heightLogic.TerrainPoints[x * _terrainSize + z];
                     for (int i = 0; i < 3; i++)
                     {
                         if (i == 0)
-                            point.X = ((float)x / ((float)_terrainSize - 1) - 0.5) * 2;
+                            point.X = ((double)x / ((double)_terrainSize - 1) - 0.5) * 2;
                         if (i == 1)
-                            point.Y = terrainPoint.Height;
+                            point.Y = 0;
                         if (i == 2)
-                            point.Z = ((float)z / ((float)_terrainSize - 1) - 0.5) * 2;
+                            point.Z = ((double)z / ((double)_terrainSize - 1) - 0.5) * 2;
                     }
                     MeshGeometry3DProperty.Positions.Add(point);
                 }
@@ -89,11 +105,11 @@ namespace TerrainGenerator.ViewModels
                 for (int i = 0; i < 3; i++)
                 {
                     if (i == 0)
-                        point.X = ((float)x / ((float)_terrainSize - 1) - 0.5) * 2;
+                        point.X = ((double)x / ((double)_terrainSize - 1) - 0.5) * 2;
                     if (i == 1)
                         point.Y = 0;
                     if (i == 2)
-                        point.Z = ((float)z / ((float)_terrainSize - 1) - 0.5) * 2;
+                        point.Z = ((double)z / ((double)_terrainSize - 1) - 0.5) * 2;
                 }
                 MeshGeometry3DProperty.Positions.Add(point);
 
@@ -105,11 +121,11 @@ namespace TerrainGenerator.ViewModels
                 for (int i = 0; i < 3; i++)
                 {
                     if (i == 0)
-                        point.X = ((float)x / ((float)_terrainSize - 1) - 0.5) * 2;
+                        point.X = ((double)x / ((double)_terrainSize - 1) - 0.5) * 2;
                     if (i == 1)
                         point.Y = 0;
                     if (i == 2)
-                        point.Z = ((float)z / ((float)_terrainSize - 1) - 0.5) * 2;
+                        point.Z = ((double)z / ((double)_terrainSize - 1) - 0.5) * 2;
                 }
                 MeshGeometry3DProperty.Positions.Add(point);
             }
@@ -120,11 +136,11 @@ namespace TerrainGenerator.ViewModels
                 for (int i = 0; i < 3; i++)
                 {
                     if (i == 0)
-                        point.X = ((float)x / ((float)_terrainSize - 1) - 0.5) * 2;
+                        point.X = ((double)x / ((double)_terrainSize - 1) - 0.5) * 2;
                     if (i == 1)
                         point.Y = 0;
                     if (i == 2)
-                        point.Z = ((float)z / ((float)_terrainSize - 1) - 0.5) * 2;
+                        point.Z = ((double)z / ((double)_terrainSize - 1) - 0.5) * 2;
                 }
                 MeshGeometry3DProperty.Positions.Add(point);
             }
@@ -135,11 +151,11 @@ namespace TerrainGenerator.ViewModels
                 for (int i = 0; i < 3; i++)
                 {
                     if (i == 0)
-                        point.X = ((float)x / ((float)_terrainSize - 1) - 0.5) * 2;
+                        point.X = ((double)x / ((double)_terrainSize - 1) - 0.5) * 2;
                     if (i == 1)
                         point.Y = 0;
                     if (i == 2)
-                        point.Z = ((float)z / ((float)_terrainSize - 1) - 0.5) * 2;
+                        point.Z = ((double)z / ((double)_terrainSize - 1) - 0.5) * 2;
                 }
                 MeshGeometry3DProperty.Positions.Add(point);
             }
@@ -194,6 +210,8 @@ namespace TerrainGenerator.ViewModels
                     MeshGeometry3DProperty.TriangleIndices.Add(value);
                 }
             }
+
+
 
             // Border Incdices
             for (int z = 0; z < _terrainSize - 1; z++)
@@ -290,7 +308,23 @@ namespace TerrainGenerator.ViewModels
                 }
             }
         }
+
+        private void GenerateUVCoordinates()
+        {
+            Point point = new Point();
+
+            for (int x = 0; x < _terrainSize; x++)
+            {
+                for (int z = 0; z < _terrainSize; z++)
+                {
+                    point.X = (double)x / (double)_terrainSize;
+                    point.Y = (double)z / (double)_terrainSize;
+                    MeshGeometry3DProperty.TextureCoordinates.Add(point);
+                }
+            }
+        }
         #endregion
+
 
 
         public void UpdateMesh()
@@ -299,7 +333,7 @@ namespace TerrainGenerator.ViewModels
             {
                 Point3D point = new Point3D();
                 point = MeshGeometry3DProperty.Positions[i];
-                point.Y = _heightLogic.TerrainPoints[i].Height * GeneralHeight;
+                point.Y = _heightLogic.TerrainPoints.YPositions[i] * GeneralHeight;
                 MeshGeometry3DProperty.Positions[i] = point;
             }
         }

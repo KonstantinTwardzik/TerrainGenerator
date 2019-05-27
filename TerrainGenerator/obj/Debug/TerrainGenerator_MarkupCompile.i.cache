@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\konst\source\repos\TerrainGenerator\TerrainGenerator\obj\Debug\
+D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\obj\Debug\
 TerrainGenerator
 none
 false
 DEBUG;TRACE
-C:\Users\konst\source\repos\TerrainGenerator\TerrainGenerator\App.xaml
-3687283256
+D:\Informatik\GitHub\TerrainGenerator\TerrainGenerator\App.xaml
+31361852815
 
-191106097722
-121-1759604895
-Views\MainWindow.xaml;Views\NoiseController.xaml;Views\ViewportCamera3D.xaml;
+22-364265978
+121-539718099
+Views\MainWindow.xaml;Views\TerrainSettings.xaml;Views\ViewportCamera3D.xaml;
 
 False
 
