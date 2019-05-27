@@ -91,7 +91,7 @@
     <Compile Include="Commands\DetailResolutionCommand.cs" />
     <Compile Include="Utilities\HydraulicErosion.cs" />
     <Compile Include="Utilities\OpenSimplexNoise.cs" />
-    <Compile Include="Models\TerrainPoint.cs" />
+    <Compile Include="Models\TerrainPoints.cs" />
     <Compile Include="ViewModels\HeightLogic.cs" />
     <Compile Include="ViewModels\TerrainMesh.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -169,6 +169,9 @@
   <ItemGroup>
     <Resource Include="Assets\TG32.png" />
     <Resource Include="Assets\TG64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Gradient.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -55,7 +55,7 @@
                 <MenuItem Header="_Open" InputGestureText="Ctrl+O" IsEnabled="False" />
                 <MenuItem Header="_Save" InputGestureText="Ctrl+S" IsEnabled="False"/>
                 <Separator/>
-                <MenuItem Header="_Export" InputGestureText="Ctrl+E" IsEnabled="False"/>
+                <MenuItem Header="_Export Maps" InputGestureText="Ctrl+E" IsEnabled="False"/>
                 <Separator />
                 <MenuItem Header="_Quit" Command="{Binding QuitCommand}" InputGestureText="Ctrl+Q"/>
             </MenuItem>
@@ -91,7 +91,7 @@
 
         <!--INFO TEXT OBEN RECHTS-->
         <StackPanel Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="1" Height="20" Margin="0,2,5,0" HorizontalAlignment="Right" Orientation="Horizontal">
-            <TextBlock ><Run Text="Version 0.04"/></TextBlock>
+            <TextBlock ><Run Text="Version 0.11"/></TextBlock>
             <Image Source="../Assets/TG32.png" Margin="5,0,0,1"/>
         </StackPanel>
 

@@ -77,7 +77,7 @@
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Collapsed">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Hidden}" />
-                                            </ObjectAnimationUsingKeyFrames>            
+                                            </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Expanded">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
                                             </ObjectAnimationUsingKeyFrames>
@@ -195,39 +195,39 @@
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Noises</Label>
                 <TreeView>
                     <TreeViewItem Header="Open Simplex Noise">
-                        <Label Foreground="White">Scale</Label>
+                        <Label >Scale</Label>
                         <DockPanel>
-                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding OSNScale, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding OSNScale, Mode=TwoWay}"/>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScale, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNScale, Mode=TwoWay}"/>
                         </DockPanel>
-                        <Label Foreground="White">Octaves</Label>
+                        <Label >Octaves</Label>
                         <DockPanel>
-                            <Slider Minimum="1" Maximum="10" TickFrequency="1" Value="{Binding OSNOctaves, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding OSNOctaves, Mode=TwoWay}"/>
+                            <Slider Minimum="1" Maximum="10" TickFrequency="1" Value="{Binding HeightLogicProperty.OSNOctaves, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNOctaves, Mode=TwoWay}"/>
                         </DockPanel>
-                        <Label Foreground="White">Octave Weight</Label>
+                        <Label >Octave Weight</Label>
                         <DockPanel>
-                            <Slider Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding OSNOctaveWeight, Mode=TwoWay}"/>
-                                <TextBox Text="{Binding OSNOctaveWeight, Mode=TwoWay}"/>
+                            <Slider Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNOctaveWeight, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNOctaveWeight, Mode=TwoWay}"/>
                         </DockPanel>
-                        <Label Foreground="White">Scale X</Label>
+                        <Label >Scale X</Label>
                         <DockPanel>
-                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding OSNScaleX, Mode=TwoWay}"/>
-                                    <TextBox Text="{Binding OSNScaleX, Mode=TwoWay}"/>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScaleX, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNScaleX, Mode=TwoWay}"/>
                         </DockPanel>
-                        <Label Foreground="White">Scale Z</Label>
+                        <Label >Scale Z</Label>
                         <DockPanel>
-                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding OSNScaleZ, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding OSNScaleZ, Mode=TwoWay}"/>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScaleZ, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.OSNScaleZ, Mode=TwoWay}"/>
                         </DockPanel>
-                        <Label Foreground="White">Seed</Label>
+                        <Label >Seed</Label>
                         <DockPanel>
-                            <Slider Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding OSNSeed, Mode=TwoWay}" />
-                            <TextBox Text="{Binding OSNSeed, Mode=TwoWay}"/>
+                            <Slider Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding HeightLogicProperty.OSNSeed, Mode=TwoWay}" />
+                            <TextBox Text="{Binding HeightLogicProperty.OSNSeed, Mode=TwoWay}"/>
                         </DockPanel>
-                        <Button Content="Noise" Command="{Binding NoiseCommand}" Width="223" Height="50" Margin="4"/>
-                    </TreeViewItem>                                             
-                </TreeView>                                                     
+                    </TreeViewItem>
+                    <Button Content="Noise" Command="{Binding NoiseCommand}" Width="223" Height="50" Margin="4"/>
+                </TreeView>
             </StackPanel>
         </Border>
 
@@ -235,14 +235,60 @@
             <StackPanel Margin="3">
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Erosions</Label>
                 <TreeView>
-                    <TreeViewItem Header="Hydraulic Erosion" Foreground="White">
-                        <Label Foreground="White">Iterations</Label>
+                    <TreeViewItem Header="Hydraulic Erosion" >
+                        <Label >Iterations</Label>
                         <DockPanel>
-                            <Slider Minimum="10000" Maximum="999999" TickFrequency="100000" LargeChange="100000" Value="{Binding HEIterations, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HEIterations, Mode=TwoWay}"/>
+                            <Slider Minimum="10000" Maximum="200000" TickFrequency="50000" LargeChange="50000" Value="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
                         </DockPanel>
-                        <Button Content="Erode" Command="{Binding ErodeCommand}" Width="223" Height="50" Margin="4"/>
+                        <Label >Droplet Lifetime</Label>
+                        <DockPanel>
+                            <Slider Minimum="1" Maximum="60" TickFrequency="5" LargeChange="5" Value="{Binding HeightLogicProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Erosion Radius</Label>
+                        <DockPanel>
+                            <Slider Minimum="1" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding HeightLogicProperty.HEErosionRadius, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEErosionRadius, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Inertia</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEInertia, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEInertia, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label  ToolTip="How much sediment can a droplet carry">Sediment Capacity Factor</Label>
+                        <DockPanel>
+                            <Slider Minimum="0.5" Maximum="4" TickFrequency="0.5" LargeChange="0.5" Value="{Binding HeightLogicProperty.HESedimentCapacityFactor, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HESedimentCapacityFactor, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Minimum Sediment Capacity</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEMinSedimentCapacity, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEMinSedimentCapacity, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label>Erode Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEErodeSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEErodeSpeed, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Deposit Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEDepositSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEDepositSpeed, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Evaporate Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Gravity</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding HeightLogicProperty.HEGravity, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding HeightLogicProperty.HEGravity, Mode=TwoWay}"/>
+                        </DockPanel>
                     </TreeViewItem>
+                    <CheckBox IsChecked="{Binding HeightLogicProperty.HEErodeOver}" Margin="4">Erode on top of previous Erosion</CheckBox>
+                    <Button Content="Erode" Command="{Binding ErodeCommand}" Width="223" Height="50" Margin="4"/>
                 </TreeView>
             </StackPanel>
         </Border>
@@ -251,7 +297,7 @@
             <StackPanel Margin="3">
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Colors</Label>
                 <TreeView>
-                    <TreeViewItem Header="Map Colors" Foreground="White">
+                    <TreeViewItem Header="Map Colors" >
                         <TextBlock><Run Text="Thermal"/></TextBlock>
                         <Slider Width="200"/>
                         <TextBlock><Run Text="Hydro"/></TextBlock>
@@ -262,8 +308,8 @@
                         <Slider Width="200"/>
                         <TextBlock><Run Text="Detail"/></TextBlock>
                         <Slider Width="200"/>
-                        <Button Content="Colorize" Width="223" Height="50" Margin="4"/>
                     </TreeViewItem>
+                    <Button Content="Colorize" Width="223" Height="50" Margin="4"/>
                 </TreeView>
             </StackPanel>
         </Border>

@@ -32,7 +32,8 @@
                         
                         <GeometryModel3D Geometry="{Binding TerrainMeshProperty.MeshGeometry3DProperty}">
                             <GeometryModel3D.Material>
-                                <DiffuseMaterial Brush="White"/>
+                                <DiffuseMaterial Brush="{Binding TerrainMeshProperty.ImageBrush}"/>
+                                <!--<DiffuseMaterial Brush="White"/>-->
                             </GeometryModel3D.Material>
                         </GeometryModel3D>
                     </Model3DGroup>
