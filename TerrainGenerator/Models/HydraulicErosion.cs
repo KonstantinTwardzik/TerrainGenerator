@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TerrainGenerator.Utilities
+namespace TerrainGenerator.Models
 {
     public class HydraulicErosion
     {
@@ -30,8 +30,6 @@ namespace TerrainGenerator.Utilities
         private int currentSeed;
         private int currentErosionRadius;
         private int currentMapSize;
-
-
 
         // Initialization creates a System.Random object and precomputes indices and weights of erosion brush
         private void Initialize(int mapSize, bool resetSeed)

@@ -35,6 +35,9 @@
 
         <KeyBinding Modifiers="Alt" Key="N" Command="{Binding NoiseCommand}"/>
         <KeyBinding Modifiers="Alt" Key="E" Command="{Binding ErodeCommand}"/>
+        <KeyBinding Modifiers="Alt" Key="C" Command="{Binding ColorizeCommand}"/>
+        <KeyBinding Modifiers="Alt" Key="A" Command="{Binding GenerateAllCommand}"/>
+
     </Window.InputBindings>
 
     <Grid Background="{StaticResource PrimaryColor}">
@@ -62,9 +65,9 @@
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding NoiseCommand}"/>
                 <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E" Command="{Binding ErodeCommand}"/>
-                <MenuItem Header="_Generate Colors" InputGestureText="Alt+C"/>
+                <MenuItem Header="_Generate Colors" InputGestureText="Alt+C" Command="{Binding ColorizeCommand}"/>
                 <Separator/>
-                <MenuItem Header="_Generate All" InputGestureText="Alt+A"/>
+                <MenuItem Header="_Generate All" InputGestureText="Alt+A" Command="{Binding GenerateAllCommand}"/>
             </MenuItem>
             <MenuItem Header="_Terrain">
                 <MenuItem Header="_Detail Resolution">
@@ -79,11 +82,6 @@
                         <Button Width="60" Height="25"  BorderBrush="{StaticResource TertiaryColor}" Background="{StaticResource PrimaryColor}" Command="{Binding UpdateMeshCommand}">Set</Button>
                     </StackPanel>
                 </MenuItem>
-
-            </MenuItem>
-            <MenuItem Header="_View">
-                <MenuItem Header="_Working" />
-                <MenuItem Header="_Spectate" />
             </MenuItem>
             <MenuItem Header="_Help" InputGestureText="Ctrl+H" Command="{Binding HelpCommand}"/>
 
