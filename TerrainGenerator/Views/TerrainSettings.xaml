@@ -47,6 +47,11 @@
             </Style.Triggers>
         </Style>
 
+        <Style TargetType="Rectangle">
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="Height" Value="50"/>
+        </Style>
+
         <Style x:Key="{x:Type TreeView}" TargetType="TreeView">
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -190,6 +195,8 @@
 
     <StackPanel Margin="1" >
         <Label FontSize="16" FontWeight="Bold" Margin="3"  HorizontalAlignment="Center">Terrain Settings</Label>
+        
+        <!--Noises-->
         <Border>
             <StackPanel Margin="3">
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Noises</Label>
@@ -197,33 +204,33 @@
                     <TreeViewItem Header="Open Simplex Noise">
                         <Label >Scale</Label>
                         <DockPanel>
-                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScale, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.OSNScale, Mode=TwoWay}"/>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.OSNScale, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.OSNScale, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Octaves</Label>
                         <DockPanel>
-                            <Slider Minimum="1" Maximum="10" TickFrequency="1" Value="{Binding HeightLogicProperty.OSNOctaves, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.OSNOctaves, Mode=TwoWay}"/>
+                            <Slider Minimum="1" Maximum="10" TickFrequency="1" Value="{Binding TerrainSettingsProperty.OSNOctaves, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.OSNOctaves, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Octave Weight</Label>
                         <DockPanel>
-                            <Slider Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNOctaveWeight, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.OSNOctaveWeight, Mode=TwoWay}"/>
+                            <Slider Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.OSNOctaveWeight, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.OSNOctaveWeight, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Scale X</Label>
                         <DockPanel>
-                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScaleX, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.OSNScaleX, Mode=TwoWay}"/>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.OSNScaleX, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.OSNScaleX, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Scale Z</Label>
                         <DockPanel>
-                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.OSNScaleZ, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.OSNScaleZ, Mode=TwoWay}"/>
+                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.OSNScaleZ, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.OSNScaleZ, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Seed</Label>
                         <DockPanel>
-                            <Slider Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding HeightLogicProperty.OSNSeed, Mode=TwoWay}" />
-                            <TextBox Text="{Binding HeightLogicProperty.OSNSeed, Mode=TwoWay}"/>
+                            <Slider Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding TerrainSettingsProperty.OSNSeed, Mode=TwoWay}" />
+                            <TextBox Text="{Binding TerrainSettingsProperty.OSNSeed, Mode=TwoWay}"/>
                         </DockPanel>
                     </TreeViewItem>
                     <Button Content="Noise" Command="{Binding NoiseCommand}" Width="223" Height="50" Margin="4"/>
@@ -231,6 +238,7 @@
             </StackPanel>
         </Border>
 
+        <!--Erosions-->
         <Border>
             <StackPanel Margin="3">
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Erosions</Label>
@@ -238,83 +246,117 @@
                     <TreeViewItem Header="Hydraulic Erosion" >
                         <Label >Iterations</Label>
                         <DockPanel>
-                            <Slider Minimum="10000" Maximum="200000" TickFrequency="50000" LargeChange="50000" Value="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                            <Slider Minimum="10000" Maximum="200000" TickFrequency="50000" LargeChange="50000" Value="{Binding TerrainSettingsProperty.HEIterations, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEIterations, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Droplet Lifetime</Label>
                         <DockPanel>
-                            <Slider Minimum="1" Maximum="60" TickFrequency="5" LargeChange="5" Value="{Binding HeightLogicProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                            <Slider Minimum="1" Maximum="60" TickFrequency="5" LargeChange="5" Value="{Binding TerrainSettingsProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Erosion Radius</Label>
                         <DockPanel>
-                            <Slider Minimum="1" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding HeightLogicProperty.HEErosionRadius, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEErosionRadius, Mode=TwoWay}"/>
+                            <Slider Minimum="1" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding TerrainSettingsProperty.HEErosionRadius, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEErosionRadius, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Inertia</Label>
                         <DockPanel>
-                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEInertia, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEInertia, Mode=TwoWay}"/>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.HEInertia, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEInertia, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label  ToolTip="How much sediment can a droplet carry">Sediment Capacity Factor</Label>
                         <DockPanel>
-                            <Slider Minimum="0.5" Maximum="4" TickFrequency="0.5" LargeChange="0.5" Value="{Binding HeightLogicProperty.HESedimentCapacityFactor, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HESedimentCapacityFactor, Mode=TwoWay}"/>
+                            <Slider Minimum="0.5" Maximum="4" TickFrequency="0.5" LargeChange="0.5" Value="{Binding TerrainSettingsProperty.HESedimentCapacityFactor, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HESedimentCapacityFactor, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Minimum Sediment Capacity</Label>
                         <DockPanel>
-                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEMinSedimentCapacity, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEMinSedimentCapacity, Mode=TwoWay}"/>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.HEMinSedimentCapacity, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEMinSedimentCapacity, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label>Erode Speed</Label>
                         <DockPanel>
-                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEErodeSpeed, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEErodeSpeed, Mode=TwoWay}"/>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.HEErodeSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEErodeSpeed, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Deposit Speed</Label>
                         <DockPanel>
-                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEDepositSpeed, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEDepositSpeed, Mode=TwoWay}"/>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.HEDepositSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEDepositSpeed, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Evaporate Speed</Label>
                         <DockPanel>
-                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEIterations, Mode=TwoWay}"/>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.HEEvaporateSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEEvaporateSpeed, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Gravity</Label>
                         <DockPanel>
-                            <Slider Minimum="0" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding HeightLogicProperty.HEGravity, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding HeightLogicProperty.HEGravity, Mode=TwoWay}"/>
+                            <Slider Minimum="0" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding TerrainSettingsProperty.HEGravity, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.HEGravity, Mode=TwoWay}"/>
                         </DockPanel>
                     </TreeViewItem>
-                    <CheckBox IsChecked="{Binding HeightLogicProperty.HEErodeOver}" Margin="4">Erode on top of previous Erosion</CheckBox>
+                    <CheckBox IsChecked="{Binding TerrainSettingsProperty.HEErodeOver}" Margin="4">Erode on top of previous Erosion</CheckBox>
                     <Button Content="Erode" Command="{Binding ErodeCommand}" Width="223" Height="50" Margin="4"/>
                 </TreeView>
             </StackPanel>
         </Border>
 
+        <!--Colors-->
         <Border>
             <StackPanel Margin="3">
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Colors</Label>
                 <TreeView>
                     <TreeViewItem Header="Map Colors" >
-                        <TextBlock><Run Text="Thermal"/></TextBlock>
-                        <Slider Width="200"/>
-                        <TextBlock><Run Text="Hydro"/></TextBlock>
-                        <Slider Width="200"/>
-                        <TextBlock><Run Text="Amount"/></TextBlock>
-                        <Slider Width="200" />
-                        <TextBlock><Run Text="Curve"/></TextBlock>
-                        <Slider Width="200"/>
-                        <TextBlock><Run Text="Detail"/></TextBlock>
-                        <Slider Width="200"/>
+                        <RadioButton Content="Boreal" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient1RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient1}"/>
+                        </Border>
+
+                        <RadioButton Content="Canyon" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient2RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient2}"/>
+                        </Border>
+
+                        <RadioButton Content="Mountain" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient3RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient3}"/>
+                        </Border>
+
+                        <RadioButton Content="Mountain Snow" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient4RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient4}"/>
+                        </Border>
+
+                        <RadioButton Content="Desert" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient5RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient5}"/>
+                        </Border>
+
+                        <RadioButton Content="Ice" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient6RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient6}"/>
+                        </Border>
+
+                        <RadioButton Content="Alien" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient7RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient7}"/>
+                        </Border>
+                        
+                        <Label >Color Shift</Label>
+                        <DockPanel>
+                            <Slider Minimum="-0.5" Maximum="0.5" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.ColorShift, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettingsProperty.ColorShift, Mode=TwoWay}"/>
+                        </DockPanel>
+
+                        <CheckBox IsChecked="{Binding TerrainSettingsProperty.ColorInvert}" Margin="4">Invert Color Application</CheckBox>
                     </TreeViewItem>
-                    <Button Content="Colorize" Width="223" Height="50" Margin="4"/>
+                    
+                    <Button Content="Colorize" Command="{Binding ColorizeCommand}" Width="223" Height="50" Margin="4"/>
                 </TreeView>
             </StackPanel>
         </Border>
 
-        <Button Content="Generate All"  Height="50" Margin="4"/>
+        <Button Content="Generate All" Command="{Binding GenerateAllCommand}"  Height="50" Margin="4"/>
 
 
     </StackPanel>

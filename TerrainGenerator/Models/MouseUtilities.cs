@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace TerrainGenerator.Utilities
+namespace TerrainGenerator.Models
 {
     public static class MouseUtilities
     {

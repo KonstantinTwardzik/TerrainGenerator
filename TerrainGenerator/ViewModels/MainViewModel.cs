@@ -3,6 +3,7 @@ using System.Windows.Input;
 using TerrainGenerator.Commands;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace TerrainGenerator.ViewModels
 {
@@ -10,7 +11,7 @@ namespace TerrainGenerator.ViewModels
     {
         #region Attributes 
         private TerrainMesh _terrainMesh;
-        private HeightLogic _heightLogic;
+        private TerrainSettings _terrainSettings;
         private bool _res256;
         private bool _res512;
         private bool _res1024;
@@ -30,15 +31,15 @@ namespace TerrainGenerator.ViewModels
                 _terrainMesh = value;
             }
         }
-        public HeightLogic HeightLogicProperty
+        public TerrainSettings TerrainSettingsProperty
         {
             get
             {
-                return _heightLogic;
+                return _terrainSettings;
             }
             set
             {
-                _heightLogic = value;
+                _terrainSettings = value;
             }
         }
 
@@ -111,19 +112,24 @@ namespace TerrainGenerator.ViewModels
 
         private void InitLogic()
         {
-            HeightLogicProperty = new HeightLogic();
-            TerrainMeshProperty = new TerrainMesh(HeightLogicProperty);
+            TerrainSettingsProperty = new TerrainSettings();
+            TerrainMeshProperty = new TerrainMesh(TerrainSettingsProperty);
         }
 
         private void InitCommands()
         {
             NoiseCommand = new NoiseCommand(this);
             ErodeCommand = new ErodeCommand(this);
+            ColorizeCommand = new ColorizeCommand(this);
+            GenerateAllCommand = new GenerateAllCommand(this);
             QuitCommand = new QuitCommand(this);
             NewCommand = new NewCommand(this);
+            ExportCommand = new ExportCommand(this);
             UpdateMeshCommand = new UpdateMeshCommand(this);
+            ChangeHeightCommand = new ChangeHeightCommand(this);
             DetailResolutionCommand = new DetailResolutionCommand(this);
             HelpCommand = new HelpCommand(this);
+
         }
         #endregion
 
@@ -135,16 +141,20 @@ namespace TerrainGenerator.ViewModels
 
         public void NewTerrain()
         {
-            //System.Windows.Forms.Application.Restart();
-            //System.Windows.Application.Current.Shutdown();
-            _heightLogic.TerrainSize = 512;
+            _terrainSettings.TerrainSize = 512;
             UpdateDetailResolution(512);
-            _heightLogic.ResetHeights();
+            _terrainSettings.ResetHeights();
             _terrainMesh.UpdateMesh();
             InitProperties();
         }
 
-        public void UpdateMesh()
+        public void ChangeMesh()
+        {
+            TerrainMeshProperty.UpdateMesh();
+            TerrainMeshProperty.GenerateDefaultTexture();
+        }
+
+        public void ChangeHeight()
         {
             TerrainMeshProperty.UpdateMesh();
         }
@@ -179,18 +189,28 @@ namespace TerrainGenerator.ViewModels
                     break;
             }
 
-            HeightLogicProperty.ChangeDetailResolution(resolution);
+            TerrainSettingsProperty.ChangeDetailResolution(resolution);
             TerrainMeshProperty.InitMesh();
+            GetPreviousState();
+        }
 
-            if (_heightLogic.isNoised)
+        public void GetPreviousState()
+        {
+            if (_terrainSettings.isNoised &&  _terrainSettings.isEroded && _terrainSettings.isColored)
+            {
+                Noise();
+                Erode();
+                Colorize();
+            }
+            else if (_terrainSettings.isNoised && _terrainSettings.isEroded)
+            {
+                Noise();
+                Erode();
+            }
+            else if (_terrainSettings.isNoised)
             {
                 Noise();
             }
-            if (_heightLogic.isEroded)
-            {
-                Erode();
-            }
-
         }
 
         public void OpenWebsite()
@@ -200,15 +220,35 @@ namespace TerrainGenerator.ViewModels
 
         public void Noise()
         {
-            HeightLogicProperty.OpenSimplexNoise();
-            TerrainMeshProperty.UpdateMesh();
-            HeightLogicProperty.ConvertToBitmapSource();
+            TerrainSettingsProperty.OpenSimplexNoise();
+            ChangeMesh();
         }
 
         public void Erode()
         {
-            HeightLogicProperty.Erode();
-            TerrainMeshProperty.UpdateMesh();
+            TerrainSettingsProperty.Erode();
+            ChangeMesh();
+        }
+
+        public void Colorize()
+        {
+            TerrainSettingsProperty.Colorize();
+            TerrainMeshProperty.UpdateTexture();
+        }
+
+        public void GenerateAll()
+        {
+            Noise();
+            Erode();
+            Colorize();
+        }
+
+        public void ExportMaps()
+        {
+            //SaveFileDialog saveFileDialog = new SaveFileDialog();
+            //saveFileDialog.Filter = "*.PNG";
+            //saveFileDialog.ShowDialog();
+            
         }
         #endregion
 
@@ -225,6 +265,18 @@ namespace TerrainGenerator.ViewModels
         }
 
         public ICommand ErodeCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand ColorizeCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand GenerateAllCommand
         {
             get;
             private set;
@@ -248,6 +300,12 @@ namespace TerrainGenerator.ViewModels
             private set;
         }
 
+        public ICommand ChangeHeightCommand
+        {
+            get;
+            private set;
+        }
+
         public ICommand DetailResolutionCommand
         {
             get;
@@ -255,6 +313,12 @@ namespace TerrainGenerator.ViewModels
         }
 
         public ICommand HelpCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand ExportCommand
         {
             get;
             private set;
