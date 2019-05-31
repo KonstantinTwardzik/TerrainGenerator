@@ -427,6 +427,34 @@ namespace TerrainGenerator.ViewModels
                 _gradient7 = value;
             }
         }
+        public bool Gradient1RB
+        {
+            get; set;
+        }
+        public bool Gradient2RB
+        {
+            get; set;
+        }
+        public bool Gradient3RB
+        {
+            get; set;
+        }
+        public bool Gradient4RB
+        {
+            get; set;
+        }
+        public bool Gradient5RB
+        {
+            get; set;
+        }
+        public bool Gradient6RB
+        {
+            get; set;
+        }
+        public bool Gradient7RB
+        {
+            get; set;
+        }
         #endregion
 
         #region Initialization
@@ -480,6 +508,13 @@ namespace TerrainGenerator.ViewModels
             //Coloring
             ColorShift = 0.0;
             ColorInvert = false;
+            Gradient1RB = true;
+            Gradient2RB = false;
+            Gradient3RB = false;
+            Gradient4RB = false;
+            Gradient5RB = false;
+            Gradient6RB = false;
+            Gradient7RB = false;
         }
 
         public void InitHeights()
@@ -1115,12 +1150,49 @@ namespace TerrainGenerator.ViewModels
 
         public void Colorize()
         {
-            GradientStopCollection currentSelectedGradient = _gradient7.GradientStops;
+            GradientStopCollection currentSelectedGradient;
             PixelFormat pixelFormat = PixelFormats.Bgr24;
             int rawStride = (_terrainSize * pixelFormat.BitsPerPixel + 7) / 8;
             byte[] rawImage = new byte[rawStride * _terrainSize];
+
+            #region Gradient Selector
+            if (Gradient1RB)
+            {
+                currentSelectedGradient = _gradient1.GradientStops;
+            }
+            else if (Gradient2RB)
+            {
+                currentSelectedGradient = _gradient2.GradientStops;
+            }
+            else if (Gradient3RB)
+            {
+                currentSelectedGradient = _gradient3.GradientStops;
+            }
+            else if (Gradient4RB)
+            {
+                currentSelectedGradient = _gradient4.GradientStops;
+            }
+            else if (Gradient5RB)
+            {
+                currentSelectedGradient = _gradient5.GradientStops;
+            }
+            else if (Gradient6RB)
+            {
+                currentSelectedGradient = _gradient6.GradientStops;
+            }
+            else if (Gradient7RB)
+            {
+                currentSelectedGradient = _gradient7.GradientStops;
+            }
+            else
+            {
+                return;
+            }
+            #endregion
+
             _coloringAlgorithm.UpdateValues(currentSelectedGradient, _terrainPoints, _terrainSize, _colorShift, _colorInvert);
             _coloringAlgorithm.calculateMinMax();
+
             int count = 0;
             for (int x = 0; x < _terrainSize; x++)
             {
@@ -1135,6 +1207,8 @@ namespace TerrainGenerator.ViewModels
 
                 }
             }
+
+
             BitmapSource bitmap = BitmapSource.Create(_terrainSize, _terrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             MemoryStream memoryStream = new MemoryStream();
@@ -1148,6 +1222,8 @@ namespace TerrainGenerator.ViewModels
             _colorMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
             _colorMapImage.EndInit();
             _colorMapImage.Freeze();
+
+            isColored = true;
         }
 
         public void GenerateMaps()

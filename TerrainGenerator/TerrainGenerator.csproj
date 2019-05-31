@@ -82,6 +82,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\ChangeHeightCommand.cs" />
     <Compile Include="Commands\GenerateAllCommand.cs" />
     <Compile Include="Commands\NoiseCommand.cs" />
     <Compile Include="Commands\ErodeCommand.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Commands\NewCommand.cs" />
     <Compile Include="Commands\QuitCommand.cs" />
     <Compile Include="Commands\ColorizeCommand.cs" />
+    <Compile Include="Commands\ExportCommand.cs" />
     <Compile Include="Commands\UpdateMeshCommand.cs" />
     <Compile Include="Commands\DetailResolutionCommand.cs" />
     <Compile Include="Models\ColoringAlgorithm.cs" />

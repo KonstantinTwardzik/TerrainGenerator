@@ -47,6 +47,11 @@
             </Style.Triggers>
         </Style>
 
+        <Style TargetType="Rectangle">
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="Height" Value="50"/>
+        </Style>
+
         <Style x:Key="{x:Type TreeView}" TargetType="TreeView">
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -190,6 +195,8 @@
 
     <StackPanel Margin="1" >
         <Label FontSize="16" FontWeight="Bold" Margin="3"  HorizontalAlignment="Center">Terrain Settings</Label>
+        
+        <!--Noises-->
         <Border>
             <StackPanel Margin="3">
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Noises</Label>
@@ -231,6 +238,7 @@
             </StackPanel>
         </Border>
 
+        <!--Erosions-->
         <Border>
             <StackPanel Margin="3">
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Erosions</Label>
@@ -293,62 +301,56 @@
             </StackPanel>
         </Border>
 
+        <!--Colors-->
         <Border>
             <StackPanel Margin="3">
                 <Label FontSize="14" FontWeight="Bold" Margin="0">Colors</Label>
                 <TreeView>
                     <TreeViewItem Header="Map Colors" >
-                        <RadioButton >
-                            <TextBlock><Run Text="Boreal"/></TextBlock>
-                        </RadioButton>
+                        <RadioButton Content="Boreal" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient1RB}"/>
                         <Border>
-                            <Rectangle Width="250" Height="50" Fill="{Binding TerrainSettingsProperty.Gradient1}"/>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient1}"/>
                         </Border>
-                        <RadioButton >
-                            <TextBlock><Run Text="Canyon"/></TextBlock>
-                        </RadioButton>
+
+                        <RadioButton Content="Canyon" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient2RB}"/>
                         <Border>
-                            <Rectangle Width="250" Height="50" Fill="{Binding TerrainSettingsProperty.Gradient2}"/>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient2}"/>
                         </Border>
-                        <RadioButton >
-                            <TextBlock><Run Text="Mountain"/></TextBlock>
-                        </RadioButton>
+
+                        <RadioButton Content="Mountain" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient3RB}"/>
                         <Border>
-                            <Rectangle Width="250" Height="50" Fill="{Binding TerrainSettingsProperty.Gradient3}"/>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient3}"/>
                         </Border>
-                        <RadioButton>
-                            <TextBlock>
-                            <Run Text="Mountain Snow"/>
-                            </TextBlock>
-                        </RadioButton>
+
+                        <RadioButton Content="Mountain Snow" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient4RB}"/>
                         <Border>
-                            <Rectangle Width="250" Height="50" Fill="{Binding TerrainSettingsProperty.Gradient4}"/>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient4}"/>
                         </Border>
-                        <RadioButton>
-                        <TextBlock><Run Text="Desert"/></TextBlock>
-                        </RadioButton>
+
+                        <RadioButton Content="Desert" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient5RB}"/>
                         <Border>
-                            <Rectangle Width="250" Height="50" Fill="{Binding TerrainSettingsProperty.Gradient5}"/>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient5}"/>
                         </Border>
-                        <RadioButton>
-                        <TextBlock><Run Text="Ice"/></TextBlock>
-                        </RadioButton>
+
+                        <RadioButton Content="Ice" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient6RB}"/>
                         <Border>
-                            <Rectangle Width="250" Height="50" Fill="{Binding TerrainSettingsProperty.Gradient6}"/>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient6}"/>
                         </Border>
-                        <RadioButton>
-                        <TextBlock><Run Text="Alien"/></TextBlock>
-                        </RadioButton>
+
+                        <RadioButton Content="Alien" GroupName="ColorRBs" IsChecked="{Binding TerrainSettingsProperty.Gradient7RB}"/>
                         <Border>
-                            <Rectangle Width="250" Height="50" Fill="{Binding TerrainSettingsProperty.Gradient7}"/>
+                            <Rectangle Fill="{Binding TerrainSettingsProperty.Gradient7}"/>
                         </Border>
+                        
                         <Label >Color Shift</Label>
                         <DockPanel>
                             <Slider Minimum="-0.5" Maximum="0.5" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.ColorShift, Mode=TwoWay}"/>
                             <TextBox Text="{Binding TerrainSettingsProperty.ColorShift, Mode=TwoWay}"/>
                         </DockPanel>
+
                         <CheckBox IsChecked="{Binding TerrainSettingsProperty.ColorInvert}" Margin="4">Invert Color Application</CheckBox>
                     </TreeViewItem>
+                    
                     <Button Content="Colorize" Command="{Binding ColorizeCommand}" Width="223" Height="50" Margin="4"/>
                 </TreeView>
             </StackPanel>

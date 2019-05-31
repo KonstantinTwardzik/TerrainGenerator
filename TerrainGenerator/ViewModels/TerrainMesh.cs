@@ -74,7 +74,7 @@ namespace TerrainGenerator.ViewModels
             GeneratePositions();
             GenerateTriangleIndices();
             GenerateUVCoordinates();
-            GenerateDefaulTexture();
+            GenerateDefaultTexture();
         }
         #endregion
 
@@ -114,7 +114,6 @@ namespace TerrainGenerator.ViewModels
                         point.Z = ((double)z / ((double)_heightLogic.TerrainSize - 1) - 0.5) * 2;
                 }
                 MeshGeometry3DProperty.Positions.Add(point);
-
             }
 
             for (int x = 0; x < _heightLogic.TerrainSize; x++)
@@ -212,9 +211,7 @@ namespace TerrainGenerator.ViewModels
                     MeshGeometry3DProperty.TriangleIndices.Add(value);
                 }
             }
-
-
-
+                       
             // Border Incdices
             for (int z = 0; z < _heightLogic.TerrainSize - 1; z++)
             {
@@ -323,11 +320,17 @@ namespace TerrainGenerator.ViewModels
                     MeshGeometry3DProperty.TextureCoordinates.Add(point);
                 }
             }
+            //for (int x = _heightLogic.TerrainSize * _heightLogic.TerrainSize; x < _meshGeometry3D.Positions.Count+10; x++)
+            //{
+            //    point.X = 0;
+            //    point.Y = 0;
+            //    MeshGeometry3DProperty.TextureCoordinates.Add(point);
+            //}
         }
 
-        private void GenerateDefaulTexture()
+        public void GenerateDefaultTexture()
         {
-            
+
             PixelFormat pixelFormat = PixelFormats.Bgr24;
             int rawStride = (pixelFormat.BitsPerPixel + 7) / 8;
             byte[] rawImage = new byte[rawStride];
@@ -369,16 +372,17 @@ namespace TerrainGenerator.ViewModels
                     MeshGeometry3DProperty.Positions[x + z * _heightLogic.TerrainSize] = point;
                 }
             }
-
-            GenerateDefaulTexture();
         }
 
         public void UpdateTexture()
         {
-            _imageBrush.ImageSource = _heightLogic.ColorMapImage;
+            if (_heightLogic.ColorMapImage != null)
+            {
+                _imageBrush.ImageSource = _heightLogic.ColorMapImage;
+            }
         }
         #endregion
-        
+
         #region INotifyPropertyChanged Members
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)

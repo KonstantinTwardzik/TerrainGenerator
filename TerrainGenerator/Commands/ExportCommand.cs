@@ -4,11 +4,11 @@ using TerrainGenerator.ViewModels;
 
 namespace TerrainGenerator.Commands
 {
-    internal class UpdateMeshCommand : ICommand
+    internal class ExportCommand : ICommand
     {
         private MainViewModel _mainViewModel;
 
-        public UpdateMeshCommand(MainViewModel mainViewModel)
+        public ExportCommand(MainViewModel mainViewModel)
         {
             _mainViewModel = mainViewModel;
         }
@@ -26,7 +26,7 @@ namespace TerrainGenerator.Commands
 
         public void Execute(object parameter)
         {
-            _mainViewModel.ChangeMesh();
+            _mainViewModel.ExportMaps();
         }
     }
 }
