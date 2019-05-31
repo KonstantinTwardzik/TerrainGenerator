@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Windows.Input;
-using TerrainGenerator.Commands;
-using System.Threading.Tasks;
+using Topographer.Commands;
 using System.ComponentModel;
-using System.Windows.Forms;
+using Microsoft.Win32;
 
-namespace TerrainGenerator.ViewModels
+namespace Topographer.ViewModels
 {
     internal class MainViewModel : INotifyPropertyChanged
     {
@@ -144,7 +143,7 @@ namespace TerrainGenerator.ViewModels
             _terrainSettings.TerrainSize = 512;
             UpdateDetailResolution(512);
             _terrainSettings.ResetHeights();
-            _terrainMesh.UpdateMesh();
+            ChangeMesh();
             InitProperties();
         }
 
@@ -196,7 +195,7 @@ namespace TerrainGenerator.ViewModels
 
         public void GetPreviousState()
         {
-            if (_terrainSettings.isNoised &&  _terrainSettings.isEroded && _terrainSettings.isColored)
+            if (_terrainSettings.isNoised && _terrainSettings.isEroded && _terrainSettings.isColored)
             {
                 Noise();
                 Erode();
@@ -245,10 +244,17 @@ namespace TerrainGenerator.ViewModels
 
         public void ExportMaps()
         {
-            //SaveFileDialog saveFileDialog = new SaveFileDialog();
-            //saveFileDialog.Filter = "*.PNG";
-            //saveFileDialog.ShowDialog();
+            TerrainSettingsProperty.CreateHeightMap();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "png (.png) | *.png";
+            saveFileDialog.FilterIndex = 1;
+            Nullable <bool> result = saveFileDialog.ShowDialog();
+            if(result == true)
+            {
+                TerrainSettingsProperty.ExportMaps(saveFileDialog.FileName);
+            }
             
+
         }
         #endregion
 
@@ -329,11 +335,7 @@ namespace TerrainGenerator.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
     }

@@ -1,7 +1,7 @@
-﻿<Application x:Class="TerrainGenerator.App"
+﻿<Application x:Class="Topographer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TerrainGenerator"
+             xmlns:local="clr-namespace:Topographer"
              StartupUri="./Views/MainWindow.xaml">
 
     <Application.Resources>

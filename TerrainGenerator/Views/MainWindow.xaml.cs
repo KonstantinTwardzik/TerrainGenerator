@@ -11,9 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using TerrainGenerator.ViewModels;
+using Topographer.ViewModels;
 
-namespace TerrainGenerator.Views
+namespace Topographer.Views
 {
     public partial class MainWindow : Window
     {

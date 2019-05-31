@@ -2,12 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
-using TerrainGenerator.ViewModels;
-using System;
-using System.Windows.Media;
-using TerrainGenerator.Models;
+using Topographer.Models;
 
-namespace TerrainGenerator.Views
+namespace Topographer.Views
 {
     /// <summary>
     /// Interaction logic for ViewportCamera3D.xaml

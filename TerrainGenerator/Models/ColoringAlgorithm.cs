@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace TerrainGenerator.Models
+namespace Topographer.Models
 {
     class ColoringAlgorithm
     {
@@ -35,9 +35,17 @@ namespace TerrainGenerator.Models
 
         }
 
-        public byte[] Colorize(int x, int z)
+        public byte[] ColorizeTerrain(int x, int z)
         {
             calculateOffset(x, z);
+            calculateColor();
+            return _bgr;
+        }
+
+        public byte[] ColorizeBorder(int x, int max)
+        {
+            x %= max;
+            _offset = (double)x / (double)max;
             calculateColor();
             return _bgr;
         }

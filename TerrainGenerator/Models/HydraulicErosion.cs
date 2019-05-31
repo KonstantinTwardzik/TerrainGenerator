@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TerrainGenerator.Models
+namespace Topographer.Models
 {
     public class HydraulicErosion
     {

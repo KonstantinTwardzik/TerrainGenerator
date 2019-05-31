@@ -4,10 +4,10 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using TerrainGenerator.Models;
+using Topographer.Models;
 using Color = System.Windows.Media.Color;
 
-namespace TerrainGenerator.ViewModels
+namespace Topographer.ViewModels
 {
     public class TerrainSettings : INotifyPropertyChanged
     {
@@ -47,6 +47,7 @@ namespace TerrainGenerator.ViewModels
         //Texturing
         private BitmapImage _colorMapImage;
         private BitmapImage _heightMapImage;
+        private BitmapImage _borderMapImage;
         private LinearGradientBrush _gradient1;
         private LinearGradientBrush _gradient2;
         private LinearGradientBrush _gradient3;
@@ -312,7 +313,7 @@ namespace TerrainGenerator.ViewModels
             }
             set
             {
-                value = _heightMapImage;
+                _heightMapImage = value;
             }
         }
         public BitmapImage ColorMapImage
@@ -323,7 +324,18 @@ namespace TerrainGenerator.ViewModels
             }
             set
             {
-                value = _colorMapImage;
+                _colorMapImage = value;
+            }
+        }
+        public BitmapImage BorderMapImage
+        {
+            get
+            {
+                return _borderMapImage;
+            }
+            set
+            {
+                _borderMapImage = value;
             }
         }
         public double ColorShift
@@ -800,9 +812,11 @@ namespace TerrainGenerator.ViewModels
             GradientStop stop50 = new GradientStop();
             stop50.Offset = 0;
             stop50.Color = color50;
-            GradientStop stop51 = new GradientStop();
-            stop51.Offset = 0.1;
-            stop51.Color = color51;
+            GradientStop stop51 = new GradientStop
+            {
+                Offset = 0.1,
+                Color = color51
+            };
             GradientStop stop52 = new GradientStop();
             stop52.Offset = 0.2;
             stop52.Color = color53;
@@ -1052,7 +1066,12 @@ namespace TerrainGenerator.ViewModels
                         }
 
                         _terrainPoints[x + z * _terrainSize] += value;
-                        _terrainPointsUneroded[x + z * _terrainSize] += value;
+
+                        if (_terrainPoints[x + z * _terrainSize] < 0)
+                        {
+                            _terrainPoints[x + z * _terrainSize] = 0;
+                        }
+                        _terrainPointsUneroded[x + z * _terrainSize] = _terrainPoints[x + z * _terrainSize];
                     }
                 }
                 weight /= 2 - (_osnOctaveWeight - 0.5);
@@ -1074,7 +1093,6 @@ namespace TerrainGenerator.ViewModels
                         _terrainPoints[x + z * _terrainSize] = _terrainPointsUneroded[x + z * _terrainSize];
                     }
                 }
-                System.Console.WriteLine("Terrain zurückgesetzt");
             }
 
             int seed = _heSeed;
@@ -1151,10 +1169,6 @@ namespace TerrainGenerator.ViewModels
         public void Colorize()
         {
             GradientStopCollection currentSelectedGradient;
-            PixelFormat pixelFormat = PixelFormats.Bgr24;
-            int rawStride = (_terrainSize * pixelFormat.BitsPerPixel + 7) / 8;
-            byte[] rawImage = new byte[rawStride * _terrainSize];
-
             #region Gradient Selector
             if (Gradient1RB)
             {
@@ -1190,6 +1204,12 @@ namespace TerrainGenerator.ViewModels
             }
             #endregion
 
+            #region ColorMap
+            PixelFormat pixelFormat = PixelFormats.Bgr24;
+            int rawStride = (_terrainSize * pixelFormat.BitsPerPixel + 7) / 8;
+            byte[] rawImage = new byte[rawStride * _terrainSize];
+
+
             _coloringAlgorithm.UpdateValues(currentSelectedGradient, _terrainPoints, _terrainSize, _colorShift, _colorInvert);
             _coloringAlgorithm.calculateMinMax();
 
@@ -1198,7 +1218,7 @@ namespace TerrainGenerator.ViewModels
             {
                 for (int z = 0; z < _terrainSize; z++)
                 {
-                    byte[] RGB = _coloringAlgorithm.Colorize(x, z);
+                    byte[] RGB = _coloringAlgorithm.ColorizeTerrain(x, z);
                     for (int i = 0; i < 3; i++)
                     {
                         rawImage[count] = RGB[i];
@@ -1222,13 +1242,45 @@ namespace TerrainGenerator.ViewModels
             _colorMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
             _colorMapImage.EndInit();
             _colorMapImage.Freeze();
+            #endregion
+
+            #region BorderMap
+            int width = 500;
+            int rawStrideBorder = (width * pixelFormat.BitsPerPixel + 7) / 8;
+            byte[] rawImageBorder = new byte[rawStrideBorder];
+
+            int count2 = 0;
+            for (int x = 0; x < width; x++)
+            {
+                byte[] RGB = _coloringAlgorithm.ColorizeBorder(x*4, width);
+                for (int i = 0; i < 3; i++)
+                {
+                    rawImageBorder[count2] = RGB[i];
+                    count2++;
+                }
+            }
+
+            BitmapSource bitmapBorder = BitmapSource.Create(width, 1, 96, 96, pixelFormat, null, rawImageBorder, rawStrideBorder);
+            PngBitmapEncoder encoderBorder = new PngBitmapEncoder();
+            MemoryStream memoryStreamBorder = new MemoryStream();
+            _borderMapImage = new BitmapImage();
+
+            encoderBorder.Frames.Add(BitmapFrame.Create(bitmapBorder));
+            encoderBorder.Save(memoryStreamBorder);
+
+            memoryStreamBorder.Position = 0;
+            _borderMapImage.BeginInit();
+            _borderMapImage.StreamSource = new MemoryStream(memoryStreamBorder.ToArray());
+            _borderMapImage.EndInit();
+            _borderMapImage.Freeze();
+            #endregion
 
             isColored = true;
         }
 
-        public void GenerateMaps()
+        public void CreateHeightMap()
         {
-            //Heightmap Generation
+            //Heightmap
             System.Windows.Media.PixelFormat pixelFormat = PixelFormats.Gray32Float;
             int rawStride = (_terrainSize * pixelFormat.BitsPerPixel + 7) / 8;
             byte[] rawImage = new byte[rawStride * _terrainSize];
@@ -1251,10 +1303,7 @@ namespace TerrainGenerator.ViewModels
                     }
                 }
             }
-
-
             BitmapSource bitmap = BitmapSource.Create(_terrainSize, _terrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
-
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             MemoryStream memoryStream = new MemoryStream();
             _heightMapImage = new BitmapImage();
@@ -1267,6 +1316,34 @@ namespace TerrainGenerator.ViewModels
             _heightMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
             _heightMapImage.EndInit();
             _heightMapImage.Freeze();
+        }
+
+        public void ExportMaps(String filePath)
+        {
+            int index = filePath.LastIndexOf(@".");
+
+            if (_heightMapImage.IsFrozen)
+            {
+                String heightFilePath = filePath.Insert(index, "_height");
+                Save(_heightMapImage, heightFilePath);
+            }
+
+            if (_colorMapImage.IsFrozen)
+            {
+                String albedoFilePath = filePath.Insert(index, "_albedo");
+                Save(_colorMapImage, albedoFilePath);
+            }
+        }
+
+        public void Save(BitmapSource image, string filePath)
+        {
+            BitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(image));
+
+            using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
+            {
+                encoder.Save(fileStream);
+            }
         }
         #endregion
 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TerrainGenerator.Properties
+namespace Topographer.Properties
 {
 
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
-using TerrainGenerator.ViewModels;
+using Topographer.ViewModels;
 
-namespace TerrainGenerator.Commands
+namespace Topographer.Commands
 {
     internal class ExportCommand : ICommand
     {
