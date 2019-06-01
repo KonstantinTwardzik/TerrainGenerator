@@ -90,7 +90,7 @@ namespace Topographer.ViewModels
             _terrainImageBrush = new ImageBrush();
             _borderMeshGeometry3D = new MeshGeometry3D();
             _borderImageBrush = new ImageBrush();
-            _generalHeight = 0.5;
+            _generalHeight = 0.75;
             InitMesh();
         }
 
@@ -222,7 +222,7 @@ namespace Topographer.ViewModels
             }
 
             point.X = 1;
-            for (int z = _terrainSettings.TerrainSize; z > 0; z--)
+            for (int z = _terrainSettings.TerrainSize - 1; z >= 0; z--)
             {
                 point.Z = ((double)z / ((double)_terrainSettings.TerrainSize - 1) - 0.5) * 2;
                 BorderMeshGeometry3DProperty.Positions.Add(point);
@@ -230,7 +230,7 @@ namespace Topographer.ViewModels
             }
 
             point.Z = -1;
-            for (int x = _terrainSettings.TerrainSize; x > 0; x--)
+            for (int x = _terrainSettings.TerrainSize - 1; x >= 0; x--)
             {
                 point.X = ((double)x / ((double)_terrainSettings.TerrainSize - 1) - 0.5) * 2;
                 BorderMeshGeometry3DProperty.Positions.Add(point);
@@ -256,7 +256,6 @@ namespace Topographer.ViewModels
                         if (trianglePoint == 2)
                             value = i;
                         BorderMeshGeometry3DProperty.TriangleIndices.Add(value);
-                        Console.WriteLine(value);
                     }
                 }
                 else
@@ -270,7 +269,6 @@ namespace Topographer.ViewModels
                         if (trianglePoint == 2)
                             value = i;
                         BorderMeshGeometry3DProperty.TriangleIndices.Add(value);
-                        Console.WriteLine(value);
                     }
                 }
 
@@ -353,7 +351,7 @@ namespace Topographer.ViewModels
                 BorderMeshGeometry3DProperty.Positions[(z * 2) + 1] = point;
             }
 
-            for (int x = 1; x < _terrainSettings.TerrainSize; x++)
+            for (int x = 0; x < _terrainSettings.TerrainSize; x++)
             {
                 point = BorderMeshGeometry3DProperty.Positions[(x * 2) + 1 + (2 * _terrainSettings.TerrainSize)];
                 point.Y = _terrainSettings.TerrainPoints[x * _terrainSettings.TerrainSize + _terrainSettings.TerrainSize - 1] * GeneralHeight;
@@ -362,16 +360,16 @@ namespace Topographer.ViewModels
 
             for (int z = _terrainSettings.TerrainSize; z > 0; z--)
             {
-                point = BorderMeshGeometry3DProperty.Positions[(z * 2) + 1 + (4 * _terrainSettings.TerrainSize)];
+                point = BorderMeshGeometry3DProperty.Positions[(z * 2) - 1 + (4 * _terrainSettings.TerrainSize)];
                 point.Y = _terrainSettings.TerrainPoints[(_terrainSettings.TerrainSize * _terrainSettings.TerrainSize) - z] * GeneralHeight;
-                BorderMeshGeometry3DProperty.Positions[(z * 2) + 1 + (4 * _terrainSettings.TerrainSize)] = point;
+                BorderMeshGeometry3DProperty.Positions[(z * 2) - 1 + (4 * _terrainSettings.TerrainSize)] = point;
             }
 
-            for (int x = _terrainSettings.TerrainSize - 1; x > 0; x--)
+            for (int x = _terrainSettings.TerrainSize; x > 0; x--)
             {
-                point = BorderMeshGeometry3DProperty.Positions[(x * 2) + 1 + (6 * _terrainSettings.TerrainSize)];
+                point = BorderMeshGeometry3DProperty.Positions[(x * 2) - 1 + (6 * _terrainSettings.TerrainSize)];
                 point.Y = _terrainSettings.TerrainPoints[(_terrainSettings.TerrainSize - x) * _terrainSettings.TerrainSize] * GeneralHeight;
-                BorderMeshGeometry3DProperty.Positions[(x * 2) + 1 + (6 * _terrainSettings.TerrainSize)] = point;
+                BorderMeshGeometry3DProperty.Positions[(x * 2) - 1 + (6 * _terrainSettings.TerrainSize)] = point;
             }
 
 

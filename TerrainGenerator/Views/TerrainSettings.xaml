@@ -204,12 +204,12 @@
                     <TreeViewItem Header="Open Simplex Noise">
                         <Label >Scale</Label>
                         <DockPanel>
-                            <Slider Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettingsProperty.OSNScale, Mode=TwoWay}"/>
+                            <Slider Minimum="0.01" Maximum="2" TickFrequency="0.2" LargeChange="0.2" Value="{Binding TerrainSettingsProperty.OSNScale, Mode=TwoWay}"/>
                             <TextBox Text="{Binding TerrainSettingsProperty.OSNScale, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Octaves</Label>
                         <DockPanel>
-                            <Slider Minimum="1" Maximum="10" TickFrequency="1" Value="{Binding TerrainSettingsProperty.OSNOctaves, Mode=TwoWay}"/>
+                            <Slider Minimum="1" Maximum="15" TickFrequency="1" Value="{Binding TerrainSettingsProperty.OSNOctaves, Mode=TwoWay}"/>
                             <TextBox Text="{Binding TerrainSettingsProperty.OSNOctaves, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Octave Weight</Label>
@@ -246,12 +246,12 @@
                     <TreeViewItem Header="Hydraulic Erosion" >
                         <Label >Iterations</Label>
                         <DockPanel>
-                            <Slider Minimum="10000" Maximum="200000" TickFrequency="50000" LargeChange="50000" Value="{Binding TerrainSettingsProperty.HEIterations, Mode=TwoWay}"/>
+                            <Slider Minimum="10000" Maximum="500000" TickFrequency="100000" LargeChange="100000" Value="{Binding TerrainSettingsProperty.HEIterations, Mode=TwoWay}"/>
                             <TextBox Text="{Binding TerrainSettingsProperty.HEIterations, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Droplet Lifetime</Label>
                         <DockPanel>
-                            <Slider Minimum="1" Maximum="60" TickFrequency="5" LargeChange="5" Value="{Binding TerrainSettingsProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                            <Slider Minimum="1" Maximum="40" TickFrequency="5" LargeChange="5" Value="{Binding TerrainSettingsProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
                             <TextBox Text="{Binding TerrainSettingsProperty.HEMaxDropletLifetime, Mode=TwoWay}"/>
                         </DockPanel>
                         <Label >Erosion Radius</Label>

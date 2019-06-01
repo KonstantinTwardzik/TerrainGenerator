@@ -145,6 +145,7 @@ namespace Topographer.ViewModels
             _terrainSettings.ResetHeights();
             ChangeMesh();
             InitProperties();
+            _terrainSettings.InitProperties();
         }
 
         public void ChangeMesh()
@@ -214,7 +215,7 @@ namespace Topographer.ViewModels
 
         public void OpenWebsite()
         {
-            System.Diagnostics.Process.Start("https://github.com/KonstantinTwardzik/TerrainGenerator");
+            System.Diagnostics.Process.Start("https://github.com/KonstantinTwardzik/Topographer3D/wiki");
         }
 
         public void Noise()

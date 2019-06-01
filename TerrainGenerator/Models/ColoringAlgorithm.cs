@@ -19,10 +19,12 @@ namespace Topographer.Models
         private double _min;
         private double _max;
         private double _range;
+        private Random _random;
 
         public ColoringAlgorithm()
         {
             _bgr = new byte[3];
+            _random = new Random();
         }
 
         public void UpdateValues(GradientStopCollection gradientStopCollection, double[] heights, int terrainSize, double contrast, bool invert)
@@ -47,6 +49,10 @@ namespace Topographer.Models
             x %= max;
             _offset = (double)x / (double)max;
             calculateColor();
+            byte randomColorOffset = (byte)_random.Next(16);
+            _bgr[0] += randomColorOffset;
+            _bgr[1] += randomColorOffset;
+            _bgr[2] += randomColorOffset;
             return _bgr;
         }
 
