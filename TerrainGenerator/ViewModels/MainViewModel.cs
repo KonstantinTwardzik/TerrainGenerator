@@ -246,9 +246,11 @@ namespace Topographer.ViewModels
         public void ExportMaps()
         {
             TerrainSettingsProperty.CreateHeightMap();
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "png (.png) | *.png";
-            saveFileDialog.FilterIndex = 1;
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "png (.png) | *.png",
+                FilterIndex = 1
+            };
             Nullable <bool> result = saveFileDialog.ShowDialog();
             if(result == true)
             {
