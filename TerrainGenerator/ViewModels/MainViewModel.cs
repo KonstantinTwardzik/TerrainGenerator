@@ -2,7 +2,10 @@
 using System.Windows.Input;
 using Topographer.Commands;
 using System.ComponentModel;
-using Microsoft.Win32;
+using System.Windows;
+using Control = System.Windows.Forms.Control;
+using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
 namespace Topographer.ViewModels
 {
@@ -15,6 +18,9 @@ namespace Topographer.ViewModels
         private bool _res512;
         private bool _res1024;
         private bool _res2048;
+        private string _maxPath;
+        private string _maxFullPath;
+        private string _maxImagePath;
         #endregion
 
         #region Properties
@@ -91,6 +97,20 @@ namespace Topographer.ViewModels
                 OnPropertyChanged("Res2048");
             }
         }
+
+        public string MaxImagePath
+        {
+            get
+            {
+                return _maxImagePath;
+            }
+
+            set
+            {
+                _maxImagePath = value;
+                OnPropertyChanged("MaxImagePath");
+            }
+        }
         #endregion
 
         #region Initialization
@@ -107,6 +127,10 @@ namespace Topographer.ViewModels
             Res512 = false;
             Res1024 = true;
             Res2048 = true;
+
+            _maxPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/Maximize.png";
+            _maxFullPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/MaximizeFullscreen.png";
+            MaxImagePath = _maxPath;
         }
 
         private void InitLogic()
@@ -121,6 +145,9 @@ namespace Topographer.ViewModels
             ErodeCommand = new ErodeCommand(this);
             ColorizeCommand = new ColorizeCommand(this);
             GenerateAllCommand = new GenerateAllCommand(this);
+            DragCommand = new DragCommand(this);
+            MinimizeCommand = new MinimizeCommand(this);
+            MaximizeCommand = new MaximizeCommand(this);
             QuitCommand = new QuitCommand(this);
             NewCommand = new NewCommand(this);
             ExportCommand = new ExportCommand(this);
@@ -136,6 +163,30 @@ namespace Topographer.ViewModels
         public void QuitApplication()
         {
             System.Windows.Application.Current.Shutdown();
+        }
+
+        public void DragWindow()
+        {
+            App.Current.MainWindow.DragMove();
+        }
+
+        public void MinimizeApplication()
+        {
+            App.Current.MainWindow.WindowState = WindowState.Minimized;
+        }
+
+        public void MaximizeApplication()
+        {
+            if (App.Current.MainWindow.WindowState == WindowState.Maximized)
+            {
+                MaxImagePath = _maxPath;
+                App.Current.MainWindow.WindowState = WindowState.Normal;
+            }
+            else if (App.Current.MainWindow.WindowState == WindowState.Normal)
+            {
+                MaxImagePath = _maxFullPath;
+                App.Current.MainWindow.WindowState = WindowState.Maximized;
+            }
         }
 
         public void NewTerrain()
@@ -246,18 +297,24 @@ namespace Topographer.ViewModels
         public void ExportMaps()
         {
             TerrainSettingsProperty.CreateHeightMap();
-            SaveFileDialog saveFileDialog = new SaveFileDialog
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "png (.png) | *.png",
                 FilterIndex = 1
             };
-            Nullable <bool> result = saveFileDialog.ShowDialog();
-            if(result == true)
+            Nullable<bool> result = saveFileDialog.ShowDialog();
+            if (result == true)
             {
                 TerrainSettingsProperty.ExportMaps(saveFileDialog.FileName);
             }
-            
 
+
+        }
+
+        public static Point GetMousePosition()
+        {
+            System.Drawing.Point point = Control.MousePosition;
+            return new Point(point.X, point.Y);
         }
         #endregion
 
@@ -286,6 +343,24 @@ namespace Topographer.ViewModels
         }
 
         public ICommand GenerateAllCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand DragCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand MinimizeCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand MaximizeCommand
         {
             get;
             private set;

@@ -112,7 +112,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\ChangeHeightCommand.cs" />
+    <Compile Include="Commands\DragCommand.cs" />
     <Compile Include="Commands\GenerateAllCommand.cs" />
+    <Compile Include="Commands\MaximizeCommand.cs" />
+    <Compile Include="Commands\MinimizeCommand.cs" />
     <Compile Include="Commands\NoiseCommand.cs" />
     <Compile Include="Commands\ErodeCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
@@ -139,6 +142,9 @@
     <Compile Include="Views\TerrainSettings.xaml.cs">
       <DependentUpon>TerrainSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Viewport.xaml.cs">
+      <DependentUpon>Viewport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ViewportCamera3D.xaml.cs">
       <DependentUpon>ViewportCamera3D.xaml</DependentUpon>
     </Compile>
@@ -147,6 +153,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TerrainSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Viewport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -205,6 +215,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="T3D.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\Minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\Maximize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\Quit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\MaximizeFullscreen.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

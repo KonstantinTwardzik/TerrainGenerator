@@ -27,7 +27,6 @@
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
 
-
         <!--Menu Seperator-->
         <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
             <Setter Property="Height" Value="1"/>
@@ -176,37 +175,10 @@
         </Style>
 
         <Style TargetType="Border">
-            <Setter Property="CornerRadius" Value="1"/>
+            <Setter Property="CornerRadius" Value="0"/>
             <Setter Property="BorderBrush" Value="{StaticResource TertiaryColor}"/>
         </Style>
-
-
-        <!--<Style TargetType="Button">
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{StaticResource SecondaryColor}" BorderBrush="{StaticResource TertiaryColor}" BorderThickness="1">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource DarkerBlue}"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource LightestBlue}"/>
-                    
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>-->
-
-
-
-
+        
     </Application.Resources>
 </Application>
  

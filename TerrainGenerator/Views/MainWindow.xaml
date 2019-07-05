@@ -6,10 +6,13 @@
         xmlns:views="clr-namespace:Topographer.Views"
         xmlns:ViewModels="clr-namespace:Topographer.ViewModels" x:Class="Topographer.Views.MainWindow"
         mc:Ignorable="d"
-        Icon="../Assets/TG64.png"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        AllowsTransparency="True"
+        Background="{StaticResource PrimaryColor}"
         Title="Topographer 3D" Height="800 " Width="1280"  MinHeight="600" MinWidth="800"
         BorderThickness="1"
-        BorderBrush="#666666">
+        BorderBrush="{StaticResource SecondaryColor}">
 
     <Window.Resources>
         <Style TargetType="{x:Type Border}">
@@ -18,6 +21,8 @@
             <Setter Property="BorderBrush" Value="{StaticResource TertiaryColor}"/>
             <Setter Property="Background" Value="{StaticResource SecondaryColor}"/>
         </Style>
+        
+        
     </Window.Resources>
 
     <Window.DataContext>
@@ -47,60 +52,155 @@
             <ColumnDefinition Width="300"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="27"/>
+            <RowDefinition Height="35"/>
             <RowDefinition/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
+        <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" BorderThickness="0" Content="Topographer3D - Terrain_01">
+            <Button.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding MaximizeCommand}"/>
+                <MouseBinding Gesture="LeftClick" Command="{Binding DragCommand}"/>
+            </Button.InputBindings>
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+
         <!--MENU-->
-        <Menu Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="1" Margin="2,5,0,0" Background="{StaticResource PrimaryColor}" Foreground="{StaticResource LightestColor}">
-            <MenuItem Header="_File">
-                <MenuItem Header="_New" Command="{Binding NewCommand}" InputGestureText="Ctrl+N" />
-                <MenuItem Header="_Open" InputGestureText="Ctrl+O" IsEnabled="False" />
-                <MenuItem Header="_Save" InputGestureText="Ctrl+S" IsEnabled="False"/>
-                <Separator/>
-                <MenuItem Header="_Export Maps" Command="{Binding ExportCommand}" InputGestureText="Ctrl+E"/>
-                <Separator />
-                <MenuItem Header="_Quit" Command="{Binding QuitCommand}" InputGestureText="Ctrl+Q"/>
-            </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding NoiseCommand}"/>
-                <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E" Command="{Binding ErodeCommand}"/>
-                <MenuItem Header="_Generate Colors" InputGestureText="Alt+C" Command="{Binding ColorizeCommand}"/>
-                <Separator/>
-                <MenuItem Header="_Generate All" InputGestureText="Alt+A" Command="{Binding GenerateAllCommand}"/>
-            </MenuItem>
-            <MenuItem Header="_Terrain">
-                <MenuItem Header="_Detail Resolution">
-                    <MenuItem Header="_256" InputGestureText="Ctrl+1" Command="{Binding DetailResolutionCommand}" CommandParameter="256" IsEnabled="{Binding Res256}"/>
-                    <MenuItem Header="_512" InputGestureText="Ctrl+2" Command="{Binding DetailResolutionCommand}" CommandParameter="512" IsEnabled="{Binding Res512}"/>
-                    <MenuItem Header="_1024" InputGestureText="Ctrl+3" Command="{Binding DetailResolutionCommand}" CommandParameter="1024" IsEnabled="{Binding Res1024}"/>
-                    <MenuItem Header="_2048" InputGestureText="Ctrl+4" Command="{Binding DetailResolutionCommand}" CommandParameter="2048" IsEnabled="{Binding Res2048}"/>
+        <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal" Margin="5,5,0,2">
+            <Image Source="pack://application:,,,/Topographer3D;component/Assets/TG32.png" Width="40"/>
+            <Menu Grid.Column="0" Grid.Row="0" Width="150" HorizontalAlignment="Left" Background="{StaticResource PrimaryColor}" Foreground="{StaticResource LightestColor}" Margin="3">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New" Command="{Binding NewCommand}" InputGestureText="Ctrl+N" />
+                    <MenuItem Header="_Open" InputGestureText="Ctrl+O" IsEnabled="False" />
+                    <MenuItem Header="_Save" InputGestureText="Ctrl+S" IsEnabled="False"/>
+                    <Separator/>
+                    <MenuItem Header="_Export Maps" Command="{Binding ExportCommand}" InputGestureText="Ctrl+E"/>
+                    <Separator />
+                    <MenuItem Header="_Quit" Command="{Binding QuitCommand}" InputGestureText="Ctrl+Q"/>
                 </MenuItem>
-                <MenuItem Header="_Height">
-                    <StackPanel Orientation="Horizontal">
-                        <Slider  Minimum="0.01" Maximum="1" Width="130" Margin="2" TickPlacement="BottomRight" TickFrequency="0.5" Value="{Binding TerrainMeshProperty.GeneralHeight}"/>
-                        <Button Width="60" Height="25"  BorderBrush="{StaticResource TertiaryColor}" Background="{StaticResource PrimaryColor}" Command="{Binding ChangeHeightCommand}">Set</Button>
-                    </StackPanel>
+                <MenuItem Header="_Edit">
+                    <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding NoiseCommand}"/>
+                    <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E" Command="{Binding ErodeCommand}"/>
+                    <MenuItem Header="_Generate Colors" InputGestureText="Alt+C" Command="{Binding ColorizeCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="_Generate All" InputGestureText="Alt+A" Command="{Binding GenerateAllCommand}"/>
                 </MenuItem>
-            </MenuItem>
-            <MenuItem Header="_Help" InputGestureText="Ctrl+H" Command="{Binding HelpCommand}"/>
+                <MenuItem Header="_Terrain">
+                    <MenuItem Header="_Detail Resolution">
+                        <MenuItem Header="_256" InputGestureText="Ctrl+1" Command="{Binding DetailResolutionCommand}" CommandParameter="256" IsEnabled="{Binding Res256}"/>
+                        <MenuItem Header="_512" InputGestureText="Ctrl+2" Command="{Binding DetailResolutionCommand}" CommandParameter="512" IsEnabled="{Binding Res512}"/>
+                        <MenuItem Header="_1024" InputGestureText="Ctrl+3" Command="{Binding DetailResolutionCommand}" CommandParameter="1024" IsEnabled="{Binding Res1024}"/>
+                        <MenuItem Header="_2048" InputGestureText="Ctrl+4" Command="{Binding DetailResolutionCommand}" CommandParameter="2048" IsEnabled="{Binding Res2048}"/>
+                    </MenuItem>
+                    <MenuItem Header="_Height">
+                        <StackPanel Orientation="Horizontal">
+                            <Slider  Minimum="0.01" Maximum="1" Width="130" Margin="2" TickPlacement="BottomRight" TickFrequency="0.5" Value="{Binding TerrainMeshProperty.GeneralHeight}"/>
+                            <Button Width="60" Height="25"  BorderBrush="{StaticResource TertiaryColor}" Background="{StaticResource PrimaryColor}" Command="{Binding ChangeHeightCommand}">Set</Button>
+                        </StackPanel>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Help" InputGestureText="Ctrl+H" Command="{Binding HelpCommand}"/>
+            </Menu>
 
-        </Menu>
+        </StackPanel>
 
-        <!--INFO TEXT OBEN RECHTS-->
-        <StackPanel Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="1" Height="20" Margin="0,2,5,0" HorizontalAlignment="Right" Orientation="Horizontal">
-            <TextBlock ><Run Text="Version 0.93"/></TextBlock>
-            <Image Source="../Assets/TG32.png" Margin="5,0,0 ,1"/>
+
+        <!--MINIMIZE MAXIMIZE QUIT-->
+        <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Width="40" BorderThickness="0" Command="{Binding MinimizeCommand}">
+                <Image Source="../Assets/Icons/Minimize.png"/>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource LighterBlue}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Width="40" BorderThickness="0" Command="{Binding MaximizeCommand}">
+                <Image Source="{Binding MaxImagePath}" />
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource LighterBlue}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Width="40" BorderThickness="0" Command="{Binding QuitCommand}">
+                <Image Source="../Assets/Icons/Quit.png"/>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#e81123"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
         <!--3D VIEWPORT-->
-        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="3">
+        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="0">
             <views:ViewportCamera3D/>
         </Border>
 
         <!--TERRAIN OPTIONEN-->
-        <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="3">
+        <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="0">
             <ScrollViewer>
                 <views:TerrainSettings/>
             </ScrollViewer>

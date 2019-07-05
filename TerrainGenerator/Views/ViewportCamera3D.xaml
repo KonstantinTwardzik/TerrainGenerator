@@ -17,7 +17,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Viewport3D x:Name="viewport" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+        <Viewport3D x:Name="viewport" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" IsHitTestVisible="False">
             <Viewport3D.Camera>
                 <PerspectiveCamera x:Name="camera" FarPlaneDistance="50" NearPlaneDistance="0" LookDirection="0,0,-10" UpDirection="0,1,0" Position="0,0,5" FieldOfView="45" />
             </Viewport3D.Camera>
