@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Topographer.Models
+namespace Topographer3D.Models
 {
     public class OpenSimplexNoise
     {

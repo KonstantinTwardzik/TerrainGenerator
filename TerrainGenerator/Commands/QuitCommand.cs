@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
-using Topographer.ViewModels;
+using Topographer3D.ViewModels;
 
-namespace Topographer.Commands
+namespace Topographer3D.Commands
 {
     internal class QuitCommand : ICommand
     {

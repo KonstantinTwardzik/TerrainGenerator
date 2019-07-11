@@ -12,12 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Topographer.ViewModels;
 
-namespace Topographer.Views
+namespace Topographer3D.Views
 {
     /// <summary>
-    /// Interaktionslogik für NoiseController.xaml
+    /// Interaktionslogik für ViewportDirectX11.xaml
     /// </summary>
     public partial class TerrainSettings : UserControl
     {
@@ -25,7 +24,7 @@ namespace Topographer.Views
         {
             InitializeComponent();
             this.DataContext = Application.Current.MainWindow.DataContext;
-
         }
     }
 }
+

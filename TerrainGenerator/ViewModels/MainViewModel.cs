@@ -1,116 +1,33 @@
 ﻿using System;
 using System.Windows.Input;
-using Topographer.Commands;
+using Topographer3D.Commands;
 using System.ComponentModel;
 using System.Windows;
-using Control = System.Windows.Forms.Control;
-using System.Windows.Media.Imaging;
-using System.Windows.Controls;
+using System.Collections.ObjectModel;
+using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf.SharpDX;
+using System.Windows.Forms;
 
-namespace Topographer.ViewModels
+namespace Topographer3D.ViewModels
 {
     internal class MainViewModel : INotifyPropertyChanged
     {
         #region Attributes 
-        private TerrainMesh _terrainMesh;
-        private TerrainSettings _terrainSettings;
-        private bool _res256;
-        private bool _res512;
-        private bool _res1024;
-        private bool _res2048;
         private string _maxPath;
         private string _maxFullPath;
-        private string _maxImagePath;
         #endregion
 
         #region Properties
         //MVVM 
-        public TerrainMesh TerrainMeshProperty
-        {
-            get
-            {
-                return _terrainMesh;
-            }
-            set
-            {
-                _terrainMesh = value;
-            }
-        }
-        public TerrainSettings TerrainSettingsProperty
-        {
-            get
-            {
-                return _terrainSettings;
-            }
-            set
-            {
-                _terrainSettings = value;
-            }
-        }
+        public Viewport ViewportProperty { get; set; }
+        public TerrainSettings TerrainSettingsProperty { get; set; }
 
         //DetailResolution
-        public bool Res256
-        {
-            get
-            {
-                return _res256;
-            }
-            set
-            {
-                _res256 = value;
-                OnPropertyChanged("Res256");
-            }
-        }
-        public bool Res512
-        {
-            get
-            {
-                return _res512;
-            }
-            set
-            {
-                _res512 = value;
-                OnPropertyChanged("Res512");
-            }
-        }
-        public bool Res1024
-        {
-            get
-            {
-                return _res1024;
-            }
-            set
-            {
-                _res1024 = value;
-                OnPropertyChanged("Res1024");
-            }
-        }
-        public bool Res2048
-        {
-            get
-            {
-                return _res2048;
-            }
-            set
-            {
-                _res2048 = value;
-                OnPropertyChanged("Res2048");
-            }
-        }
-
-        public string MaxImagePath
-        {
-            get
-            {
-                return _maxImagePath;
-            }
-
-            set
-            {
-                _maxImagePath = value;
-                OnPropertyChanged("MaxImagePath");
-            }
-        }
+        public bool Res256 { get; set; }
+        public bool Res512 { get; set; }
+        public bool Res1024 { get; set; }
+        public bool Res2048 { get; set; }
+        public string MaxImagePath { get; set; }
         #endregion
 
         #region Initialization
@@ -136,7 +53,7 @@ namespace Topographer.ViewModels
         private void InitLogic()
         {
             TerrainSettingsProperty = new TerrainSettings();
-            TerrainMeshProperty = new TerrainMesh(TerrainSettingsProperty);
+            ViewportProperty = new Viewport(TerrainSettingsProperty);
         }
 
         private void InitCommands()
@@ -191,23 +108,23 @@ namespace Topographer.ViewModels
 
         public void NewTerrain()
         {
-            _terrainSettings.TerrainSize = 512;
+            TerrainSettingsProperty.TerrainSize = 512;
             UpdateDetailResolution(512);
-            _terrainSettings.ResetHeights();
+            TerrainSettingsProperty.ResetHeights();
             ChangeMesh();
             InitProperties();
-            _terrainSettings.InitProperties();
+            TerrainSettingsProperty.InitProperties();
         }
 
         public void ChangeMesh()
         {
-            TerrainMeshProperty.UpdateMesh();
-            TerrainMeshProperty.GenerateDefaultTexture();
+            //ViewportProperty.UpdateMesh();
+            //ViewportProperty.GenerateDefaultTexture();
         }
 
         public void ChangeHeight()
         {
-            TerrainMeshProperty.UpdateMesh();
+            //ViewportProperty.UpdateMesh();
         }
 
         public void UpdateDetailResolution(int resolution)
@@ -241,24 +158,24 @@ namespace Topographer.ViewModels
             }
 
             TerrainSettingsProperty.ChangeDetailResolution(resolution);
-            TerrainMeshProperty.InitMesh();
+            //ViewportProperty.InitMesh();
             GetPreviousState();
         }
 
         public void GetPreviousState()
         {
-            if (_terrainSettings.isNoised && _terrainSettings.isEroded && _terrainSettings.isColored)
+            if (TerrainSettingsProperty.isNoised && TerrainSettingsProperty.isEroded && TerrainSettingsProperty.isColored)
             {
                 Noise();
                 Erode();
                 Colorize();
             }
-            else if (_terrainSettings.isNoised && _terrainSettings.isEroded)
+            else if (TerrainSettingsProperty.isNoised && TerrainSettingsProperty.isEroded)
             {
                 Noise();
                 Erode();
             }
-            else if (_terrainSettings.isNoised)
+            else if (TerrainSettingsProperty.isNoised)
             {
                 Noise();
             }
@@ -284,7 +201,7 @@ namespace Topographer.ViewModels
         public void Colorize()
         {
             TerrainSettingsProperty.Colorize();
-            TerrainMeshProperty.UpdateTexture();
+            //ViewportProperty.UpdateTexture();
         }
 
         public void GenerateAll()
@@ -411,10 +328,10 @@ namespace Topographer.ViewModels
 
         #region INotifyPropertyChanged Members
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        //private void OnPropertyChanged(string propertyName)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
         #endregion
     }
 }

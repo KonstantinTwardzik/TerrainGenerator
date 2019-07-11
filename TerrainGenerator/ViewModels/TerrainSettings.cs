@@ -4,10 +4,10 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Topographer.Models;
+using Topographer3D.Models;
 using Color = System.Windows.Media.Color;
 
-namespace Topographer.ViewModels
+namespace Topographer3D.ViewModels
 {
     public class TerrainSettings : INotifyPropertyChanged
     {
@@ -21,28 +21,6 @@ namespace Topographer.ViewModels
         public bool isNoised;
         public bool isEroded;
         public bool isColored;
-
-        //Open Simplex Noise
-        private double _osnScale;
-        private int _osnOctaves;
-        private double _osnOctaveWeight;
-        private double _osnScaleX;
-        private double _osnScaleZ;
-        private int _osnSeed;
-
-        //Hydraulic Erosion
-        private int _heIterations;
-        private int _heMaxDropletLifetime;
-        private int _heSeed;
-        private int _heErosionRadius;
-        private double _heInertia;
-        private double _heSedimentCapacityFactor;
-        private double _heMinSedimentCapacity;
-        private double _heErodeSpeed;
-        private double _heDepositSpeed;
-        private double _heEvaporateSpeed;
-        private double _heGravity;
-        private bool _heErodeOver;
 
         //Texturing
         private BitmapImage _colorMapImage;
@@ -67,412 +45,57 @@ namespace Topographer.ViewModels
 
         #region Properties
         //Elementary Values
-        public double[] TerrainPoints
-        {
-            get
-            {
-                return _terrainPoints;
-            }
-            set
-            {
-                _terrainPoints = value;
-            }
-        }
-        public int TerrainSize
-        {
-            get
-            {
-                return _terrainSize;
-            }
-            set
-            {
-                _terrainSize = value;
-            }
-        }
+        public double[] TerrainPoints { get; set; }
+        public int TerrainSize { get; set; }
+
 
         //OpenSimplexNoise
-        public double OSNScale
-        {
-            get
-            {
-                return _osnScale;
-            }
-            set
-            {
-                _osnScale = value;
-                OnPropertyChanged("OSNScale");
-            }
-        }
-        public int OSNOctaves
-        {
-            get
-            {
-                return _osnOctaves;
-            }
-            set
-            {
-                _osnOctaves = value;
-                OnPropertyChanged("OSNOctaves");
-            }
-        }
-        public double OSNOctaveWeight
-        {
-            get
-            {
-                return _osnOctaveWeight;
-            }
-            set
-            {
-                _osnOctaveWeight = value;
-                OnPropertyChanged("OSNOctaveWeight");
-            }
-        }
-        public double OSNScaleX
-        {
-            get
-            {
-                return _osnScaleX;
-            }
-            set
-            {
-                _osnScaleX = value;
-                OnPropertyChanged("OSNScaleX");
-            }
-        }
-        public double OSNScaleZ
-        {
-            get
-            {
-                return _osnScaleZ;
-            }
-            set
-            {
-                _osnScaleZ = value;
-                OnPropertyChanged("OSNScaleZ");
-            }
-        }
-        public int OSNSeed
-        {
-            get
-            {
-                return _osnSeed;
-            }
-            set
-            {
-                _osnSeed = value;
-                OnPropertyChanged("OSNSeed");
-            }
-        }
+        public double OSNScale { get; set; }
+        public int OSNOctaves { get; set; }
+        public double OSNOctaveWeight { get; set; }
+        public double OSNScaleX { get; set; }
+        public double OSNScaleZ { get; set; }
+        public int OSNSeed { get; set; }
+
 
         //Hydraulic Erosion 
-        public int HEIterations
-        {
-            get
-            {
-                return _heIterations;
-            }
-            set
-            {
-                _heIterations = value;
-                OnPropertyChanged("HEIterations");
-            }
-        }
-        public int HEMaxDropletLifetime
-        {
-            get
-            {
-                return _heMaxDropletLifetime;
-            }
-            set
-            {
-                _heMaxDropletLifetime = value;
-                OnPropertyChanged("HEMaxDropletLifetime");
-            }
-        }
-        public int HESeed
-        {
-            get
-            {
-                return _heSeed;
-            }
-            set
-            {
-                _heSeed = value;
-                OnPropertyChanged("HESeed");
-            }
-        }
-        public int HEErosionRadius
-        {
-            get
-            {
-                return _heErosionRadius;
-            }
-            set
-            {
-                _heErosionRadius = value;
-                OnPropertyChanged("HEErosionRadius");
-            }
-        }
-        public double HEInertia
-        {
-            get
-            {
-                return _heInertia;
-            }
-            set
-            {
-                _heInertia = value;
-                OnPropertyChanged("HEInertia");
-            }
-        }
-        public double HESedimentCapacityFactor
-        {
-            get
-            {
-                return _heSedimentCapacityFactor;
-            }
-            set
-            {
-                _heSedimentCapacityFactor = value;
-                OnPropertyChanged("HESedimentCapacityFactor");
-            }
-        }
-        public double HEMinSedimentCapacity
-        {
-            get
-            {
-                return _heMinSedimentCapacity;
-            }
-            set
-            {
-                _heMinSedimentCapacity = value;
-                OnPropertyChanged("HEMinSedimentCapacity");
-            }
-        }
-        public double HEErodeSpeed
-        {
-            get
-            {
-                return _heErodeSpeed;
-            }
-            set
-            {
-                _heErodeSpeed = value;
-                OnPropertyChanged("HEErodeSpeed");
-            }
-        }
-        public double HEDepositSpeed
-        {
-            get
-            {
-                return _heDepositSpeed;
-            }
-            set
-            {
-                _heDepositSpeed = value;
-                OnPropertyChanged("HEDepositSpeed");
-            }
-        }
-        public double HEEvaporateSpeed
-        {
-            get
-            {
-                return _heEvaporateSpeed;
-            }
-            set
-            {
-                _heEvaporateSpeed = value;
-                OnPropertyChanged("HEEvaporateSpeed");
-            }
-        }
-        public double HEGravity
-        {
-            get
-            {
-                return _heGravity;
-            }
-            set
-            {
-                _heGravity = value;
-                OnPropertyChanged("HEGravity");
-            }
-        }
-        public bool HEErodeOver
-        {
-            get
-            {
-                return _heErodeOver;
-            }
-            set
-            {
-                _heErodeOver = value;
-                OnPropertyChanged("HEErodeOver");
-            }
-        }
+        public int HEIterations { get; set; }
+        public int HEMaxDropletLifetime { get; set; }
+        public int HESeed { get; set; }
+        public int HEErosionRadius { get; set; }
+        public double HEInertia { get; set; }
+        public double HESedimentCapacityFactor { get; set; }
+        public double HEMinSedimentCapacity { get; set; }
+        public double HEErodeSpeed { get; set; }
+        public double HEDepositSpeed { get; set; }
+        public double HEEvaporateSpeed { get; set; }
+        public double HEGravity { get; set; }
+        public bool HEErodeOver { get; set; }
 
         // Coloring
-        public BitmapImage HeightMapImage
-        {
-            get
-            {
-                return _heightMapImage;
-            }
-            set
-            {
-                _heightMapImage = value;
-            }
-        }
-        public BitmapImage ColorMapImage
-        {
-            get
-            {
-                return _colorMapImage;
-            }
-            set
-            {
-                _colorMapImage = value;
-            }
-        }
-        public BitmapImage BorderMapImage
-        {
-            get
-            {
-                return _borderMapImage;
-            }
-            set
-            {
-                _borderMapImage = value;
-            }
-        }
-        public double ColorShift
-        {
-            get
-            {
-                return _colorShift;
-            }
-            set
-            {
-                _colorShift = value;
-                OnPropertyChanged("ColorShift");
-            }
-        }
-        public bool ColorInvert
-        {
-            get
-            {
-                return _colorInvert;
-            }
-            set
-            {
-                _colorInvert = value;
-                OnPropertyChanged("ColorInvert");
-            }
-        }
-        public LinearGradientBrush Gradient1
-        {
-            get
-            {
-                return _gradient1;
-            }
-            set
-            {
-                _gradient1 = value;
-            }
-        }
-        public LinearGradientBrush Gradient2
-        {
-            get
-            {
-                return _gradient2;
-            }
-            set
-            {
-                _gradient2 = value;
-            }
-        }
-        public LinearGradientBrush Gradient3
-        {
-            get
-            {
-                return _gradient3;
-            }
-            set
-            {
-                _gradient3 = value;
-            }
-        }
-        public LinearGradientBrush Gradient4
-        {
-            get
-            {
-                return _gradient4;
-            }
-            set
-            {
-                _gradient4 = value;
-            }
-        }
-        public LinearGradientBrush Gradient5
-        {
-            get
-            {
-                return _gradient5;
-            }
-            set
-            {
-                _gradient5 = value;
-            }
-        }
-        public LinearGradientBrush Gradient6
-        {
-            get
-            {
-                return _gradient6;
-            }
-            set
-            {
-                _gradient6 = value;
-            }
-        }
-        public LinearGradientBrush Gradient7
-        {
-            get
-            {
-                return _gradient7;
-            }
-            set
-            {
-                _gradient7 = value;
-            }
-        }
-        public bool Gradient1RB
-        {
-            get; set;
-        }
-        public bool Gradient2RB
-        {
-            get; set;
-        }
-        public bool Gradient3RB
-        {
-            get; set;
-        }
-        public bool Gradient4RB
-        {
-            get; set;
-        }
-        public bool Gradient5RB
-        {
-            get; set;
-        }
-        public bool Gradient6RB
-        {
-            get; set;
-        }
-        public bool Gradient7RB
-        {
-            get; set;
-        }
+        public BitmapImage HeightMapImage { get; set; }
+        public BitmapImage ColorMapImage { get; set; }
+        public BitmapImage BorderMapImage { get; set; }
+
+        public double ColorShift { get; set; }
+        public bool ColorInvert { get; set; }
+
+        public LinearGradientBrush Gradient1 { get; set; }
+        public LinearGradientBrush Gradient2 { get; set; }
+        public LinearGradientBrush Gradient3 { get; set; }
+        public LinearGradientBrush Gradient4 { get; set; }
+        public LinearGradientBrush Gradient5 { get; set; }
+        public LinearGradientBrush Gradient6 { get; set; }
+        public LinearGradientBrush Gradient7 { get; set; }
+
+        public bool Gradient1RB { get; set; }
+        public bool Gradient2RB { get; set; }
+        public bool Gradient3RB { get; set; }
+        public bool Gradient4RB { get; set; }
+        public bool Gradient5RB { get; set; }
+        public bool Gradient6RB { get; set; }
+        public bool Gradient7RB { get; set; }
+
         #endregion
 
         #region Initialization
@@ -1001,7 +624,7 @@ namespace Topographer.ViewModels
             _gradient7.GradientStops.Add(stop710);
             #endregion
 
-        }       
+        }
 
         private void GenerateTerrainPoints()
         {
@@ -1126,15 +749,15 @@ namespace Topographer.ViewModels
             }
             ResetHeights();
 
-            for (int o = 0; o < _osnOctaves; o++)
+            for (int o = 0; o < OSNOctaves; o++)
             {
                 for (int x = 0; x < _terrainSize; x++)
                 {
                     for (int z = 0; z < _terrainSize; z++)
                     {
                         double value = 0;
-                        double xValue = ((((0.0005f / _osnScale) / _osnScaleX) * (x * sizeCompensator) + _osnSeed) * octaveMultiplier);
-                        double zValue = ((((0.0005f / _osnScale) / _osnScaleZ) * (z * sizeCompensator) + _osnSeed) * octaveMultiplier);
+                        double xValue = ((((0.0005f / OSNScale) / OSNScaleX) * (x * sizeCompensator) + OSNSeed) * octaveMultiplier);
+                        double zValue = ((((0.0005f / OSNScale) / OSNScaleZ) * (z * sizeCompensator) + OSNSeed) * octaveMultiplier);
                         if (o == 0)
                         {
                             value = (((_openSimplexNoise.Evaluate(xValue, zValue) * weight) + 1) / 2);
@@ -1153,7 +776,7 @@ namespace Topographer.ViewModels
                         _terrainPointsUneroded[x + z * _terrainSize] = _terrainPoints[x + z * _terrainSize];
                     }
                 }
-                weight /= 2 - (_osnOctaveWeight - 0.5);
+                weight /= 2 - (OSNOctaveWeight - 0.5);
                 octaveMultiplier = o * 2;
             }
             isNoised = true;
@@ -1163,7 +786,7 @@ namespace Topographer.ViewModels
 
         public void Erode()
         {
-            if (!_heErodeOver && isEroded == true)
+            if (!HEErodeOver && isEroded == true)
             {
                 for (int x = 0; x < _terrainSize; x++)
                 {
@@ -1174,17 +797,17 @@ namespace Topographer.ViewModels
                 }
             }
 
-            int seed = _heSeed;
-            int iterations = _heIterations;
-            int erosionRadius = _heErosionRadius;
-            double inertia = 0.2 * _heInertia;
-            double sedimentCapacityFactor = _heSedimentCapacityFactor;
-            double minSedimentCapacity = 0.001 + 0.025 * _heMinSedimentCapacity;
-            double erodeSpeed = _heErodeSpeed;
-            double depositSpeed = 0.5 * _heDepositSpeed;
-            double evaporateSpeed = 0.001 + 0.005 * _heEvaporateSpeed;
-            double gravity = _heGravity;
-            int maxDropletLifetime = _heMaxDropletLifetime;
+            int seed = HESeed;
+            int iterations = HEIterations;
+            int erosionRadius = HEErosionRadius;
+            double inertia = 0.2 * HEInertia;
+            double sedimentCapacityFactor = HESedimentCapacityFactor;
+            double minSedimentCapacity = 0.001 + 0.025 * HEMinSedimentCapacity;
+            double erodeSpeed = HEErodeSpeed;
+            double depositSpeed = 0.5 * HEDepositSpeed;
+            double evaporateSpeed = 0.001 + 0.005 * HEEvaporateSpeed;
+            double gravity = HEGravity;
+            int maxDropletLifetime = HEMaxDropletLifetime;
 
             switch (_terrainSize)
             {
@@ -1258,42 +881,42 @@ namespace Topographer.ViewModels
             else if (Gradient2RB)
             {
                 currentSelectedGradient = _gradient2.GradientStops;
-                ChangeBorderGradient(232, 197, 159, 140, 79, 43, 220, 119, 56, 191, 116, 73, 232, 157, 82); 
-            }                                                                                         
-            else if (Gradient3RB)                                                                     
-            {                                                                                         
-                currentSelectedGradient = _gradient3.GradientStops;                                   
-                ChangeBorderGradient(100, 98, 101, 138, 130, 116, 82, 70, 61, 96, 82, 71, 138, 123, 112); 
-            }                                                                                       
+                ChangeBorderGradient(232, 197, 159, 140, 79, 43, 220, 119, 56, 191, 116, 73, 232, 157, 82);
+            }
+            else if (Gradient3RB)
+            {
+                currentSelectedGradient = _gradient3.GradientStops;
+                ChangeBorderGradient(100, 98, 101, 138, 130, 116, 82, 70, 61, 96, 82, 71, 138, 123, 112);
+            }
             else if (Gradient4RB)
             {
                 currentSelectedGradient = _gradient4.GradientStops;
-                ChangeBorderGradient(140, 142, 145, 123, 125, 127, 227, 231, 235, 62, 63, 64, 99, 106, 115); 
-            }                                                                                      
+                ChangeBorderGradient(140, 142, 145, 123, 125, 127, 227, 231, 235, 62, 63, 64, 99, 106, 115);
+            }
             else if (Gradient5RB)
             {
                 currentSelectedGradient = _gradient5.GradientStops;
-                ChangeBorderGradient(217, 197, 160, 232, 214, 179, 191, 169, 142, 239, 224, 172, 134, 105, 73); 
-            }                                                                                             
+                ChangeBorderGradient(217, 197, 160, 232, 214, 179, 191, 169, 142, 239, 224, 172, 134, 105, 73);
+            }
             else if (Gradient6RB)
             {
                 currentSelectedGradient = _gradient6.GradientStops;
-                ChangeBorderGradient(235, 239, 239, 117, 156, 191, 139, 187, 217, 182, 219, 239, 206, 232, 239); 
-            }                                                                                       
+                ChangeBorderGradient(235, 239, 239, 117, 156, 191, 139, 187, 217, 182, 219, 239, 206, 232, 239);
+            }
             else if (Gradient7RB)
             {
                 currentSelectedGradient = _gradient7.GradientStops;
                 ChangeBorderGradient(12, 108, 130, 216, 67, 120, 99, 67, 86, 50, 163, 83, 238, 101, 75);
-            }                                                                
+            }
             else
             {
                 return;
-            }                                                                                  
-            #endregion                                                                              
-                                                                                                     
+            }
+            #endregion
+
             #region ColorMap                                                                       
-            PixelFormat pixelFormat = PixelFormats.Bgr24;                                            
-            int rawStride = (_terrainSize * pixelFormat.BitsPerPixel + 7) / 8;                      
+            PixelFormat pixelFormat = PixelFormats.Bgr24;
+            int rawStride = (_terrainSize * pixelFormat.BitsPerPixel + 7) / 8;
             byte[] rawImage = new byte[rawStride * _terrainSize];
 
 
@@ -1335,10 +958,10 @@ namespace Topographer.ViewModels
             int width = 500;
             int height = 1;
             int rawStrideBorder = (width * pixelFormat.BitsPerPixel + 7) / 8;
-            byte[] rawImageBorder = new byte[rawStrideBorder* height];
+            byte[] rawImageBorder = new byte[rawStrideBorder * height];
             _coloringAlgorithm.UpdateValues(_gradientBorder.GradientStops, _terrainPoints, _terrainSize, _colorShift, _colorInvert);
             int count2 = 0;
-            for (int x = 0; x < width*height; x++)
+            for (int x = 0; x < width * height; x++)
             {
                 byte[] RGB = _coloringAlgorithm.ColorizeBorder(x * 4, width);
                 for (int i = 0; i < 3; i++)
@@ -1437,14 +1060,6 @@ namespace Topographer.ViewModels
 
         #region INotifyPropertyChanged Members
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-
-            }
-        }
         #endregion
     }
 }
