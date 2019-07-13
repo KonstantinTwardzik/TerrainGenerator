@@ -7,10 +7,11 @@
              x:Class="Topographer3D.Views.Viewport"
              mc:Ignorable="d">
     <Grid>
-        <hx:Viewport3DX BackgroundColor="#383838" Camera="{Binding ViewportProperty.Camera}" EffectsManager="{Binding ViewportProperty.EffectsManager}" ModelUpDirection="{Binding ViewportProperty.UpDirection}" ShowViewCube="False" FXAALevel="Ultra" MSAA="Maximum">
-            <hx:AmbientLight3D Color="{Binding ViewportProperty.AmbientLightColor}" />
-            <hx:DirectionalLight3D Direction="{Binding ViewportProperty.Camera.LookDirection}" Color="{Binding ViewportProperty.DirectionalLightColor}" />
-            <hx:MeshGeometryModel3D Geometry="{Binding ViewportProperty.TerrainMeshMainGeometry3DProperty}" Material="{Binding ViewportProperty.TerrainMeshMainMaterial}" Transform="{Binding ViewportProperty.TerrainMeshMainTransform}" />
+        <hx:Viewport3DX BackgroundColor="#383838" Camera="{Binding ViewportCamera.Camera}" EffectsManager="{Binding Viewport.EffectsManager}" ModelUpDirection="{Binding Viewport.UpDirection}" ShowViewCube="False" FXAALevel="Ultra" MSAA="Maximum">
+            <hx:AmbientLight3D Color="{Binding Viewport.AmbientLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding ViewportCamera.Camera.LookDirection}" Color="{Binding Viewport.DirectionalLightColor}" />
+            <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshMainGeometry3D}" Material="{Binding Viewport.TerrainMeshMainMaterial}" Transform="{Binding Viewport.TerrainMeshMainTransform}" />
+            <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshBorderGeometry3D}" Material="{Binding Viewport.TerrainMeshBorderMaterial}" Transform="{Binding Viewport.TerrainMeshBorderTransform}" />
         </hx:Viewport3DX>
     </Grid>
 </UserControl>

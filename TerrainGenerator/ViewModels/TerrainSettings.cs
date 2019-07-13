@@ -12,9 +12,7 @@ namespace Topographer3D.ViewModels
     public class TerrainSettings : INotifyPropertyChanged
     {
         #region Attributes
-        private int _terrainSize;
-        private double[] _terrainPoints;
-        private double[] _terrainPointsUneroded;
+        private double[] TerrainPointsUneroded;
         private OpenSimplexNoise _openSimplexNoise;
         private HydraulicErosion _hydraulicErosion;
         private ColoringAlgorithm _coloringAlgorithm;
@@ -26,21 +24,12 @@ namespace Topographer3D.ViewModels
         private BitmapImage _colorMapImage;
         private BitmapImage _heightMapImage;
         private BitmapImage _borderMapImage;
-        private LinearGradientBrush _gradient1;
-        private LinearGradientBrush _gradient2;
-        private LinearGradientBrush _gradient3;
-        private LinearGradientBrush _gradient4;
-        private LinearGradientBrush _gradient5;
-        private LinearGradientBrush _gradient6;
-        private LinearGradientBrush _gradient7;
         private LinearGradientBrush _gradientBorder;
         private Color color0Border;
         private Color color1Border;
         private Color color2Border;
         private Color color3Border;
         private Color color4Border;
-        private double _colorShift;
-        private bool _colorInvert;
         #endregion
 
         #region Properties
@@ -96,6 +85,8 @@ namespace Topographer3D.ViewModels
         public bool Gradient6RB { get; set; }
         public bool Gradient7RB { get; set; }
 
+        public MemoryStream TerrainMainColors { get; private set; }
+        public MemoryStream TerrainBorderColors { get; private set; }
         #endregion
 
         #region Initialization
@@ -133,6 +124,8 @@ namespace Topographer3D.ViewModels
 
         public void InitProperties()
         {
+            TerrainSize = 512;
+
             //OpenSimplexNoise
             OSNScale = 1.0f;
             OSNOctaves = 6;
@@ -169,17 +162,17 @@ namespace Topographer3D.ViewModels
 
         public void InitHeights()
         {
-            _terrainSize = 512;
+            TerrainSize = 512;
             GenerateTerrainPoints();
         }
 
         public void InitGradients()
         {
             #region Gradient1
-            _gradient1 = new LinearGradientBrush();
-            _gradient1.StartPoint = new System.Windows.Point(0, 0);
-            _gradient1.EndPoint = new System.Windows.Point(1, 0);
-            _gradient1.GradientStops = new GradientStopCollection();
+            Gradient1 = new LinearGradientBrush();
+            Gradient1.StartPoint = new System.Windows.Point(0, 0);
+            Gradient1.EndPoint = new System.Windows.Point(1, 0);
+            Gradient1.GradientStops = new GradientStopCollection();
 
             Color color10 = new Color();
             color10 = Color.FromRgb(51, 58, 40);
@@ -226,23 +219,23 @@ namespace Topographer3D.ViewModels
             stop110.Offset = 1.0;
             stop110.Color = color11;
 
-            _gradient1.GradientStops.Add(stop10);
-            _gradient1.GradientStops.Add(stop11);
-            _gradient1.GradientStops.Add(stop12);
-            _gradient1.GradientStops.Add(stop13);
-            _gradient1.GradientStops.Add(stop15);
-            _gradient1.GradientStops.Add(stop16);
-            _gradient1.GradientStops.Add(stop17);
-            _gradient1.GradientStops.Add(stop18);
-            _gradient1.GradientStops.Add(stop19);
-            _gradient1.GradientStops.Add(stop110);
+            Gradient1.GradientStops.Add(stop10);
+            Gradient1.GradientStops.Add(stop11);
+            Gradient1.GradientStops.Add(stop12);
+            Gradient1.GradientStops.Add(stop13);
+            Gradient1.GradientStops.Add(stop15);
+            Gradient1.GradientStops.Add(stop16);
+            Gradient1.GradientStops.Add(stop17);
+            Gradient1.GradientStops.Add(stop18);
+            Gradient1.GradientStops.Add(stop19);
+            Gradient1.GradientStops.Add(stop110);
             #endregion
 
             #region Gradient2
-            _gradient2 = new LinearGradientBrush();
-            _gradient2.StartPoint = new System.Windows.Point(0, 0);
-            _gradient2.EndPoint = new System.Windows.Point(1, 0);
-            _gradient2.GradientStops = new GradientStopCollection();
+            Gradient2 = new LinearGradientBrush();
+            Gradient2.StartPoint = new System.Windows.Point(0, 0);
+            Gradient2.EndPoint = new System.Windows.Point(1, 0);
+            Gradient2.GradientStops = new GradientStopCollection();
 
             Color color20 = new Color();
             color20 = Color.FromRgb(232, 197, 159);
@@ -289,24 +282,24 @@ namespace Topographer3D.ViewModels
             stop210.Offset = 1;
             stop210.Color = color23;
 
-            _gradient2.GradientStops.Add(stop20);
-            _gradient2.GradientStops.Add(stop21);
-            _gradient2.GradientStops.Add(stop22);
-            _gradient2.GradientStops.Add(stop23);
-            _gradient2.GradientStops.Add(stop24);
-            _gradient2.GradientStops.Add(stop25);
-            _gradient2.GradientStops.Add(stop26);
-            _gradient2.GradientStops.Add(stop27);
-            _gradient2.GradientStops.Add(stop28);
-            _gradient2.GradientStops.Add(stop29);
-            _gradient2.GradientStops.Add(stop210);
+            Gradient2.GradientStops.Add(stop20);
+            Gradient2.GradientStops.Add(stop21);
+            Gradient2.GradientStops.Add(stop22);
+            Gradient2.GradientStops.Add(stop23);
+            Gradient2.GradientStops.Add(stop24);
+            Gradient2.GradientStops.Add(stop25);
+            Gradient2.GradientStops.Add(stop26);
+            Gradient2.GradientStops.Add(stop27);
+            Gradient2.GradientStops.Add(stop28);
+            Gradient2.GradientStops.Add(stop29);
+            Gradient2.GradientStops.Add(stop210);
             #endregion
 
             #region Gradient3
-            _gradient3 = new LinearGradientBrush();
-            _gradient3.StartPoint = new System.Windows.Point(0, 0);
-            _gradient3.EndPoint = new System.Windows.Point(1, 0);
-            _gradient3.GradientStops = new GradientStopCollection();
+            Gradient3 = new LinearGradientBrush();
+            Gradient3.StartPoint = new System.Windows.Point(0, 0);
+            Gradient3.EndPoint = new System.Windows.Point(1, 0);
+            Gradient3.GradientStops = new GradientStopCollection();
 
             Color color30 = new Color();
             color30 = Color.FromRgb(102, 115, 2);
@@ -353,24 +346,24 @@ namespace Topographer3D.ViewModels
             stop310.Offset = 1;
             stop310.Color = color33;
 
-            _gradient3.GradientStops.Add(stop30);
-            _gradient3.GradientStops.Add(stop31);
-            _gradient3.GradientStops.Add(stop32);
-            _gradient3.GradientStops.Add(stop33);
-            _gradient3.GradientStops.Add(stop34);
-            _gradient3.GradientStops.Add(stop35);
-            _gradient3.GradientStops.Add(stop36);
-            _gradient3.GradientStops.Add(stop37);
-            _gradient3.GradientStops.Add(stop38);
-            _gradient3.GradientStops.Add(stop39);
-            _gradient3.GradientStops.Add(stop310);
+            Gradient3.GradientStops.Add(stop30);
+            Gradient3.GradientStops.Add(stop31);
+            Gradient3.GradientStops.Add(stop32);
+            Gradient3.GradientStops.Add(stop33);
+            Gradient3.GradientStops.Add(stop34);
+            Gradient3.GradientStops.Add(stop35);
+            Gradient3.GradientStops.Add(stop36);
+            Gradient3.GradientStops.Add(stop37);
+            Gradient3.GradientStops.Add(stop38);
+            Gradient3.GradientStops.Add(stop39);
+            Gradient3.GradientStops.Add(stop310);
             #endregion
 
             #region Gradient4
-            _gradient4 = new LinearGradientBrush();
-            _gradient4.StartPoint = new System.Windows.Point(0, 0);
-            _gradient4.EndPoint = new System.Windows.Point(1, 0);
-            _gradient4.GradientStops = new GradientStopCollection();
+            Gradient4 = new LinearGradientBrush();
+            Gradient4.StartPoint = new System.Windows.Point(0, 0);
+            Gradient4.EndPoint = new System.Windows.Point(1, 0);
+            Gradient4.GradientStops = new GradientStopCollection();
 
             Color color40 = new Color();
             color40 = Color.FromRgb(147, 149, 152);
@@ -417,24 +410,24 @@ namespace Topographer3D.ViewModels
             stop410.Offset = 1;
             stop410.Color = color42;
 
-            _gradient4.GradientStops.Add(stop40);
-            _gradient4.GradientStops.Add(stop41);
-            _gradient4.GradientStops.Add(stop42);
-            _gradient4.GradientStops.Add(stop43);
-            _gradient4.GradientStops.Add(stop44);
-            _gradient4.GradientStops.Add(stop45);
-            _gradient4.GradientStops.Add(stop46);
-            _gradient4.GradientStops.Add(stop47);
-            _gradient4.GradientStops.Add(stop48);
-            _gradient4.GradientStops.Add(stop49);
-            _gradient4.GradientStops.Add(stop410);
+            Gradient4.GradientStops.Add(stop40);
+            Gradient4.GradientStops.Add(stop41);
+            Gradient4.GradientStops.Add(stop42);
+            Gradient4.GradientStops.Add(stop43);
+            Gradient4.GradientStops.Add(stop44);
+            Gradient4.GradientStops.Add(stop45);
+            Gradient4.GradientStops.Add(stop46);
+            Gradient4.GradientStops.Add(stop47);
+            Gradient4.GradientStops.Add(stop48);
+            Gradient4.GradientStops.Add(stop49);
+            Gradient4.GradientStops.Add(stop410);
             #endregion
 
             #region Gradient5
-            _gradient5 = new LinearGradientBrush();
-            _gradient5.StartPoint = new System.Windows.Point(0, 0);
-            _gradient5.EndPoint = new System.Windows.Point(1, 0);
-            _gradient5.GradientStops = new GradientStopCollection();
+            Gradient5 = new LinearGradientBrush();
+            Gradient5.StartPoint = new System.Windows.Point(0, 0);
+            Gradient5.EndPoint = new System.Windows.Point(1, 0);
+            Gradient5.GradientStops = new GradientStopCollection();
 
             Color color50 = new Color();
             color50 = Color.FromRgb(217, 197, 160);
@@ -483,24 +476,24 @@ namespace Topographer3D.ViewModels
             stop510.Offset = 1;
             stop510.Color = color52;
 
-            _gradient5.GradientStops.Add(stop50);
-            _gradient5.GradientStops.Add(stop51);
-            _gradient5.GradientStops.Add(stop52);
-            _gradient5.GradientStops.Add(stop53);
-            _gradient5.GradientStops.Add(stop54);
-            _gradient5.GradientStops.Add(stop55);
-            _gradient5.GradientStops.Add(stop56);
-            _gradient5.GradientStops.Add(stop57);
-            _gradient5.GradientStops.Add(stop58);
-            _gradient5.GradientStops.Add(stop59);
-            _gradient5.GradientStops.Add(stop510);
+            Gradient5.GradientStops.Add(stop50);
+            Gradient5.GradientStops.Add(stop51);
+            Gradient5.GradientStops.Add(stop52);
+            Gradient5.GradientStops.Add(stop53);
+            Gradient5.GradientStops.Add(stop54);
+            Gradient5.GradientStops.Add(stop55);
+            Gradient5.GradientStops.Add(stop56);
+            Gradient5.GradientStops.Add(stop57);
+            Gradient5.GradientStops.Add(stop58);
+            Gradient5.GradientStops.Add(stop59);
+            Gradient5.GradientStops.Add(stop510);
             #endregion
 
             #region Gradient6
-            _gradient6 = new LinearGradientBrush();
-            _gradient6.StartPoint = new System.Windows.Point(0, 0);
-            _gradient6.EndPoint = new System.Windows.Point(1, 0);
-            _gradient6.GradientStops = new GradientStopCollection();
+            Gradient6 = new LinearGradientBrush();
+            Gradient6.StartPoint = new System.Windows.Point(0, 0);
+            Gradient6.EndPoint = new System.Windows.Point(1, 0);
+            Gradient6.GradientStops = new GradientStopCollection();
 
             Color color60 = new Color();
             color60 = Color.FromRgb(235, 239, 242);
@@ -547,24 +540,24 @@ namespace Topographer3D.ViewModels
             stop610.Offset = 1;
             stop610.Color = color62;
 
-            _gradient6.GradientStops.Add(stop60);
-            _gradient6.GradientStops.Add(stop61);
-            _gradient6.GradientStops.Add(stop62);
-            _gradient6.GradientStops.Add(stop63);
-            _gradient6.GradientStops.Add(stop64);
-            _gradient6.GradientStops.Add(stop65);
-            _gradient6.GradientStops.Add(stop66);
-            _gradient6.GradientStops.Add(stop67);
-            _gradient6.GradientStops.Add(stop68);
-            _gradient6.GradientStops.Add(stop69);
-            _gradient6.GradientStops.Add(stop610);
+            Gradient6.GradientStops.Add(stop60);
+            Gradient6.GradientStops.Add(stop61);
+            Gradient6.GradientStops.Add(stop62);
+            Gradient6.GradientStops.Add(stop63);
+            Gradient6.GradientStops.Add(stop64);
+            Gradient6.GradientStops.Add(stop65);
+            Gradient6.GradientStops.Add(stop66);
+            Gradient6.GradientStops.Add(stop67);
+            Gradient6.GradientStops.Add(stop68);
+            Gradient6.GradientStops.Add(stop69);
+            Gradient6.GradientStops.Add(stop610);
             #endregion
 
             #region Gradient7
-            _gradient7 = new LinearGradientBrush();
-            _gradient7.StartPoint = new System.Windows.Point(0, 0);
-            _gradient7.EndPoint = new System.Windows.Point(1, 0);
-            _gradient7.GradientStops = new GradientStopCollection();
+            Gradient7 = new LinearGradientBrush();
+            Gradient7.StartPoint = new System.Windows.Point(0, 0);
+            Gradient7.EndPoint = new System.Windows.Point(1, 0);
+            Gradient7.GradientStops = new GradientStopCollection();
 
             Color color70 = new Color();
             color70 = Color.FromRgb(12, 108, 130);
@@ -611,32 +604,32 @@ namespace Topographer3D.ViewModels
             stop710.Offset = 1;
             stop710.Color = color72;
 
-            _gradient7.GradientStops.Add(stop70);
-            _gradient7.GradientStops.Add(stop71);
-            _gradient7.GradientStops.Add(stop72);
-            _gradient7.GradientStops.Add(stop73);
-            _gradient7.GradientStops.Add(stop74);
-            _gradient7.GradientStops.Add(stop75);
-            _gradient7.GradientStops.Add(stop76);
-            _gradient7.GradientStops.Add(stop77);
-            _gradient7.GradientStops.Add(stop78);
-            _gradient7.GradientStops.Add(stop79);
-            _gradient7.GradientStops.Add(stop710);
+            Gradient7.GradientStops.Add(stop70);
+            Gradient7.GradientStops.Add(stop71);
+            Gradient7.GradientStops.Add(stop72);
+            Gradient7.GradientStops.Add(stop73);
+            Gradient7.GradientStops.Add(stop74);
+            Gradient7.GradientStops.Add(stop75);
+            Gradient7.GradientStops.Add(stop76);
+            Gradient7.GradientStops.Add(stop77);
+            Gradient7.GradientStops.Add(stop78);
+            Gradient7.GradientStops.Add(stop79);
+            Gradient7.GradientStops.Add(stop710);
             #endregion
 
         }
 
         private void GenerateTerrainPoints()
         {
-            _terrainPoints = new double[_terrainSize * _terrainSize];
-            _terrainPointsUneroded = new double[_terrainSize * _terrainSize];
+            TerrainPoints = new double[TerrainSize * TerrainSize];
+            TerrainPointsUneroded = new double[TerrainSize * TerrainSize];
 
-            for (int x = 0; x < _terrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                for (int z = 0; z < _terrainSize; z++)
+                for (int z = 0; z < TerrainSize; z++)
                 {
-                    _terrainPoints[x + z * _terrainSize] = 0;
-                    _terrainPointsUneroded[x + z * _terrainSize] = 0;
+                    TerrainPoints[x + z * TerrainSize] = 0;
+                    TerrainPointsUneroded[x + z * TerrainSize] = 0;
                 }
             }
         }
@@ -645,7 +638,7 @@ namespace Topographer3D.ViewModels
         #region Terrain Generation
         public void ChangeDetailResolution(int terrainSize)
         {
-            _terrainSize = terrainSize;
+            TerrainSize = terrainSize;
             GenerateTerrainPoints();
         }
 
@@ -714,12 +707,12 @@ namespace Topographer3D.ViewModels
 
         public void ResetHeights()
         {
-            for (int x = 0; x < _terrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                for (int z = 0; z < _terrainSize; z++)
+                for (int z = 0; z < TerrainSize; z++)
                 {
-                    _terrainPoints[x + z * _terrainSize] = 0;
-                    _terrainPointsUneroded[x + z * _terrainSize] = 0;
+                    TerrainPoints[x + z * TerrainSize] = 0;
+                    TerrainPointsUneroded[x + z * TerrainSize] = 0;
                 }
             }
 
@@ -732,7 +725,7 @@ namespace Topographer3D.ViewModels
             double octaveMultiplier = 1;
             double sizeCompensator = 1;
 
-            switch (_terrainSize)
+            switch (TerrainSize)
             {
                 case 256:
                     sizeCompensator = 8;
@@ -751,9 +744,9 @@ namespace Topographer3D.ViewModels
 
             for (int o = 0; o < OSNOctaves; o++)
             {
-                for (int x = 0; x < _terrainSize; x++)
+                for (int x = 0; x < TerrainSize; x++)
                 {
-                    for (int z = 0; z < _terrainSize; z++)
+                    for (int z = 0; z < TerrainSize; z++)
                     {
                         double value = 0;
                         double xValue = ((((0.0005f / OSNScale) / OSNScaleX) * (x * sizeCompensator) + OSNSeed) * octaveMultiplier);
@@ -767,13 +760,13 @@ namespace Topographer3D.ViewModels
                             value = ((_openSimplexNoise.Evaluate(xValue, zValue) * weight) / 2);
                         }
 
-                        _terrainPoints[x + z * _terrainSize] += value;
+                        TerrainPoints[x + z * TerrainSize] += value;
 
-                        if (_terrainPoints[x + z * _terrainSize] < 0)
+                        if (TerrainPoints[x + z * TerrainSize] < 0)
                         {
-                            _terrainPoints[x + z * _terrainSize] = 0;
+                            TerrainPoints[x + z * TerrainSize] = 0;
                         }
-                        _terrainPointsUneroded[x + z * _terrainSize] = _terrainPoints[x + z * _terrainSize];
+                        TerrainPointsUneroded[x + z * TerrainSize] = TerrainPoints[x + z * TerrainSize];
                     }
                 }
                 weight /= 2 - (OSNOctaveWeight - 0.5);
@@ -788,11 +781,11 @@ namespace Topographer3D.ViewModels
         {
             if (!HEErodeOver && isEroded == true)
             {
-                for (int x = 0; x < _terrainSize; x++)
+                for (int x = 0; x < TerrainSize; x++)
                 {
-                    for (int z = 0; z < _terrainSize; z++)
+                    for (int z = 0; z < TerrainSize; z++)
                     {
-                        _terrainPoints[x + z * _terrainSize] = _terrainPointsUneroded[x + z * _terrainSize];
+                        TerrainPoints[x + z * TerrainSize] = TerrainPointsUneroded[x + z * TerrainSize];
                     }
                 }
             }
@@ -809,7 +802,7 @@ namespace Topographer3D.ViewModels
             double gravity = HEGravity;
             int maxDropletLifetime = HEMaxDropletLifetime;
 
-            switch (_terrainSize)
+            switch (TerrainSize)
             {
                 case 256:
                     iterations *= 1;
@@ -862,7 +855,7 @@ namespace Topographer3D.ViewModels
             }
 
             _hydraulicErosion.UpdateValues(seed, erosionRadius, inertia, sedimentCapacityFactor, minSedimentCapacity, erodeSpeed, depositSpeed, evaporateSpeed, gravity, maxDropletLifetime);
-            _hydraulicErosion.Erode(_terrainPoints, _terrainSize, iterations, false);
+            _hydraulicErosion.Erode(TerrainPoints, TerrainSize, iterations, false);
 
             isEroded = true;
             isColored = false;
@@ -875,37 +868,37 @@ namespace Topographer3D.ViewModels
             #region Gradient Selector
             if (Gradient1RB)
             {
-                currentSelectedGradient = _gradient1.GradientStops;
+                currentSelectedGradient = Gradient1.GradientStops;
                 ChangeBorderGradient(89, 75, 66, 38, 27, 20, 115, 97, 81, 38, 27, 20, 13, 0, 0);
             }
             else if (Gradient2RB)
             {
-                currentSelectedGradient = _gradient2.GradientStops;
+                currentSelectedGradient = Gradient2.GradientStops;
                 ChangeBorderGradient(232, 197, 159, 140, 79, 43, 220, 119, 56, 191, 116, 73, 232, 157, 82);
             }
             else if (Gradient3RB)
             {
-                currentSelectedGradient = _gradient3.GradientStops;
+                currentSelectedGradient = Gradient3.GradientStops;
                 ChangeBorderGradient(100, 98, 101, 138, 130, 116, 82, 70, 61, 96, 82, 71, 138, 123, 112);
             }
             else if (Gradient4RB)
             {
-                currentSelectedGradient = _gradient4.GradientStops;
+                currentSelectedGradient = Gradient4.GradientStops;
                 ChangeBorderGradient(140, 142, 145, 123, 125, 127, 227, 231, 235, 62, 63, 64, 99, 106, 115);
             }
             else if (Gradient5RB)
             {
-                currentSelectedGradient = _gradient5.GradientStops;
+                currentSelectedGradient = Gradient5.GradientStops;
                 ChangeBorderGradient(217, 197, 160, 232, 214, 179, 191, 169, 142, 239, 224, 172, 134, 105, 73);
             }
             else if (Gradient6RB)
             {
-                currentSelectedGradient = _gradient6.GradientStops;
+                currentSelectedGradient = Gradient6.GradientStops;
                 ChangeBorderGradient(235, 239, 239, 117, 156, 191, 139, 187, 217, 182, 219, 239, 206, 232, 239);
             }
             else if (Gradient7RB)
             {
-                currentSelectedGradient = _gradient7.GradientStops;
+                currentSelectedGradient = Gradient7.GradientStops;
                 ChangeBorderGradient(12, 108, 130, 216, 67, 120, 99, 67, 86, 50, 163, 83, 238, 101, 75);
             }
             else
@@ -916,17 +909,17 @@ namespace Topographer3D.ViewModels
 
             #region ColorMap                                                                       
             PixelFormat pixelFormat = PixelFormats.Bgr24;
-            int rawStride = (_terrainSize * pixelFormat.BitsPerPixel + 7) / 8;
-            byte[] rawImage = new byte[rawStride * _terrainSize];
+            int rawStride = (TerrainSize * pixelFormat.BitsPerPixel + 7) / 8;
+            byte[] rawImage = new byte[rawStride * TerrainSize];
 
 
-            _coloringAlgorithm.UpdateValues(currentSelectedGradient, _terrainPoints, _terrainSize, _colorShift, _colorInvert);
+            _coloringAlgorithm.UpdateValues(currentSelectedGradient, TerrainPoints, TerrainSize, ColorShift, ColorInvert);
             _coloringAlgorithm.calculateMinMax();
 
             int count = 0;
-            for (int x = 0; x < _terrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                for (int z = 0; z < _terrainSize; z++)
+                for (int z = 0; z < TerrainSize; z++)
                 {
                     byte[] RGB = _coloringAlgorithm.ColorizeTerrain(x, z);
                     for (int i = 0; i < 3; i++)
@@ -939,19 +932,19 @@ namespace Topographer3D.ViewModels
             }
 
 
-            BitmapSource bitmap = BitmapSource.Create(_terrainSize, _terrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
+            BitmapSource bitmap = BitmapSource.Create(TerrainSize, TerrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
-            MemoryStream memoryStream = new MemoryStream();
+            TerrainMainColors = new MemoryStream();
             _colorMapImage = new BitmapImage();
 
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            encoder.Save(memoryStream);
+            encoder.Save(TerrainMainColors);
 
-            memoryStream.Position = 0;
-            _colorMapImage.BeginInit();
-            _colorMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
-            _colorMapImage.EndInit();
-            _colorMapImage.Freeze();
+            TerrainMainColors.Position = 0;
+            //_colorMapImage.BeginInit();
+            //_colorMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
+            //_colorMapImage.EndInit();
+            //_colorMapImage.Freeze();
             #endregion
 
             #region BorderMap
@@ -959,7 +952,7 @@ namespace Topographer3D.ViewModels
             int height = 1;
             int rawStrideBorder = (width * pixelFormat.BitsPerPixel + 7) / 8;
             byte[] rawImageBorder = new byte[rawStrideBorder * height];
-            _coloringAlgorithm.UpdateValues(_gradientBorder.GradientStops, _terrainPoints, _terrainSize, _colorShift, _colorInvert);
+            _coloringAlgorithm.UpdateValues(_gradientBorder.GradientStops, TerrainPoints, TerrainSize, ColorShift, ColorInvert);
             int count2 = 0;
             for (int x = 0; x < width * height; x++)
             {
@@ -973,17 +966,17 @@ namespace Topographer3D.ViewModels
 
             BitmapSource bitmapBorder = BitmapSource.Create(width, height, 96, 96, pixelFormat, null, rawImageBorder, rawStrideBorder);
             PngBitmapEncoder encoderBorder = new PngBitmapEncoder();
-            MemoryStream memoryStreamBorder = new MemoryStream();
+            TerrainBorderColors = new MemoryStream();
             _borderMapImage = new BitmapImage();
 
             encoderBorder.Frames.Add(BitmapFrame.Create(bitmapBorder));
-            encoderBorder.Save(memoryStreamBorder);
+            encoderBorder.Save(TerrainBorderColors);
 
-            memoryStreamBorder.Position = 0;
-            _borderMapImage.BeginInit();
-            _borderMapImage.StreamSource = new MemoryStream(memoryStreamBorder.ToArray());
-            _borderMapImage.EndInit();
-            _borderMapImage.Freeze();
+            TerrainBorderColors.Position = 0;
+            //_borderMapImage.BeginInit();
+            //_borderMapImage.StreamSource = new MemoryStream(memoryStreamBorder.ToArray());
+            //_borderMapImage.EndInit();
+            //_borderMapImage.Freeze();
             #endregion
 
             isColored = true;
@@ -993,16 +986,16 @@ namespace Topographer3D.ViewModels
         {
             //Heightmap
             System.Windows.Media.PixelFormat pixelFormat = PixelFormats.Gray32Float;
-            int rawStride = (_terrainSize * pixelFormat.BitsPerPixel + 7) / 8;
-            byte[] rawImage = new byte[rawStride * _terrainSize];
+            int rawStride = (TerrainSize * pixelFormat.BitsPerPixel + 7) / 8;
+            byte[] rawImage = new byte[rawStride * TerrainSize];
 
             // Filling the rawImage with Data
             int count = 0;
-            for (int x = 0; x < _terrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                for (int z = 0; z < _terrainSize; z++)
+                for (int z = 0; z < TerrainSize; z++)
                 {
-                    byte[] bytes = BitConverter.GetBytes((float)_terrainPoints[x + z * _terrainSize]);
+                    byte[] bytes = BitConverter.GetBytes((float)TerrainPoints[x + z * TerrainSize]);
                     for (int i = 0; i < 4; i++)
                     {
                         if (count >= rawImage.Length)
@@ -1014,7 +1007,7 @@ namespace Topographer3D.ViewModels
                     }
                 }
             }
-            BitmapSource bitmap = BitmapSource.Create(_terrainSize, _terrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
+            BitmapSource bitmap = BitmapSource.Create(TerrainSize, TerrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             MemoryStream memoryStream = new MemoryStream();
             _heightMapImage = new BitmapImage();

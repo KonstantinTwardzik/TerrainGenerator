@@ -31,11 +31,15 @@
         <KeyBinding Modifiers="Ctrl" Key="Q" Command="{Binding QuitCommand}"/>
         <KeyBinding Modifiers="Ctrl" Key="N" Command="{Binding NewCommand}"/>
         <KeyBinding Modifiers="Ctrl" Key="E" Command="{Binding ExportCommand}"/>
-        <KeyBinding Modifiers="Ctrl" Key="D1" Command="{Binding DetailResolutionCommand}" CommandParameter="256" />
-        <KeyBinding Modifiers="Ctrl" Key="D2" Command="{Binding DetailResolutionCommand}" CommandParameter="512"/>
-        <KeyBinding Modifiers="Ctrl" Key="D3" Command="{Binding DetailResolutionCommand}" CommandParameter="1024"/>
-        <KeyBinding Modifiers="Ctrl" Key="D4" Command="{Binding DetailResolutionCommand}" CommandParameter="2048"/>
-        
+        <KeyBinding Modifiers="Ctrl" Key="D1" Command="{Binding DetailResolutionCommand}" CommandParameter="16" />
+        <KeyBinding Modifiers="Ctrl" Key="D2" Command="{Binding DetailResolutionCommand}" CommandParameter="32" />
+        <KeyBinding Modifiers="Ctrl" Key="D3" Command="{Binding DetailResolutionCommand}" CommandParameter="64"/>
+        <KeyBinding Modifiers="Ctrl" Key="D4" Command="{Binding DetailResolutionCommand}" CommandParameter="128"/>
+        <KeyBinding Modifiers="Ctrl" Key="D5" Command="{Binding DetailResolutionCommand}" CommandParameter="512"/>
+        <KeyBinding Modifiers="Ctrl" Key="D6" Command="{Binding DetailResolutionCommand}" CommandParameter="1024"/>
+        <KeyBinding Modifiers="Ctrl" Key="D7" Command="{Binding DetailResolutionCommand}" CommandParameter="2048"/>
+        <KeyBinding Modifiers="Ctrl" Key="D8" Command="{Binding DetailResolutionCommand}" CommandParameter="4096"/>
+
         <KeyBinding Modifiers="Ctrl" Key="H" Command="{Binding HelpCommand}"/>
         <KeyBinding Modifiers="Alt" Key="N" Command="{Binding NoiseCommand}"/>
         <KeyBinding Modifiers="Alt" Key="E" Command="{Binding ErodeCommand}"/>
@@ -84,40 +88,7 @@
         <!--MENU-->
         <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal" Margin="5,5,0,2">
             <Image Source="pack://application:,,,/Topographer3D;component/Assets/TG32.png" Width="40"/>
-            <Menu Grid.Column="0" Grid.Row="0" Width="150" HorizontalAlignment="Left" Background="{StaticResource PrimaryColor}" Foreground="{StaticResource LightestColor}" Margin="3">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_New" Command="{Binding NewCommand}" InputGestureText="Ctrl+N" />
-                    <MenuItem Header="_Open" InputGestureText="Ctrl+O" IsEnabled="False" />
-                    <MenuItem Header="_Save" InputGestureText="Ctrl+S" IsEnabled="False"/>
-                    <Separator/>
-                    <MenuItem Header="_Export Maps" Command="{Binding ExportCommand}" InputGestureText="Ctrl+E"/>
-                    <Separator />
-                    <MenuItem Header="_Quit" Command="{Binding QuitCommand}" InputGestureText="Ctrl+Q"/>
-                </MenuItem>
-                <MenuItem Header="_Edit">
-                    <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding NoiseCommand}"/>
-                    <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E" Command="{Binding ErodeCommand}"/>
-                    <MenuItem Header="_Generate Colors" InputGestureText="Alt+C" Command="{Binding ColorizeCommand}"/>
-                    <Separator/>
-                    <MenuItem Header="_Generate All" InputGestureText="Alt+A" Command="{Binding GenerateAllCommand}"/>
-                </MenuItem>
-                <MenuItem Header="_Terrain">
-                    <MenuItem Header="_Detail Resolution">
-                        <MenuItem Header="_256" InputGestureText="Ctrl+1" Command="{Binding DetailResolutionCommand}" CommandParameter="256" IsEnabled="{Binding Res256}"/>
-                        <MenuItem Header="_512" InputGestureText="Ctrl+2" Command="{Binding DetailResolutionCommand}" CommandParameter="512" IsEnabled="{Binding Res512}"/>
-                        <MenuItem Header="_1024" InputGestureText="Ctrl+3" Command="{Binding DetailResolutionCommand}" CommandParameter="1024" IsEnabled="{Binding Res1024}"/>
-                        <MenuItem Header="_2048" InputGestureText="Ctrl+4" Command="{Binding DetailResolutionCommand}" CommandParameter="2048" IsEnabled="{Binding Res2048}"/>
-                    </MenuItem>
-                    <MenuItem Header="_Height">
-                        <StackPanel Orientation="Horizontal">
-                            <Slider  Minimum="0.01" Maximum="1" Width="130" Margin="2" TickPlacement="BottomRight" TickFrequency="0.5" Value="{Binding ViewportProperty.GeneralHeight}"/>
-                            <Button Width="60" Height="25"  BorderBrush="{StaticResource TertiaryColor}" Background="{StaticResource PrimaryColor}" Command="{Binding ChangeHeightCommand}">Set</Button>
-                        </StackPanel>
-                    </MenuItem>
-                </MenuItem>
-                <MenuItem Header="_Help" InputGestureText="Ctrl+H" Command="{Binding HelpCommand}"/>
-            </Menu>
-
+            <views:MenuBar/>
         </StackPanel>
 
 
@@ -193,7 +164,6 @@
 
         <!--3D VIEWPORT-->
         <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="0">
-            <!--<views:ViewportCamera3D/>-->
             <views:Viewport/>
         </Border>
 

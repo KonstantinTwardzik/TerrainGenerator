@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="Topographer3D.Views.MenuBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Topographer3D.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Menu Grid.Column="0" Grid.Row="0" Width="150" HorizontalAlignment="Left" Background="{StaticResource PrimaryColor}" Foreground="{StaticResource LightestColor}" Margin="3">
+        <MenuItem Header="_File">
+            <MenuItem Header="_New" Command="{Binding NewCommand}" InputGestureText="Ctrl+N" />
+            <MenuItem Header="_Open" InputGestureText="Ctrl+O" IsEnabled="False" />
+            <MenuItem Header="_Save" InputGestureText="Ctrl+S" IsEnabled="False"/>
+            <Separator/>
+            <MenuItem Header="_Export Maps" Command="{Binding ExportCommand}" InputGestureText="Ctrl+E"/>
+            <Separator />
+            <MenuItem Header="_Quit" Command="{Binding QuitCommand}" InputGestureText="Ctrl+Q"/>
+        </MenuItem>
+        <MenuItem Header="_Edit">
+            <MenuItem Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding NoiseCommand}"/>
+            <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E" Command="{Binding ErodeCommand}"/>
+            <MenuItem Header="_Generate Colors" InputGestureText="Alt+C" Command="{Binding ColorizeCommand}"/>
+            <Separator/>
+            <MenuItem Header="_Generate All" InputGestureText="Alt+A" Command="{Binding GenerateAllCommand}"/>
+        </MenuItem>
+        <MenuItem Header="_Terrain">
+            <MenuItem Header="_Detail Resolution">
+                <MenuItem Header="Low Poly Mode" IsEnabled="False"/>
+                <MenuItem Header="_16" InputGestureText="Ctrl+1" Command="{Binding DetailResolutionCommand}" CommandParameter="16" IsEnabled="{Binding Res16}"/>
+                <MenuItem Header="_32" InputGestureText="Ctrl+2" Command="{Binding DetailResolutionCommand}" CommandParameter="32" IsEnabled="{Binding Res32}"/>
+                <MenuItem Header="_64" InputGestureText="Ctrl+3" Command="{Binding DetailResolutionCommand}" CommandParameter="64" IsEnabled="{Binding Res64}"/>
+                <MenuItem Header="_128" InputGestureText="Ctrl+4" Command="{Binding DetailResolutionCommand}" CommandParameter="128" IsEnabled="{Binding Res128}"/>
+                <Separator/>
+                <MenuItem Header="High Poly Mode" IsEnabled="False"/>
+                <MenuItem Header="_512" InputGestureText="Ctrl+5" Command="{Binding DetailResolutionCommand}" CommandParameter="512" IsEnabled="{Binding Res512}"/>
+                <MenuItem Header="_1024" InputGestureText="Ctrl+6" Command="{Binding DetailResolutionCommand}" CommandParameter="1024" IsEnabled="{Binding Res1024}"/>
+                <MenuItem Header="_2048" InputGestureText="Ctrl+7" Command="{Binding DetailResolutionCommand}" CommandParameter="2048" IsEnabled="{Binding Res2048}"/>
+                <MenuItem Header="_4096" InputGestureText="Ctrl+8" Command="{Binding DetailResolutionCommand}" CommandParameter="4096" IsEnabled="{Binding Res4096}"/>
+            </MenuItem>
+            <MenuItem Header="_Height">
+                <MenuItem Header="_25%" InputGestureText="Alt+1" Command="{Binding ChangeHeightCommand}" CommandParameter="25" IsEnabled="{Binding Height25}"/>
+                <MenuItem Header="_50%" InputGestureText="Alt+2" Command="{Binding ChangeHeightCommand}" CommandParameter="50" IsEnabled="{Binding Height50}"/>
+                <MenuItem Header="_75%" InputGestureText="Alt+3" Command="{Binding ChangeHeightCommand}" CommandParameter="75" IsEnabled="{Binding Height75}"/>
+                <MenuItem Header="_100%" InputGestureText="Alt+4" Command="{Binding ChangeHeightCommand}" CommandParameter="100" IsEnabled="{Binding Height100}"/>
+                <MenuItem Header="_125%" InputGestureText="Alt+5" Command="{Binding ChangeHeightCommand}" CommandParameter="125" IsEnabled="{Binding Height125}"/>
+                <MenuItem Header="_150%" InputGestureText="Alt+6" Command="{Binding ChangeHeightCommand}" CommandParameter="150" IsEnabled="{Binding Height150}"/>
+            </MenuItem>
+        </MenuItem>
+        <MenuItem Header="_Help" InputGestureText="Ctrl+H" Command="{Binding HelpCommand}"/>
+    </Menu>
+</UserControl>

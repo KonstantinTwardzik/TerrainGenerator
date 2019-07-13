@@ -57,7 +57,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>T3D.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\T3D.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>E58258D1E2CB69D1C8585C84E6BDE58D4B2500A6</ManifestCertificateThumbprint>
@@ -161,7 +161,7 @@
     <Compile Include="Models\ColoringAlgorithm.cs" />
     <Compile Include="Models\HydraulicErosion.cs" />
     <Compile Include="Models\OpenSimplexNoise.cs" />
-    <Compile Include="ObservableObject.cs" />
+    <Compile Include="ViewModels\ViewportCamera.cs" />
     <Compile Include="ViewModels\TerrainSettings.cs" />
     <Compile Include="ViewModels\Viewport.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -173,6 +173,9 @@
     </Compile>
     <Compile Include="Models\MouseUtilities.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\MenuBar.xaml.cs">
+      <DependentUpon>MenuBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TerrainSettings.xaml.cs">
       <DependentUpon>TerrainSettings.xaml</DependentUpon>
     </Compile>
@@ -180,6 +183,10 @@
       <DependentUpon>Viewport.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MenuBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -242,7 +249,7 @@
     <Resource Include="Assets\TG64.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="T3D.ico" />
+    <Resource Include="Assets\T3D.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\Minimize.png" />

@@ -19,14 +19,30 @@ namespace Topographer3D.ViewModels
 
         #region Properties
         //MVVM 
-        public Viewport ViewportProperty { get; set; }
-        public TerrainSettings TerrainSettingsProperty { get; set; }
+        public Viewport Viewport { get; private set; }
+        public TerrainSettings TerrainSettings { get; private set; }
+        public ViewportCamera ViewportCamera { get; private set; }
+
+
 
         //DetailResolution
-        public bool Res256 { get; set; }
+        public bool Res16 { get; set; }
+        public bool Res32 { get; set; }
+        public bool Res64 { get; set; }
+        public bool Res128 { get; set; }
         public bool Res512 { get; set; }
         public bool Res1024 { get; set; }
         public bool Res2048 { get; set; }
+        public bool Res4096 { get; set; }
+
+        //HeightMultiplicator
+        public bool Height25 { get; set; }
+        public bool Height50 { get; set; }
+        public bool Height75 { get; set; }
+        public bool Height100 { get; set; }
+        public bool Height125 { get; set; }
+        public bool Height150 { get; set; }
+
         public string MaxImagePath { get; set; }
         #endregion
 
@@ -40,10 +56,21 @@ namespace Topographer3D.ViewModels
 
         private void InitProperties()
         {
-            Res256 = true;
+            Res16 = true;
+            Res32 = true;
+            Res64 = true;
+            Res128 = true;
             Res512 = false;
             Res1024 = true;
             Res2048 = true;
+            Res4096 = true;
+
+            Height25 = true;
+            Height50 = true;
+            Height75 = true;
+            Height100 = false;
+            Height125 = true;
+            Height150 = true;
 
             _maxPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/Maximize.png";
             _maxFullPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/MaximizeFullscreen.png";
@@ -52,8 +79,9 @@ namespace Topographer3D.ViewModels
 
         private void InitLogic()
         {
-            TerrainSettingsProperty = new TerrainSettings();
-            ViewportProperty = new Viewport(TerrainSettingsProperty);
+            TerrainSettings = new TerrainSettings();
+            Viewport = new Viewport(TerrainSettings);
+            ViewportCamera = new ViewportCamera();
         }
 
         private void InitCommands()
@@ -108,74 +136,183 @@ namespace Topographer3D.ViewModels
 
         public void NewTerrain()
         {
-            TerrainSettingsProperty.TerrainSize = 512;
+            TerrainSettings.TerrainSize = 512;
             UpdateDetailResolution(512);
-            TerrainSettingsProperty.ResetHeights();
+            TerrainSettings.ResetHeights();
             ChangeMesh();
             InitProperties();
-            TerrainSettingsProperty.InitProperties();
+            TerrainSettings.InitProperties();
         }
 
         public void ChangeMesh()
         {
-            //ViewportProperty.UpdateMesh();
-            //ViewportProperty.GenerateDefaultTexture();
+            Viewport.UpdateMesh();
+            Viewport.GenerateDefaultTexture();
         }
 
-        public void ChangeHeight()
+        public void ChangeHeight(float heightMulitplicator)
         {
-            //ViewportProperty.UpdateMesh();
+            switch (heightMulitplicator)
+            {
+                case 25:
+                    Height25 = false;
+                    Height50 = true;
+                    Height75 = true;
+                    Height100 = true;
+                    Height125 = true;
+                    Height150 = true;
+                    break;
+                case 50:
+                    Height25 = true;
+                    Height50 = false;
+                    Height75 = true;
+                    Height100 = true;
+                    Height125 = true;
+                    Height150 = true;
+                    break;
+                case 75:
+                    Height25 = true;
+                    Height50 = true;
+                    Height75 = false;
+                    Height100 = true;
+                    Height125 = true;
+                    Height150 = true;
+                    break;
+                case 100:
+                    Height25 = true;
+                    Height50 = true;
+                    Height75 = true;
+                    Height100 = false;
+                    Height125 = true;
+                    Height150 = true;
+                    break;
+                case 125:
+                    Height25 = true;
+                    Height50 = true;
+                    Height75 = true;
+                    Height100 = true;
+                    Height125 = false;
+                    Height150 = true;
+                    break;
+                case 150:
+                    Height25 = true;
+                    Height50 = true;
+                    Height75 = true;
+                    Height100 = true;
+                    Height125 = true;
+                    Height150 = false;
+                    break;
+            }
+
+            Viewport.HeightMultiplicator = heightMulitplicator / 100.0f;
+            Viewport.UpdateMesh();
         }
 
         public void UpdateDetailResolution(int resolution)
         {
             switch (resolution)
             {
-                case 256:
-                    Res256 = false;
+                case 16:
+                    Res16 = false;
+                    Res32 = true;
+                    Res64 = true;
+                    Res128 = true;
                     Res512 = true;
                     Res1024 = true;
                     Res2048 = true;
+                    Res4096 = true;
+                    break;
+                case 32:
+                    Res16 = true;
+                    Res32 = false;
+                    Res64 = true;
+                    Res128 = true;
+                    Res512 = true;
+                    Res1024 = true;
+                    Res2048 = true;
+                    Res4096 = true;
+                    break;
+                case 64:
+                    Res16 = true;
+                    Res32 = true;
+                    Res64 = false;
+                    Res128 = true;
+                    Res512 = true;
+                    Res1024 = true;
+                    Res2048 = true;
+                    Res4096 = true;
+                    break;
+                case 128:
+                    Res16 = true;
+                    Res32 = true;
+                    Res64 = true;
+                    Res128 = false;
+                    Res512 = true;
+                    Res1024 = true;
+                    Res2048 = true;
+                    Res4096 = true;
                     break;
                 case 512:
-                    Res256 = true;
+                    Res16 = true;
+                    Res32 = true;
+                    Res64 = true;
+                    Res128 = true;
                     Res512 = false;
                     Res1024 = true;
                     Res2048 = true;
+                    Res4096 = true;
                     break;
                 case 1024:
-                    Res256 = true;
+                    Res16 = true;
+                    Res32 = true;
+                    Res64 = true;
+                    Res128 = true;
                     Res512 = true;
                     Res1024 = false;
                     Res2048 = true;
+                    Res4096 = true;
                     break;
                 case 2048:
-                    Res256 = true;
+                    Res16 = true;
+                    Res32 = true;
+                    Res64 = true;
+                    Res128 = true;
                     Res512 = true;
                     Res1024 = true;
                     Res2048 = false;
+                    Res4096 = true;
+                    break;
+                case 4096:
+                    Res16 = true;
+                    Res32 = true;
+                    Res64 = true;
+                    Res128 = true;
+                    Res512 = true;
+                    Res1024 = true;
+                    Res2048 = true;
+                    Res4096 = false;
                     break;
             }
 
-            TerrainSettingsProperty.ChangeDetailResolution(resolution);
-            //ViewportProperty.InitMesh();
+            TerrainSettings.ChangeDetailResolution(resolution);
+            Viewport.InitMesh();
             GetPreviousState();
         }
 
         public void GetPreviousState()
         {
-            if (TerrainSettingsProperty.isNoised && TerrainSettingsProperty.isEroded && TerrainSettingsProperty.isColored)
+            if (TerrainSettings.isNoised && TerrainSettings.isEroded && TerrainSettings.isColored)
             {
                 Noise();
                 Erode();
                 Colorize();
             }
-            else if (TerrainSettingsProperty.isNoised && TerrainSettingsProperty.isEroded)
+            else if (TerrainSettings.isNoised && TerrainSettings.isEroded)
             {
                 Noise();
                 Erode();
             }
-            else if (TerrainSettingsProperty.isNoised)
+            else if (TerrainSettings.isNoised)
             {
                 Noise();
             }
@@ -188,20 +325,20 @@ namespace Topographer3D.ViewModels
 
         public void Noise()
         {
-            TerrainSettingsProperty.OpenSimplexNoise();
+            TerrainSettings.OpenSimplexNoise();
             ChangeMesh();
         }
 
         public void Erode()
         {
-            TerrainSettingsProperty.Erode();
+            TerrainSettings.Erode();
             ChangeMesh();
         }
 
         public void Colorize()
         {
-            TerrainSettingsProperty.Colorize();
-            //ViewportProperty.UpdateTexture();
+            TerrainSettings.Colorize();
+            Viewport.UpdateTexture();
         }
 
         public void GenerateAll()
@@ -213,7 +350,7 @@ namespace Topographer3D.ViewModels
 
         public void ExportMaps()
         {
-            TerrainSettingsProperty.CreateHeightMap();
+            TerrainSettings.CreateHeightMap();
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "png (.png) | *.png",
@@ -222,7 +359,7 @@ namespace Topographer3D.ViewModels
             Nullable<bool> result = saveFileDialog.ShowDialog();
             if (result == true)
             {
-                TerrainSettingsProperty.ExportMaps(saveFileDialog.FileName);
+                TerrainSettings.ExportMaps(saveFileDialog.FileName);
             }
 
 
@@ -328,10 +465,6 @@ namespace Topographer3D.ViewModels
 
         #region INotifyPropertyChanged Members
         public event PropertyChangedEventHandler PropertyChanged;
-        //private void OnPropertyChanged(string propertyName)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
         #endregion
     }
 }

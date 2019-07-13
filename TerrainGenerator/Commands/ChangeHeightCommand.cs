@@ -26,7 +26,8 @@ namespace Topographer3D.Commands
 
         public void Execute(object parameter)
         {
-            _mainViewModel.ChangeHeight();
+            float heightMultiplicator = (float)Convert.ToDouble(parameter);
+            _mainViewModel.ChangeHeight(heightMultiplicator);
         }
     }
 }
