@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Topographer3D.ViewModels
 {
-    internal class MainViewModel : INotifyPropertyChanged
+    internal class MainViewModel : ObservableObject
     {
         #region Attributes 
         private string _maxPath;
@@ -23,27 +23,25 @@ namespace Topographer3D.ViewModels
         public TerrainSettings TerrainSettings { get; private set; }
         public ViewportCamera ViewportCamera { get; private set; }
 
-
-
         //DetailResolution
-        public bool Res16 { get; set; }
-        public bool Res32 { get; set; }
-        public bool Res64 { get; set; }
-        public bool Res128 { get; set; }
-        public bool Res512 { get; set; }
-        public bool Res1024 { get; set; }
-        public bool Res2048 { get; set; }
-        public bool Res4096 { get; set; }
+        public bool Res16 { get; private set; }
+        public bool Res32 { get; private set; }
+        public bool Res64 { get; private set; }
+        public bool Res128 { get; private set; }
+        public bool Res512 { get; private set; }
+        public bool Res1024 { get; private set; }
+        public bool Res2048 { get; private set; }
+        public bool Res4096 { get; private set; }
 
         //HeightMultiplicator
-        public bool Height25 { get; set; }
-        public bool Height50 { get; set; }
-        public bool Height75 { get; set; }
-        public bool Height100 { get; set; }
-        public bool Height125 { get; set; }
-        public bool Height150 { get; set; }
+        public bool Height25 { get; private set; }
+        public bool Height50 { get; private set; }
+        public bool Height75 { get; private set; }
+        public bool Height100 { get; private set; }
+        public bool Height125 { get; private set; }
+        public bool Height150 { get; private set; }
 
-        public string MaxImagePath { get; set; }
+        public string MaxImagePath { get; private set; }
         #endregion
 
         #region Initialization
@@ -80,8 +78,9 @@ namespace Topographer3D.ViewModels
         private void InitLogic()
         {
             TerrainSettings = new TerrainSettings();
-            Viewport = new Viewport(TerrainSettings);
             ViewportCamera = new ViewportCamera();
+            Viewport = new Viewport(TerrainSettings, ViewportCamera);
+
         }
 
         private void InitCommands()
@@ -373,98 +372,21 @@ namespace Topographer3D.ViewModels
         #endregion
 
         #region ICommands
-        public bool CanExecute
-        {
-            get { return true; }
-        }
-
-        public ICommand NoiseCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand ErodeCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand ColorizeCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand GenerateAllCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand DragCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand MinimizeCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand MaximizeCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand QuitCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand NewCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand UpdateMeshCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand ChangeHeightCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand DetailResolutionCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand HelpCommand
-        {
-            get;
-            private set;
-        }
-
-        public ICommand ExportCommand
-        {
-            get;
-            private set;
-        }
-        #endregion
-
-        #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
+        public bool CanExecute { get { return true; } }
+        public ICommand NoiseCommand { get; private set; }
+        public ICommand ErodeCommand { get; private set; }
+        public ICommand ColorizeCommand { get; private set; }
+        public ICommand GenerateAllCommand { get; private set; }
+        public ICommand DragCommand { get; private set; }
+        public ICommand MinimizeCommand { get; private set; }
+        public ICommand MaximizeCommand { get; private set; }
+        public ICommand QuitCommand { get; private set; }
+        public ICommand NewCommand { get; private set; }
+        public ICommand UpdateMeshCommand { get; private set; }
+        public ICommand ChangeHeightCommand { get; private set; }
+        public ICommand DetailResolutionCommand { get; private set; }
+        public ICommand HelpCommand { get; private set; }
+        public ICommand ExportCommand { get; private set; }
         #endregion
     }
 }

@@ -3,101 +3,187 @@ using Point3D = System.Windows.Media.Media3D.Point3D;
 using Vector3D = System.Windows.Media.Media3D.Vector3D;
 using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Input;
+using Topographer3D.Commands;
+using System.Windows.Controls;
+using Topographer3D.Models;
 
 namespace Topographer3D.ViewModels
 {
 
     class ViewportCamera : ObservableObject
     {
-        public const string Orthographic = "Orthographic Camera";
-        public const string Perspective = "Perspective Camera";
-        private string cameraModel;
-        private Camera camera;
-        public List<string> CameraModelCollection { get; private set; }
-        public string CameraModel
-        {
-            get
-            {
-                return cameraModel;
-            }
-            set
-            {
-                if (SetValue(ref cameraModel, value, "CameraModel"))
-                {
-                    OnCameraModelChanged();
-                }
-            }
-        }
-        public Camera Camera
-        {
-            get
-            {
-                return camera;
-            }
-
-            protected set
-            {
-                SetValue(ref camera, value, "Camera");
-                CameraModel = value is PerspectiveCamera ? Perspective : value is OrthographicCamera ? Orthographic : null;
-            }
-        }
-        protected OrthographicCamera defaultOrthographicCamera = new OrthographicCamera { Position = new System.Windows.Media.Media3D.Point3D(0, 0, 5), LookDirection = new System.Windows.Media.Media3D.Vector3D(-0, -0, -5), UpDirection = new System.Windows.Media.Media3D.Vector3D(0, 1, 0), NearPlaneDistance = 1, FarPlaneDistance = 100 };
-        protected PerspectiveCamera defaultPerspectiveCamera = new PerspectiveCamera { Position = new System.Windows.Media.Media3D.Point3D(0, 0, 5), LookDirection = new System.Windows.Media.Media3D.Vector3D(-0, -0, -5), UpDirection = new System.Windows.Media.Media3D.Vector3D(0, 1, 0), NearPlaneDistance = 0.5, FarPlaneDistance = 150 };
-        public event EventHandler CameraModelChanged;
+        public RestrictedCamera Camera { get; private set; }
+        public bool IsOrthographic { get; set; }
 
         public ViewportCamera()
         {
             InitCamera();
+            InitCommands();
         }
 
         private void InitCamera()
         {
-            // camera models
-            CameraModelCollection = new List<string>()
-            {
-                Orthographic,
-                Perspective,
-            };
+            IsOrthographic = false;
+            Camera = new RestrictedCamera();
+        }
 
-            // on camera changed callback
-            CameraModelChanged += (s, e) =>
+        private void InitCommands()
+        {
+            TopViewCommand = new TopViewCommand(this);
+            SideViewCommand = new SideViewCommand(this);
+            PerspectiveViewCommand = new PerspectiveViewCommand(this);
+
+        }
+
+        public void SetPerspectiveView()
+        {
+            Camera.ActivateManual = true;
+            if (IsOrthographic)
             {
-                if (cameraModel == Orthographic)
+                Camera.Position = new Point3D(10, 10, 0);
+                Camera.LookDirection = new Vector3D(-10, -9.7, 0);
+                Camera.UpDirection = new Vector3D(0, 1, 0);
+            }
+            else
+            {
+                Camera.Position = new Point3D(2, 2, 0);
+                Camera.LookDirection = new Vector3D(-2, -1.7, 0);
+                Camera.UpDirection = new Vector3D(0, 1, 0);
+            }
+            Camera.ActivateManual = false;
+        }
+
+        public void SetTopView()
+        {
+            Camera.ActivateManual = true;
+            if (IsOrthographic)
+            {
+                Camera.Position = new Point3D(0, 20, 0);
+                Camera.LookDirection = new Vector3D(0, -19.3, 0);
+                Camera.UpDirection = new Vector3D(1, 0, 0);
+            }
+            else
+            {
+                Camera.Position = new Point3D(0, 4, 0);
+                Camera.LookDirection = new Vector3D(0, -3.7, 0);
+                Camera.UpDirection = new Vector3D(1, 0, 0);
+            }
+            Camera.ActivateManual = false;
+        }
+
+        public void SetSideView()
+        {
+            Camera.ActivateManual = true;
+            if (IsOrthographic)
+            {
+                Camera.Position = new Point3D(20, 0.3, 0);
+                Camera.LookDirection = new Vector3D(-20, 0, 0);
+                Camera.UpDirection = new Vector3D(0, 1, 0);
+            }
+            else
+            {
+                Camera.Position = new Point3D(4.0, 0.3, 0.0);
+                Camera.LookDirection = new Vector3D(-4.0, 0.0, 0.0);
+                Camera.UpDirection = new Vector3D(0, 1, 0);
+
+            }
+            Camera.ActivateManual = false;
+        }
+
+        public void SetPerspectiveCam()
+        {
+            Camera.FieldOfView = 60;
+            IsOrthographic = false;
+            SetPerspectiveView();
+        }
+
+        public void SetOrthographicCam()
+        {
+            Camera.FieldOfView = 10;
+            IsOrthographic = true;
+            SetPerspectiveView();
+        }
+
+        #region ICommands 
+        public bool CanExecute { get { return true; } }
+        public ICommand TopViewCommand { get; private set; }
+        public ICommand SideViewCommand { get; private set; }
+        public ICommand PerspectiveViewCommand { get; private set; }
+        #endregion
+    }
+
+    public class RestrictedCamera : HelixToolkit.Wpf.SharpDX.PerspectiveCamera
+    {
+        private Vector3D oldLookDir;
+        public bool IsLocked { get; set; }
+        public bool ActivateManual { get; set; }
+
+        public RestrictedCamera()
+        {
+            Position = new Point3D(3, 3, 3);
+            LookDirection = new Vector3D(-3, -2.7, -3);
+            UpDirection = new Vector3D(0, 1, 0);
+            FarPlaneDistance = 1000;
+            ActivateManual = false;
+        }
+
+        public override Point3D Position
+        {
+            get
+            {
+                return base.Position;
+            }
+
+            set
+            {
+                if (ActivateManual || value.Y >= 0 && (sameSign(base.Position.X, value.X) || sameSign(base.Position.Z, value.Z)))
                 {
-                    if (!(Camera is OrthographicCamera))
-                        Camera = defaultOrthographicCamera;
-                }
-                else if (cameraModel == Perspective)
-                {
-                    if (!(Camera is PerspectiveCamera))
-                        Camera = defaultPerspectiveCamera;
+                    base.Position = value;
+                    this.IsLocked = false;
                 }
                 else
                 {
-                    throw new HelixToolkitException("Camera Model Error.");
+                    this.IsLocked = true;
+                    base.LookDirection = this.oldLookDir;
                 }
-            };
-
-            // default camera model
-            CameraModel = Orthographic;
-
-            // camera setup
-            Camera = new PerspectiveCamera
-            {
-                Position = new Point3D(3, 3, 5),
-                LookDirection = new Vector3D(-3, -3, -5),
-                UpDirection = new Vector3D(0, 1, 0),
-                FarPlaneDistance = 5000000
-            };
+            }
         }
 
-        protected virtual void OnCameraModelChanged()
+        public override Vector3D LookDirection
         {
-            var eh = CameraModelChanged;
-            if (eh != null)
+            get
             {
-                eh(this, new EventArgs());
+                return base.LookDirection;
             }
+
+            set
+            {
+                this.oldLookDir = base.LookDirection;
+                base.LookDirection = value;
+            }
+        }
+
+        public override Vector3D UpDirection
+        {
+            get
+            {
+                return base.UpDirection;
+            }
+
+            set
+            {
+                if (!this.IsLocked)
+                {
+                    base.UpDirection = value;
+                }
+            }
+        }
+
+        bool sameSign(double num1, double num2)
+        {
+            return num1 >= 0 && num2 >= 0 || num1 < 0 && num2 < 0;
         }
 
     }

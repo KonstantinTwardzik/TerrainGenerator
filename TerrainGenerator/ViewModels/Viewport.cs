@@ -1,6 +1,5 @@
 ﻿using HelixToolkit.Wpf.SharpDX;
 using Media3D = System.Windows.Media.Media3D;
-using Point3D = System.Windows.Media.Media3D.Point3D;
 using Vector3D = System.Windows.Media.Media3D.Vector3D;
 using Transform3D = System.Windows.Media.Media3D.Transform3D;
 using Color = System.Windows.Media.Color;
@@ -13,6 +12,8 @@ using System.Runtime.CompilerServices;
 using SharpDX;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Input;
+using Topographer3D.Commands;
 
 namespace Topographer3D.ViewModels
 {
@@ -21,6 +22,7 @@ namespace Topographer3D.ViewModels
         #region Properties
 
         private TerrainSettings terrainSettings;
+        private ViewportCamera viewportCamera;
         private MeshBuilder terrainMesh;
         private MeshBuilder borderMesh;
 
@@ -43,22 +45,31 @@ namespace Topographer3D.ViewModels
         public TextureModel TerrainMeshMainTexture { get; private set; }
         public TextureModel TerrainMeshBorderTexture { get; private set; }
 
+        public double MinZoom { get; private set; }
+        public double MaxZoom { get; private set; }
+
         #endregion
 
         #region Initialization
-        public Viewport(TerrainSettings terrainSettings)
+        public Viewport(TerrainSettings terrainSettings, ViewportCamera viewportCamera)
         {
             EffectsManager = new DefaultEffectsManager();
             this.terrainSettings = terrainSettings;
+            this.viewportCamera = viewportCamera;
             HeightMultiplicator = 1.0f;
+            MinZoom = 2;
+            MaxZoom = 5;
 
-            // setup lighting            
+            //Lighting            
             AmbientLightColor = Colors.DimGray;
             DirectionalLightColor = Colors.White;
             DirectionalLightDirection = new Vector3D(-2, -5, -2);
 
+            InitCommands();
             InitMesh();
         }
+
+
 
         public void InitMesh()
         {
@@ -76,6 +87,13 @@ namespace Topographer3D.ViewModels
             GenerateBorderMesh();
             GenerateDefaultTexture();
         }
+
+        private void InitCommands()
+        {
+            PerspectiveCommand = new PerspectiveCommand(this);
+            OrthographicCommand = new OrthographicCommand(this);
+
+    }
         #endregion
 
         #region Generating 3D Model
@@ -374,6 +392,22 @@ namespace Topographer3D.ViewModels
         }
         #endregion
 
+        #region Viewport Settings 
+        public void SetOrthographicView()
+        {
+            viewportCamera.SetOrthographicCam();
+            MinZoom = 8;
+            MaxZoom = 20;
+        }
+
+        public void SetPerspectiveView()
+        {
+            viewportCamera.SetPerspectiveCam();
+            MinZoom = 2;
+            MaxZoom = 5;
+        }
+        #endregion
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -415,8 +449,11 @@ namespace Topographer3D.ViewModels
         }
         #endregion
 
-
-
+        #region ICommands
+        public bool CanExecute { get { return true; } }
+        public ICommand PerspectiveCommand { get; private set; }
+        public ICommand OrthographicCommand { get; private set; }
+        #endregion
     }
 
     public abstract class ObservableObject : INotifyPropertyChanged

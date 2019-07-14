@@ -3,15 +3,74 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Topographer3D.Views"
-             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
+             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"             
              x:Class="Topographer3D.Views.Viewport"
              mc:Ignorable="d">
-    <Grid>
-        <hx:Viewport3DX BackgroundColor="#383838" Camera="{Binding ViewportCamera.Camera}" EffectsManager="{Binding Viewport.EffectsManager}" ModelUpDirection="{Binding Viewport.UpDirection}" ShowViewCube="False" FXAALevel="Ultra" MSAA="Maximum">
+
+    <UserControl.Resources>
+        <!--Button-->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource TertiaryColor}" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LighterBlue}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid x:Name="ViewportGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="30"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <hx:Viewport3DX Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="#383838" Camera="{Binding ViewportCamera.Camera}" EffectsManager="{Binding Viewport.EffectsManager}" ShowViewCube="False" FXAALevel="Ultra" MSAA="Maximum" EnableSSAO="True" UseDefaultGestures="True" IsZoomEnabled="True" ZoomDistanceLimitFar="{Binding Viewport.MaxZoom}" ZoomDistanceLimitNear="{Binding Viewport.MinZoom}" IsMoveEnabled="False" RotateCursor="None" ShowCameraTarget="False" IsChangeFieldOfViewEnabled="False" IsPanEnabled="False" IsInertiaEnabled="False" EnableAutoOctreeUpdate="False">
             <hx:AmbientLight3D Color="{Binding Viewport.AmbientLightColor}" />
             <hx:DirectionalLight3D Direction="{Binding ViewportCamera.Camera.LookDirection}" Color="{Binding Viewport.DirectionalLightColor}" />
             <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshMainGeometry3D}" Material="{Binding Viewport.TerrainMeshMainMaterial}" Transform="{Binding Viewport.TerrainMeshMainTransform}" />
             <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshBorderGeometry3D}" Material="{Binding Viewport.TerrainMeshBorderMaterial}" Transform="{Binding Viewport.TerrainMeshBorderTransform}" />
         </hx:Viewport3DX>
+
+        <StackPanel VerticalAlignment="Top" Grid.Column="1" Grid.Row="0">
+            <Button ToolTip="Perspective Mode" Command="{Binding Viewport.PerspectiveCommand}">
+                <Image Margin="3" Source="../Assets/Icons/perspective.png"/>
+            </Button>
+            <Button ToolTip="Orthographic Mode" Command="{Binding Viewport.OrthographicCommand}">
+                <Image Margin="3" Source="../Assets/Icons/orthographic.png"/>
+            </Button>
+            
+            <Border BorderThickness="0.5" BorderBrush="LightGray"/>
+            
+            <Button ToolTip="Perspective View" Command="{Binding ViewportCamera.PerspectiveViewCommand}">
+                <Image Margin="3" Source="../Assets/Icons/perspectiveView.png"/>
+            </Button>
+            <Button ToolTip="Side View" Command="{Binding ViewportCamera.SideViewCommand}">
+                <Image Margin="3" Source="../Assets/Icons/sideView.png"/>
+            </Button>
+            <Button ToolTip="Top View" Command="{Binding ViewportCamera.TopViewCommand}">
+                <Image Margin="3" Source="../Assets/Icons/topView.png"/>
+            </Button>
+
+            <Border BorderThickness="0.5" BorderBrush="LightGray"/>
+
+        </StackPanel>
+
+
     </Grid>
 </UserControl>
