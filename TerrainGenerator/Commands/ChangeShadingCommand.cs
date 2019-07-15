@@ -4,13 +4,13 @@ using Topographer3D.ViewModels;
 
 namespace Topographer3D.Commands
 {
-    internal class ChangeLightingModeCommand : ICommand
+    internal class ChangeShadingCommand : ICommand
     {
-        private ViewportCamera _viewportCamera;
+        private Viewport _viewport;
 
-        public ChangeLightingModeCommand(ViewportCamera viewportCamera)
+        public ChangeShadingCommand(Viewport viewport)
         {
-            _viewportCamera = viewportCamera;
+            _viewport = viewport;
         }
 
         public event EventHandler CanExecuteChanged
@@ -21,13 +21,13 @@ namespace Topographer3D.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _viewportCamera.CanExecute;
+            return _viewport.CanExecute;
         }
 
         public void Execute(object parameter)
         {
-            int lightingMode = Convert.ToInt32(parameter);
-            _viewportCamera.ChangeLightingMode(lightingMode);
+            int shader = Convert.ToInt32(parameter);
+            _viewport.ChangeShading(shader);
         }
     }
 }

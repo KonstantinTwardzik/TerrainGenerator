@@ -6,33 +6,38 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using Topographer3D.Commands;
-using System.Windows.Controls;
-using Topographer3D.Models;
+
 
 namespace Topographer3D.ViewModels
 {
 
-    class ViewportCamera : ObservableObject
+    public class ViewportCamera : ObservableObject
     {
         public RestrictedCamera Camera { get; private set; }
         public bool IsOrthographic { get; set; }
+        private bool isDynamicLighting;
+        public Vector3D DirectionalLightDirection { get; private set; }
+
 
         public ViewportCamera()
         {
             InitCamera();
             InitCommands();
+            ChangeLightingMode(0);
         }
 
         private void InitCamera()
         {
             IsOrthographic = true;
-            Camera = new RestrictedCamera();
+
+            Camera = new RestrictedCamera(this);
             SetOrthographicCam();
         }
 
         private void InitCommands()
         {
             ChangeViewCommand = new ChangeViewCommand(this);
+            ChangeLightingModeCommand = new ChangeLightingModeCommand(this);
         }
 
         public void SetView(int view)
@@ -88,7 +93,7 @@ namespace Topographer3D.ViewModels
                     }
                     break;
 
-                    // SideView
+                // SideView
                 case 3:
                     if (IsOrthographic)
                     {
@@ -121,9 +126,35 @@ namespace Topographer3D.ViewModels
             SetView(0);
         }
 
+        public void ChangeLightingMode(int lightingMode)
+        {
+            switch (lightingMode)
+            {
+                // Dynamic Lighting
+                case 0:
+                    isDynamicLighting = true;
+                    Camera.LookDirection = Camera.LookDirection;
+                    break;
+
+                // Static Lighting
+                case 1:
+                    isDynamicLighting = false;
+                    break;
+            }
+        }
+
+        public void UpdateLight(Vector3D LookAt)
+        {
+            if(isDynamicLighting)
+            {
+                DirectionalLightDirection = LookAt;
+            }
+        }
+
         #region ICommands 
         public bool CanExecute { get { return true; } }
         public ICommand ChangeViewCommand { get; private set; }
+        public ICommand ChangeLightingModeCommand { get; private set; }
         #endregion
     }
 
@@ -133,10 +164,14 @@ namespace Topographer3D.ViewModels
         public bool IsLocked { get; set; }
         public bool ActivateManual { get; set; }
 
-        public RestrictedCamera()
+        private ViewportCamera vpc;
+
+        public RestrictedCamera(ViewportCamera vpc)
         {
             ActivateManual = false;
+            this.vpc = vpc;
         }
+
 
         public override Point3D Position
         {
@@ -151,6 +186,7 @@ namespace Topographer3D.ViewModels
                 {
                     base.Position = value;
                     this.IsLocked = false;
+
                 }
                 else
                 {
@@ -171,6 +207,7 @@ namespace Topographer3D.ViewModels
             {
                 this.oldLookDir = base.LookDirection;
                 base.LookDirection = value;
+                vpc.UpdateLight(value);
             }
         }
 

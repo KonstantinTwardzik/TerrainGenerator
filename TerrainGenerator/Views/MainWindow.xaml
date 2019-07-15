@@ -17,7 +17,7 @@
     <Window.Resources>
         <Style TargetType="{x:Type Border}">
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Margin" Value="0"/>
             <Setter Property="BorderBrush" Value="{StaticResource TertiaryColor}"/>
             <Setter Property="Background" Value="{StaticResource SecondaryColor}"/>
         </Style>
@@ -163,12 +163,12 @@
         </StackPanel>
 
         <!--3D VIEWPORT-->
-        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="0">
+        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="4,0,2,0">
             <views:Viewport/>
         </Border>
 
         <!--TERRAIN OPTIONEN-->
-        <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" CornerRadius="0">
+        <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="2, 0,4,0">
             <ScrollViewer>
                 <views:TerrainSettings/>
             </ScrollViewer>

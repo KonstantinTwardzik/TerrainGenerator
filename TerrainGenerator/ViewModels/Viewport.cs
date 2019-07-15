@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using Topographer3D.Commands;
+using HelixToolkit.Wpf.SharpDX.Shaders;
 
 namespace Topographer3D.ViewModels
 {
@@ -25,7 +26,6 @@ namespace Topographer3D.ViewModels
         private ViewportCamera viewportCamera;
         private MeshBuilder terrainMesh;
         private MeshBuilder borderMesh;
-        private bool updateLightDirection;
 
         public IEffectsManager EffectsManager
         {
@@ -33,9 +33,7 @@ namespace Topographer3D.ViewModels
         }
 
         public float HeightMultiplicator { get; set; }
-        public Vector3D DirectionalLightDirection { get; private set; }
         public Color DirectionalLightColor { get; private set; }
-        public Color AmbientLightColor { get; private set; }
         public MeshGeometry3D TerrainMeshMainGeometry3D { get; private set; }
         public MeshGeometry3D TerrainMeshBorderGeometry3D { get; private set; }
         public PhongMaterial TerrainMeshMainMaterial { get; private set; }
@@ -48,6 +46,7 @@ namespace Topographer3D.ViewModels
 
         public FXAALevel FXAA { get; private set; }
         public MSAALevel MSAA { get; private set; }
+        public SSAOQuality SSAO { get; private set; }
         public double MinZoom { get; private set; }
         public double MaxZoom { get; private set; }
 
@@ -69,6 +68,7 @@ namespace Topographer3D.ViewModels
             InitCommands();
             InitMesh();
             ChangeMaterial(2);
+            ChangeShading(1);
         }
 
         public void InitMesh()
@@ -83,8 +83,8 @@ namespace Topographer3D.ViewModels
                 TerrainMeshBorderGeometry3D.TextureCoordinates.Clear();
             }
 
-            GenerateMainMesh();
-            GenerateBorderMesh();
+            GenerateMain();
+            GenerateBorder();
             GenerateDefaultTexture();
 
         }
@@ -94,7 +94,7 @@ namespace Topographer3D.ViewModels
             ChangeViewModeCommand = new ChangeViewModeCommand(this);
             ChangeMaterialCommand = new ChangeMaterialCommand(this);
             ChangeViewportQualityCommand = new ChangeViewportQualityCommand(this);
-            ChangeLightingModeCommand = new ChangeLightingModeCommand(this);
+            ChangeShadingCommand = new ChangeShadingCommand(this);
         }
 
         private void InitProperties()
@@ -103,12 +103,9 @@ namespace Topographer3D.ViewModels
             FXAA = new FXAALevel();
             HeightMultiplicator = 1.0f;
 
-            //Lighting            
-            AmbientLightColor = Colors.DimGray;
+
             DirectionalLightColor = Colors.White;
 
-
-            ChangeLightingMode(0);
             ChangeViewMode(0);
             ChangeViewportQuality(2);
 
@@ -117,7 +114,7 @@ namespace Topographer3D.ViewModels
 
         #region Generating 3D Model
 
-        private void GenerateMainMesh()
+        private void GenerateMain()
         {
             terrainMesh = new MeshBuilder();
             GenerateTerrainPositions();
@@ -125,12 +122,12 @@ namespace Topographer3D.ViewModels
             GenerateTerrainUVCoordinates();
             TerrainMeshMainGeometry3D = terrainMesh.ToMeshGeometry3D();
             TerrainMeshMainMaterial = new PhongMaterial();
-            TerrainMeshMainMaterial.EnableFlatShading = true;
+
             TerrainMeshMainMaterial.RenderDiffuseMap = true;
             TerrainMeshMainTransform = new Media3D.TranslateTransform3D(0, 0, 0);
         }
 
-        private void GenerateBorderMesh()
+        private void GenerateBorder()
         {
             borderMesh = new MeshBuilder();
             GenerateBorderPositions();
@@ -138,7 +135,6 @@ namespace Topographer3D.ViewModels
             GenerateBorderUVCoordinates();
             TerrainMeshBorderGeometry3D = borderMesh.ToMeshGeometry3D();
             TerrainMeshBorderMaterial = new PhongMaterial();
-            TerrainMeshBorderMaterial.EnableFlatShading = true;
             TerrainMeshBorderMaterial.RenderDiffuseMap = true;
             TerrainMeshBorderTransform = new Media3D.TranslateTransform3D(0, 0, 0);
         }
@@ -155,7 +151,8 @@ namespace Topographer3D.ViewModels
                     point.Y = 0;
                     point.Z = (float)((float)z / ((float)terrainSettings.TerrainSize - 1) - 0.5) * 2;
                     terrainMesh.Positions.Add(point);
-                    //terrainMesh.Normals.Add(new Vector3(0, 1, 0));
+                    terrainMesh.Normals.Add(new Vector3(0, 1, 0));
+
                 }
             }
         }
@@ -235,6 +232,8 @@ namespace Topographer3D.ViewModels
                 point.Z = (float)((float)z / ((float)terrainSettings.TerrainSize - 1) - 0.5) * 2;
                 borderMesh.Positions.Add(point);
                 borderMesh.Positions.Add(point);
+                borderMesh.Normals.Add(new Vector3(-1, 0, 0));
+                borderMesh.Normals.Add(new Vector3(-1, 0, 0));
             }
 
             point.Z = 1;
@@ -243,6 +242,8 @@ namespace Topographer3D.ViewModels
                 point.X = (float)((float)x / ((float)terrainSettings.TerrainSize - 1) - 0.5) * 2;
                 borderMesh.Positions.Add(point);
                 borderMesh.Positions.Add(point);
+                borderMesh.Normals.Add(new Vector3(0, 0, 1));
+                borderMesh.Normals.Add(new Vector3(0, 0, 1));
             }
 
             point.X = 1;
@@ -251,6 +252,8 @@ namespace Topographer3D.ViewModels
                 point.Z = (float)((float)z / ((float)terrainSettings.TerrainSize - 1) - 0.5) * 2;
                 borderMesh.Positions.Add(point);
                 borderMesh.Positions.Add(point);
+                borderMesh.Normals.Add(new Vector3(1, 0, 0));
+                borderMesh.Normals.Add(new Vector3(1, 0, 0));
             }
 
             point.Z = -1;
@@ -259,6 +262,8 @@ namespace Topographer3D.ViewModels
                 point.X = (float)((float)x / ((float)terrainSettings.TerrainSize - 1) - 0.5) * 2;
                 borderMesh.Positions.Add(point);
                 borderMesh.Positions.Add(point);
+                borderMesh.Normals.Add(new Vector3(0, 0, -1));
+                borderMesh.Normals.Add(new Vector3(0, 0, -1));
             }
         }
 
@@ -326,7 +331,7 @@ namespace Topographer3D.ViewModels
             byte[] rawImage = new byte[rawStride];
             for (int i = 0; i < rawStride; i++)
             {
-                rawImage[i] = 255;
+                rawImage[i] = 170;
             }
 
             //Convert to memorystream
@@ -342,6 +347,7 @@ namespace Topographer3D.ViewModels
             TerrainMeshBorderTexture = new TextureModel(memoryStream);
             TerrainMeshMainMaterial.DiffuseMap = TerrainMeshMainTexture;
             TerrainMeshBorderMaterial.DiffuseMap = TerrainMeshBorderTexture;
+
         }
         #endregion
 
@@ -362,14 +368,19 @@ namespace Topographer3D.ViewModels
             }
             TerrainMeshMainGeometry3D = terrainMesh.ToMeshGeometry3D();
 
-            //for (int x = 0; x < terrainSettings.TerrainSize; x++)
-            //{
-            //    for (int z = 0; z < terrainSettings.TerrainSize; z++)
-            //    {
-            //        terrainMesh.Normals[x + z * terrainSettings.TerrainSize] = new Vector3((float)terrainSettings.TerrainPoints[z + x * terrainSettings.TerrainSize], (float)terrainSettings.TerrainPoints[x + z * terrainSettings.TerrainSize], (float)terrainSettings.TerrainPoints[z + x * terrainSettings.TerrainSize]);
-            //        terrainMesh.Normals[x + z * terrainSettings.TerrainSize].Normalize();
-            //    }
-            //}
+            for (int x = 1; x < terrainSettings.TerrainSize - 1; x++)
+            {
+                for (int z = 1; z < terrainSettings.TerrainSize - 1; z++)
+                {
+                    Vector3 neighbour0 = terrainMesh.Positions[x + (z * terrainSettings.TerrainSize) - 1];
+                    Vector3 neighbour1 = terrainMesh.Positions[x + (z * terrainSettings.TerrainSize) + 1];
+                    Vector3 neighbour2 = terrainMesh.Positions[x + (z * terrainSettings.TerrainSize) - terrainSettings.TerrainSize];
+                    Vector3 neighbour3 = terrainMesh.Positions[x + (z * terrainSettings.TerrainSize) + terrainSettings.TerrainSize];
+                    Vector3 vec0 = neighbour0 - neighbour1;
+                    Vector3 vec1 = neighbour2 - neighbour3;
+                    terrainMesh.Normals[x + z * terrainSettings.TerrainSize] = Vector3.Cross(vec0, vec1);
+                }
+            }
 
             //Update Bordermesh
             for (int z = 0; z < terrainSettings.TerrainSize; z++)
@@ -425,6 +436,7 @@ namespace Topographer3D.ViewModels
                     Ultra = true;
                     FXAA = FXAALevel.None;
                     MSAA = MSAALevel.Disable;
+                    SSAO = SSAOQuality.Low;
                     break;
 
                 // Medium
@@ -435,6 +447,7 @@ namespace Topographer3D.ViewModels
                     Ultra = true;
                     FXAA = FXAALevel.Low;
                     MSAA = MSAALevel.Two;
+                    SSAO = SSAOQuality.Low;
                     break;
 
                 // High
@@ -445,6 +458,7 @@ namespace Topographer3D.ViewModels
                     Ultra = true;
                     FXAA = FXAALevel.High;
                     MSAA = MSAALevel.Four;
+                    SSAO = SSAOQuality.High;
                     break;
 
                 // Ultra
@@ -455,6 +469,7 @@ namespace Topographer3D.ViewModels
                     Ultra = false;
                     FXAA = FXAALevel.Ultra;
                     MSAA = MSAALevel.Maximum;
+                    SSAO = SSAOQuality.High;
                     break;
             }
         }
@@ -507,20 +522,25 @@ namespace Topographer3D.ViewModels
             }
         }
 
-        public void ChangeLightingMode(int lightingMode)
+        public void ChangeShading(int shadingMode)
         {
-            switch (lightingMode)
+            switch (shadingMode)
             {
-                // Dynamic Lighting
+                // Flat Shading
                 case 0:
-                    updateLightDirection = true;
-                    DirectionalLightDirection = viewportCamera.Camera.LookDirection;
+
+                    TerrainMeshMainMaterial.EnableFlatShading = true;
+                    TerrainMeshBorderMaterial.EnableFlatShading = true;
+                    TerrainMeshMainMaterial.DiffuseMapSampler = DefaultSamplers.PointSamplerWrap;
+                    TerrainMeshBorderMaterial.DiffuseMapSampler = DefaultSamplers.PointSamplerWrap;
                     break;
 
-                // Static Lighting
+                //Phong Shading
                 case 1:
-                    updateLightDirection = false;
-                    DirectionalLightDirection = new Vector3D(-2, -5, -2);
+                    TerrainMeshMainMaterial.EnableFlatShading = false;
+                    TerrainMeshBorderMaterial.EnableFlatShading = false;
+                    TerrainMeshMainMaterial.DiffuseMapSampler = DefaultSamplers.LinearSamplerWrapAni16;
+                    TerrainMeshBorderMaterial.DiffuseMapSampler = DefaultSamplers.LinearSamplerWrapAni16;
                     break;
             }
         }
@@ -573,6 +593,7 @@ namespace Topographer3D.ViewModels
         public ICommand ChangeMaterialCommand { get; private set; }
         public ICommand ChangeViewportQualityCommand { get; private set; }
         public ICommand ChangeLightingModeCommand { get; private set; }
+        public ICommand ChangeShadingCommand { get; private set; }
         #endregion
     }
 

@@ -47,10 +47,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <hx:Viewport3DX Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="#383838" Camera="{Binding ViewportCamera.Camera}" EffectsManager="{Binding Viewport.EffectsManager}" ShowViewCube="False" FXAALevel="{Binding Viewport.FXAA}" MSAA="{Binding Viewport.MSAA}" EnableSSAO="True" UseDefaultGestures="True" IsZoomEnabled="True" ZoomDistanceLimitFar="{Binding Viewport.MaxZoom}" ZoomDistanceLimitNear="{Binding Viewport.MinZoom}" IsMoveEnabled="False" RotateCursor="None" ShowCameraTarget="False" IsChangeFieldOfViewEnabled="False" IsPanEnabled="False" IsInertiaEnabled="False" EnableAutoOctreeUpdate="False">
-            <hx:AmbientLight3D Color="{Binding Viewport.AmbientLightColor}" />
-            <!--<hx:DirectionalLight3D Direction="{Binding Viewport.DirectionalLightDirection}" Color="{Binding Viewport.DirectionalLightColor}" />-->
-            <hx:DirectionalLight3D Direction="{Binding ViewportCamera.Camera.LookDirection}" Color="{Binding Viewport.DirectionalLightColor}" />
+        <hx:Viewport3DX Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="#383838" Camera="{Binding ViewportCamera.Camera}" EffectsManager="{Binding Viewport.EffectsManager}" SSAOIntensity="10" ShowViewCube="False" FXAALevel="{Binding Viewport.FXAA}" MSAA="{Binding Viewport.MSAA}" SSAOQuality="{Binding Viewport.SSAO}" EnableSSAO="True" UseDefaultGestures="True" IsZoomEnabled="True" ZoomDistanceLimitFar="{Binding Viewport.MaxZoom}" ZoomDistanceLimitNear="{Binding Viewport.MinZoom}" IsMoveEnabled="False" RotateCursor="None" ShowCameraTarget="False" IsChangeFieldOfViewEnabled="False" IsPanEnabled="False" IsInertiaEnabled="False" EnableAutoOctreeUpdate="False">
+            <hx:DirectionalLight3D Direction="{Binding ViewportCamera.DirectionalLightDirection}" Color="{Binding Viewport.DirectionalLightColor}" />
             <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshMainGeometry3D}" Material="{Binding Viewport.TerrainMeshMainMaterial}" Transform="{Binding Viewport.TerrainMeshMainTransform}" />
             <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshBorderGeometry3D}" Material="{Binding Viewport.TerrainMeshBorderMaterial}" Transform="{Binding Viewport.TerrainMeshBorderTransform}" />
         </hx:Viewport3DX>
@@ -94,15 +92,21 @@
             <Border BorderThickness="0.5" BorderBrush="LightGray"/>
 
             <!--Lighting Options-->
-            <Button ToolTip="Dynamic Lighting" Command="{Binding Viewport.ChangeMaterialCommand}" CommandParameter="1">
+            <Button ToolTip="Dynamic Lighting" Command="{Binding ViewportCamera.ChangeLightingModeCommand}" CommandParameter="0">
                 <Image Source="../Assets/Icons/LightingModeFree.png"/>
             </Button>
-            <Button ToolTip="Static Lighting" Command="{Binding Viewport.ChangeMaterialCommand}" CommandParameter="2">
+            <Button ToolTip="Static Lighting" Command="{Binding ViewportCamera.ChangeLightingModeCommand}" CommandParameter="1">
                 <Image Source="../Assets/Icons/LightingModeLocked.png"/>
             </Button>
             <Border BorderThickness="0.5" BorderBrush="LightGray"/>
             
             <!--Phong Options-->
+            <Button ToolTip="Flat Shading" Command="{Binding Viewport.ChangeShadingCommand}" CommandParameter="0">
+                <Image Source="../Assets/Icons/FlatShading.png"/>
+            </Button>
+            <Button ToolTip="Phong Shading" Command="{Binding Viewport.ChangeShadingCommand}" CommandParameter="1">
+                <Image Source="../Assets/Icons/PhongShading.png"/>
+            </Button>
         </StackPanel>
 
 

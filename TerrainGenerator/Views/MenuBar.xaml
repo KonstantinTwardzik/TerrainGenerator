@@ -185,13 +185,21 @@
         </MenuItem>
         <MenuItem Header="_Terrain">
             <MenuItem Header="_Detail Resolution">
-                <MenuItem Header="Low Poly Mode" IsEnabled="False"/>
+                <MenuItem Header="Low Poly Mode" IsEnabled="False">
+                    <MenuItem.Icon>
+                        <Image Source="../Assets/Icons/FlatShading.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="_16" InputGestureText="Ctrl+1" Command="{Binding DetailResolutionCommand}" CommandParameter="16" IsEnabled="{Binding Res16}"/>
                 <MenuItem Header="_32" InputGestureText="Ctrl+2" Command="{Binding DetailResolutionCommand}" CommandParameter="32" IsEnabled="{Binding Res32}"/>
                 <MenuItem Header="_64" InputGestureText="Ctrl+3" Command="{Binding DetailResolutionCommand}" CommandParameter="64" IsEnabled="{Binding Res64}"/>
                 <MenuItem Header="_128" InputGestureText="Ctrl+4" Command="{Binding DetailResolutionCommand}" CommandParameter="128" IsEnabled="{Binding Res128}"/>
                 <Separator/>
-                <MenuItem Header="High Poly Mode" IsEnabled="False"/>
+                <MenuItem Header="High Poly Mode" IsEnabled="False">
+                    <MenuItem.Icon>
+                        <Image Source="../Assets/Icons/PhongShading.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="_512" InputGestureText="Ctrl+5" Command="{Binding DetailResolutionCommand}" CommandParameter="512" IsEnabled="{Binding Res512}"/>
                 <MenuItem Header="_1024" InputGestureText="Ctrl+6" Command="{Binding DetailResolutionCommand}" CommandParameter="1024" IsEnabled="{Binding Res1024}"/>
                 <MenuItem Header="_2048" InputGestureText="Ctrl+7" Command="{Binding DetailResolutionCommand}" CommandParameter="2048" IsEnabled="{Binding Res2048}"/>

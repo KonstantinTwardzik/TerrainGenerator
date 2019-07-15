@@ -108,6 +108,9 @@
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.4.2.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
     </Reference>
@@ -138,6 +141,7 @@
     </ApplicationDefinition>
     <Compile Include="Commands\ChangeHeightCommand.cs" />
     <Compile Include="Commands\ChangeLightingModeCommand.cs" />
+    <Compile Include="Commands\ChangeShadingCommand.cs" />
     <Compile Include="Commands\ChangeViewportQualityCommand.cs" />
     <Compile Include="Commands\DragCommand.cs" />
     <Compile Include="Commands\GenerateAllCommand.cs" />
@@ -293,6 +297,10 @@
   <ItemGroup>
     <Resource Include="Assets\Icons\LightingModeFree.png" />
     <Resource Include="Assets\Icons\LightingModeLocked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\FlatShading.png" />
+    <Resource Include="Assets\Icons\PhongShading.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.5.1.1\build\Fody.targets" Condition="Exists('..\packages\Fody.5.1.1\build\Fody.targets')" />
