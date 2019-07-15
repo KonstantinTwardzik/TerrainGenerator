@@ -4,11 +4,11 @@ using Topographer3D.ViewModels;
 
 namespace Topographer3D.Commands
 {
-    internal class PerspectiveCommand : ICommand
+    internal class ChangeMaterialCommand : ICommand
     {
         private Viewport _viewport;
 
-        public PerspectiveCommand(Viewport viewport)
+        public ChangeMaterialCommand(Viewport viewport)
         {
             _viewport = viewport;
         }
@@ -26,7 +26,8 @@ namespace Topographer3D.Commands
 
         public void Execute(object parameter)
         {
-            _viewport.SetPerspectiveView();
+            int material = Convert.ToInt32(parameter);
+            _viewport.ChangeMaterial(material);
         }
     }
 }

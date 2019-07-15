@@ -25,6 +25,7 @@ namespace Topographer3D.ViewModels
         private ViewportCamera viewportCamera;
         private MeshBuilder terrainMesh;
         private MeshBuilder borderMesh;
+        private bool updateLightDirection;
 
         public IEffectsManager EffectsManager
         {
@@ -32,7 +33,6 @@ namespace Topographer3D.ViewModels
         }
 
         public float HeightMultiplicator { get; set; }
-        public Vector3D UpDirection { get; set; } = new Vector3D(0, 1, 0);
         public Vector3D DirectionalLightDirection { get; private set; }
         public Color DirectionalLightColor { get; private set; }
         public Color AmbientLightColor { get; private set; }
@@ -45,8 +45,16 @@ namespace Topographer3D.ViewModels
         public TextureModel TerrainMeshMainTexture { get; private set; }
         public TextureModel TerrainMeshBorderTexture { get; private set; }
 
+
+        public FXAALevel FXAA { get; private set; }
+        public MSAALevel MSAA { get; private set; }
         public double MinZoom { get; private set; }
         public double MaxZoom { get; private set; }
+
+        public bool Low { get; private set; }
+        public bool Medium { get; private set; }
+        public bool High { get; private set; }
+        public bool Ultra { get; private set; }
 
         #endregion
 
@@ -56,20 +64,12 @@ namespace Topographer3D.ViewModels
             EffectsManager = new DefaultEffectsManager();
             this.terrainSettings = terrainSettings;
             this.viewportCamera = viewportCamera;
-            HeightMultiplicator = 1.0f;
-            MinZoom = 2;
-            MaxZoom = 5;
 
-            //Lighting            
-            AmbientLightColor = Colors.DimGray;
-            DirectionalLightColor = Colors.White;
-            DirectionalLightDirection = new Vector3D(-2, -5, -2);
-
+            InitProperties();
             InitCommands();
             InitMesh();
+            ChangeMaterial(2);
         }
-
-
 
         public void InitMesh()
         {
@@ -86,14 +86,33 @@ namespace Topographer3D.ViewModels
             GenerateMainMesh();
             GenerateBorderMesh();
             GenerateDefaultTexture();
+
         }
 
         private void InitCommands()
         {
-            PerspectiveCommand = new PerspectiveCommand(this);
-            OrthographicCommand = new OrthographicCommand(this);
+            ChangeViewModeCommand = new ChangeViewModeCommand(this);
+            ChangeMaterialCommand = new ChangeMaterialCommand(this);
+            ChangeViewportQualityCommand = new ChangeViewportQualityCommand(this);
+            ChangeLightingModeCommand = new ChangeLightingModeCommand(this);
+        }
 
-    }
+        private void InitProperties()
+        {
+            MSAA = new MSAALevel();
+            FXAA = new FXAALevel();
+            HeightMultiplicator = 1.0f;
+
+            //Lighting            
+            AmbientLightColor = Colors.DimGray;
+            DirectionalLightColor = Colors.White;
+
+
+            ChangeLightingMode(0);
+            ChangeViewMode(0);
+            ChangeViewportQuality(2);
+
+        }
         #endregion
 
         #region Generating 3D Model
@@ -313,7 +332,7 @@ namespace Topographer3D.ViewModels
             //Convert to memorystream
             BitmapSource bitmap = BitmapSource.Create(1, 1, 96, 96, pixelFormat, null, rawImage, rawStride);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
-            MemoryStream memoryStream = new MemoryStream();           
+            MemoryStream memoryStream = new MemoryStream();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
             encoder.Save(memoryStream);
             memoryStream.Position = 0;
@@ -351,7 +370,7 @@ namespace Topographer3D.ViewModels
             //        terrainMesh.Normals[x + z * terrainSettings.TerrainSize].Normalize();
             //    }
             //}
-                                 
+
             //Update Bordermesh
             for (int z = 0; z < terrainSettings.TerrainSize; z++)
             {
@@ -393,18 +412,117 @@ namespace Topographer3D.ViewModels
         #endregion
 
         #region Viewport Settings 
-        public void SetOrthographicView()
+
+        public void ChangeViewportQuality(int quality)
         {
-            viewportCamera.SetOrthographicCam();
-            MinZoom = 8;
-            MaxZoom = 20;
+            switch (quality)
+            {
+                // Low
+                case 0:
+                    Low = false;
+                    Medium = true;
+                    High = true;
+                    Ultra = true;
+                    FXAA = FXAALevel.None;
+                    MSAA = MSAALevel.Disable;
+                    break;
+
+                // Medium
+                case 1:
+                    Low = true;
+                    Medium = false;
+                    High = true;
+                    Ultra = true;
+                    FXAA = FXAALevel.Low;
+                    MSAA = MSAALevel.Two;
+                    break;
+
+                // High
+                case 2:
+                    Low = true;
+                    Medium = true;
+                    High = false;
+                    Ultra = true;
+                    FXAA = FXAALevel.High;
+                    MSAA = MSAALevel.Four;
+                    break;
+
+                // Ultra
+                case 3:
+                    Low = true;
+                    Medium = true;
+                    High = true;
+                    Ultra = false;
+                    FXAA = FXAALevel.Ultra;
+                    MSAA = MSAALevel.Maximum;
+                    break;
+            }
         }
 
-        public void SetPerspectiveView()
+        public void ChangeViewMode(int viewMode)
         {
-            viewportCamera.SetPerspectiveCam();
-            MinZoom = 2;
-            MaxZoom = 5;
+            switch (viewMode)
+            {
+                // Orthographic Mode
+                case 0:
+                    viewportCamera.SetOrthographicCam();
+                    MinZoom = 8;
+                    MaxZoom = 20;
+                    break;
+
+                // Perspective Mode
+                case 1:
+                    viewportCamera.SetPerspectiveCam();
+                    MinZoom = 2;
+                    MaxZoom = 5;
+                    break;
+            }
+        }
+
+        public void ChangeMaterial(int material)
+        {
+            switch (material)
+            {
+                // Super Glossy
+                case 0:
+                    TerrainMeshMainMaterial.SpecularColor = new Color4(0.75f, 0.75f, 0.75f, 1.0f);
+                    TerrainMeshBorderMaterial.SpecularColor = new Color4(0.75f, 0.75f, 0.75f, 1.0f);
+                    TerrainMeshMainMaterial.SpecularShininess = 100;
+                    TerrainMeshBorderMaterial.SpecularShininess = 100;
+                    break;
+                // Glossy
+                case 1:
+                    TerrainMeshMainMaterial.SpecularColor = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+                    TerrainMeshBorderMaterial.SpecularColor = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+                    TerrainMeshMainMaterial.SpecularShininess = 25;
+                    TerrainMeshBorderMaterial.SpecularShininess = 25;
+                    break;
+                // Matte
+                case 2:
+                    TerrainMeshMainMaterial.SpecularColor = Color4.Black;
+                    TerrainMeshBorderMaterial.SpecularColor = Color4.Black;
+                    TerrainMeshMainMaterial.SpecularShininess = 0;
+                    TerrainMeshBorderMaterial.SpecularShininess = 0;
+                    break;
+            }
+        }
+
+        public void ChangeLightingMode(int lightingMode)
+        {
+            switch (lightingMode)
+            {
+                // Dynamic Lighting
+                case 0:
+                    updateLightDirection = true;
+                    DirectionalLightDirection = viewportCamera.Camera.LookDirection;
+                    break;
+
+                // Static Lighting
+                case 1:
+                    updateLightDirection = false;
+                    DirectionalLightDirection = new Vector3D(-2, -5, -2);
+                    break;
+            }
         }
         #endregion
 
@@ -451,8 +569,10 @@ namespace Topographer3D.ViewModels
 
         #region ICommands
         public bool CanExecute { get { return true; } }
-        public ICommand PerspectiveCommand { get; private set; }
-        public ICommand OrthographicCommand { get; private set; }
+        public ICommand ChangeViewModeCommand { get; private set; }
+        public ICommand ChangeMaterialCommand { get; private set; }
+        public ICommand ChangeViewportQualityCommand { get; private set; }
+        public ICommand ChangeLightingModeCommand { get; private set; }
         #endregion
     }
 

@@ -25,92 +25,105 @@ namespace Topographer3D.ViewModels
 
         private void InitCamera()
         {
-            IsOrthographic = false;
+            IsOrthographic = true;
             Camera = new RestrictedCamera();
+            SetOrthographicCam();
         }
 
         private void InitCommands()
         {
-            TopViewCommand = new TopViewCommand(this);
-            SideViewCommand = new SideViewCommand(this);
-            PerspectiveViewCommand = new PerspectiveViewCommand(this);
-
+            ChangeViewCommand = new ChangeViewCommand(this);
         }
 
-        public void SetPerspectiveView()
+        public void SetView(int view)
         {
             Camera.ActivateManual = true;
-            if (IsOrthographic)
+            switch (view)
             {
-                Camera.Position = new Point3D(10, 10, 0);
-                Camera.LookDirection = new Vector3D(-10, -9.7, 0);
-                Camera.UpDirection = new Vector3D(0, 1, 0);
-            }
-            else
-            {
-                Camera.Position = new Point3D(2, 2, 0);
-                Camera.LookDirection = new Vector3D(-2, -1.7, 0);
-                Camera.UpDirection = new Vector3D(0, 1, 0);
-            }
-            Camera.ActivateManual = false;
-        }
+                // IsometricView
+                case 0:
+                    if (IsOrthographic)
+                    {
+                        Camera.Position = new Point3D(8, 8, 8);
+                        Camera.LookDirection = new Vector3D(-8, -7.7, -8);
+                        Camera.UpDirection = new Vector3D(0, 1, 0);
+                    }
+                    else
+                    {
+                        Camera.Position = new Point3D(2, 1, 2);
+                        Camera.LookDirection = new Vector3D(-2, -0.7, -2);
+                        Camera.UpDirection = new Vector3D(0, 1, 0);
+                    }
+                    break;
 
-        public void SetTopView()
-        {
-            Camera.ActivateManual = true;
-            if (IsOrthographic)
-            {
-                Camera.Position = new Point3D(0, 20, 0);
-                Camera.LookDirection = new Vector3D(0, -19.3, 0);
-                Camera.UpDirection = new Vector3D(1, 0, 0);
-            }
-            else
-            {
-                Camera.Position = new Point3D(0, 4, 0);
-                Camera.LookDirection = new Vector3D(0, -3.7, 0);
-                Camera.UpDirection = new Vector3D(1, 0, 0);
-            }
-            Camera.ActivateManual = false;
-        }
+                // PerspectiveView
+                case 1:
+                    if (IsOrthographic)
+                    {
+                        Camera.Position = new Point3D(9, 6, 0);
+                        Camera.LookDirection = new Vector3D(-9, -5.7, 0);
+                        Camera.UpDirection = new Vector3D(0, 1, 0);
+                    }
+                    else
+                    {
+                        Camera.Position = new Point3D(2, 1, 0);
+                        Camera.LookDirection = new Vector3D(-2, -0.7, 0);
+                        Camera.UpDirection = new Vector3D(0, 1, 0);
+                    }
+                    break;
 
-        public void SetSideView()
-        {
-            Camera.ActivateManual = true;
-            if (IsOrthographic)
-            {
-                Camera.Position = new Point3D(20, 0.3, 0);
-                Camera.LookDirection = new Vector3D(-20, 0, 0);
-                Camera.UpDirection = new Vector3D(0, 1, 0);
-            }
-            else
-            {
-                Camera.Position = new Point3D(4.0, 0.3, 0.0);
-                Camera.LookDirection = new Vector3D(-4.0, 0.0, 0.0);
-                Camera.UpDirection = new Vector3D(0, 1, 0);
+                // TopView
+                case 2:
+                    if (IsOrthographic)
+                    {
+                        Camera.Position = new Point3D(0, 15, 0);
+                        Camera.LookDirection = new Vector3D(0, -14.3, 0);
+                        Camera.UpDirection = new Vector3D(1, 0, 0);
+                    }
+                    else
+                    {
+                        Camera.Position = new Point3D(0, 3, 0);
+                        Camera.LookDirection = new Vector3D(0, -2.7, 0);
+                        Camera.UpDirection = new Vector3D(1, 0, 0);
+                    }
+                    break;
 
+                    // SideView
+                case 3:
+                    if (IsOrthographic)
+                    {
+                        Camera.Position = new Point3D(15, 0.3, 0);
+                        Camera.LookDirection = new Vector3D(-15, 0, 0);
+                        Camera.UpDirection = new Vector3D(0, 1, 0);
+                    }
+                    else
+                    {
+                        Camera.Position = new Point3D(3.0, 0.3, 0.0);
+                        Camera.LookDirection = new Vector3D(-3.0, 0.0, 0.0);
+                        Camera.UpDirection = new Vector3D(0, 1, 0);
+                    }
+                    break;
             }
             Camera.ActivateManual = false;
         }
 
         public void SetPerspectiveCam()
         {
-            Camera.FieldOfView = 60;
+            Camera.FieldOfView = 50;
             IsOrthographic = false;
-            SetPerspectiveView();
+            SetView(0);
         }
 
         public void SetOrthographicCam()
         {
             Camera.FieldOfView = 10;
             IsOrthographic = true;
-            SetPerspectiveView();
+            SetView(0);
         }
 
         #region ICommands 
         public bool CanExecute { get { return true; } }
-        public ICommand TopViewCommand { get; private set; }
-        public ICommand SideViewCommand { get; private set; }
-        public ICommand PerspectiveViewCommand { get; private set; }
+        public ICommand ChangeViewCommand { get; private set; }
         #endregion
     }
 
@@ -122,10 +135,6 @@ namespace Topographer3D.ViewModels
 
         public RestrictedCamera()
         {
-            Position = new Point3D(3, 3, 3);
-            LookDirection = new Vector3D(-3, -2.7, -3);
-            UpDirection = new Vector3D(0, 1, 0);
-            FarPlaneDistance = 1000;
             ActivateManual = false;
         }
 

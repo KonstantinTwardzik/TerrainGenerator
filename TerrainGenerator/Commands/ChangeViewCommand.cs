@@ -4,13 +4,13 @@ using Topographer3D.ViewModels;
 
 namespace Topographer3D.Commands
 {
-    internal class OrthographicCommand : ICommand
+    internal class ChangeViewCommand : ICommand
     {
-        private Viewport _viewport;
+        private ViewportCamera _viewportCamera;
 
-        public OrthographicCommand(Viewport viewport)
+        public ChangeViewCommand(ViewportCamera viewportCamera)
         {
-            _viewport = viewport;
+            _viewportCamera = viewportCamera;
         }
 
         public event EventHandler CanExecuteChanged
@@ -21,12 +21,13 @@ namespace Topographer3D.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _viewport.CanExecute;
+            return _viewportCamera.CanExecute;
         }
 
         public void Execute(object parameter)
         {
-            _viewport.SetOrthographicView();
+            int view = Convert.ToInt32(parameter);
+            _viewportCamera.SetView(view);
         }
     }
 }

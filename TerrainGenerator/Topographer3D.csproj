@@ -137,22 +137,22 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\ChangeHeightCommand.cs" />
+    <Compile Include="Commands\ChangeLightingModeCommand.cs" />
+    <Compile Include="Commands\ChangeViewportQualityCommand.cs" />
     <Compile Include="Commands\DragCommand.cs" />
     <Compile Include="Commands\GenerateAllCommand.cs" />
     <Compile Include="Commands\MaximizeCommand.cs" />
     <Compile Include="Commands\MinimizeCommand.cs" />
+    <Compile Include="Commands\ChangeMaterialCommand.cs" />
     <Compile Include="Commands\NoiseCommand.cs" />
     <Compile Include="Commands\ErodeCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\NewCommand.cs" />
-    <Compile Include="Commands\OrthographicCommand.cs" />
-    <Compile Include="Commands\PerspectiveCommand.cs" />
-    <Compile Include="Commands\PerspectiveViewCommand.cs" />
+    <Compile Include="Commands\ChangeViewModeCommand.cs" />
     <Compile Include="Commands\QuitCommand.cs" />
     <Compile Include="Commands\ColorizeCommand.cs" />
     <Compile Include="Commands\ExportCommand.cs" />
-    <Compile Include="Commands\SideViewCommand.cs" />
-    <Compile Include="Commands\TopViewCommand.cs" />
+    <Compile Include="Commands\ChangeViewCommand.cs" />
     <Compile Include="Commands\UpdateMeshCommand.cs" />
     <Compile Include="Commands\DetailResolutionCommand.cs" />
     <Compile Include="Models\ColoringAlgorithm.cs" />
@@ -261,8 +261,38 @@
     <Resource Include="Assets\Icons\MaximizeFullscreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\Icons\orthographic.png" />
-    <Resource Include="Assets\Icons\perspective.png" />
+    <Resource Include="Assets\Icons\orthographicMode.png" />
+    <Resource Include="Assets\Icons\perspectiveMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\matteMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\mixedMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\terrainColorize.png" />
+    <Resource Include="Assets\Icons\terrainErode.png" />
+    <Resource Include="Assets\Icons\terrainAll.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\terrainNoise.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\isometricView.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\glossyMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\HighQuality.png" />
+    <Resource Include="Assets\Icons\LowQuality.png" />
+    <Resource Include="Assets\Icons\MediumQuality.png" />
+    <Resource Include="Assets\Icons\UltraQuality.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\LightingModeFree.png" />
+    <Resource Include="Assets\Icons\LightingModeLocked.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.5.1.1\build\Fody.targets" Condition="Exists('..\packages\Fody.5.1.1\build\Fody.targets')" />
