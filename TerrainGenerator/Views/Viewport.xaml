@@ -1,17 +1,114 @@
-﻿<UserControl x:Class="Topographer3D.Views.Viewport"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="clr-namespace:System.Windows.Interop;assembly=PresentationCore"
              xmlns:local="clr-namespace:Topographer3D.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Image x:Name="imgelt">
-            <Image.Source>
-                <i:D3DImage x:Name="d3dimg" />
-            </Image.Source>
-        </Image>
+             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"             
+             x:Class="Topographer3D.Views.Viewport"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+
+
+        <!--Button-->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource TertiaryColor}" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LighterBlue}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!--Image-->
+        <Style TargetType="Image">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="ViewportGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="38"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <hx:Viewport3DX Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="#383838" Camera="{Binding ViewportCamera.Camera}" EffectsManager="{Binding Viewport.EffectsManager}" SSAOIntensity="10" ShowViewCube="False" FXAALevel="{Binding Viewport.FXAA}" MSAA="{Binding Viewport.MSAA}" SSAOQuality="{Binding Viewport.SSAO}" EnableSSAO="True" UseDefaultGestures="True" IsZoomEnabled="True" ZoomDistanceLimitFar="{Binding Viewport.MaxZoom}" ZoomDistanceLimitNear="{Binding Viewport.MinZoom}" IsMoveEnabled="False" RotateCursor="None" ShowCameraTarget="False" IsChangeFieldOfViewEnabled="False" IsPanEnabled="False" IsInertiaEnabled="False" EnableAutoOctreeUpdate="False">
+            <hx:DirectionalLight3D Direction="{Binding ViewportCamera.DirectionalLightDirection}" Color="{Binding Viewport.DirectionalLightColor}" />
+            <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshMainGeometry3D}" Material="{Binding Viewport.TerrainMeshMainMaterial}" Transform="{Binding Viewport.TerrainMeshMainTransform}" />
+            <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshBorderGeometry3D}" Material="{Binding Viewport.TerrainMeshBorderMaterial}" Transform="{Binding Viewport.TerrainMeshBorderTransform}" />
+        </hx:Viewport3DX>
+
+        <StackPanel VerticalAlignment="Top" Grid.Column="1" Grid.Row="0">
+            <!--Perspective Options-->
+            <Button ToolTip="Perspective Mode" Command="{Binding Viewport.ChangeViewModeCommand}" CommandParameter="1">
+                <Image Source="../Assets/Icons/perspectiveMode.png"/>
+            </Button>
+            <Button ToolTip="Orthographic Mode" Command="{Binding Viewport.ChangeViewModeCommand}" CommandParameter="0">
+                <Image Source="../Assets/Icons/orthographicMode.png"/>
+            </Button>
+            <Border BorderThickness="0.5" BorderBrush="LightGray"/>
+
+            <!--CameraOptions-->
+            <Button ToolTip="Perspective View" Command="{Binding ViewportCamera.ChangeViewCommand}" CommandParameter="0">
+                <Image Source="../Assets/Icons/isometricView.png"/>
+            </Button>
+            <Button ToolTip="Perspective View" Command="{Binding ViewportCamera.ChangeViewCommand}" CommandParameter="1">
+                <Image Source="../Assets/Icons/perspectiveView.png"/>
+            </Button>
+            <Button ToolTip="Top View" Command="{Binding ViewportCamera.ChangeViewCommand}" CommandParameter="2">
+                <Image Source="../Assets/Icons/topView.png"/>
+            </Button>
+            <Button ToolTip="Side View" Command="{Binding ViewportCamera.ChangeViewCommand}" CommandParameter="3">
+                <Image Source="../Assets/Icons/sideView.png"/>
+            </Button>
+
+            <Border BorderThickness="0.5" BorderBrush="LightGray"/>
+
+            <!--Material Options-->
+            <Button ToolTip="Glossy" Command="{Binding Viewport.ChangeMaterialCommand}" CommandParameter="0">
+                <Image Source="../Assets/Icons/glossyMaterial.png"/>
+            </Button>
+            <Button ToolTip="Rough" Command="{Binding Viewport.ChangeMaterialCommand}" CommandParameter="1">
+                <Image Source="../Assets/Icons/mixedMaterial.png"/>
+            </Button>
+            <Button ToolTip="Matte" Command="{Binding Viewport.ChangeMaterialCommand}" CommandParameter="2">
+                <Image Source="../Assets/Icons/matteMaterial.png"/>
+            </Button>
+            <Border BorderThickness="0.5" BorderBrush="LightGray"/>
+
+            <!--Lighting Options-->
+            <Button ToolTip="Dynamic Lighting" Command="{Binding ViewportCamera.ChangeLightingModeCommand}" CommandParameter="0">
+                <Image Source="../Assets/Icons/LightingModeFree.png"/>
+            </Button>
+            <Button ToolTip="Static Lighting" Command="{Binding ViewportCamera.ChangeLightingModeCommand}" CommandParameter="1">
+                <Image Source="../Assets/Icons/LightingModeLocked.png"/>
+            </Button>
+            <Border BorderThickness="0.5" BorderBrush="LightGray"/>
+            
+            <!--Phong Options-->
+            <Button ToolTip="Flat Shading" Command="{Binding Viewport.ChangeShadingCommand}" CommandParameter="0">
+                <Image Source="../Assets/Icons/FlatShading.png"/>
+            </Button>
+            <Button ToolTip="Phong Shading" Command="{Binding Viewport.ChangeShadingCommand}" CommandParameter="1">
+                <Image Source="../Assets/Icons/PhongShading.png"/>
+            </Button>
+        </StackPanel>
+
+
     </Grid>
 </UserControl>

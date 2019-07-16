@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Topographer
+namespace Topographer3D
 {
     /// <summary>
     /// Interaktionslogik für "App.xaml"

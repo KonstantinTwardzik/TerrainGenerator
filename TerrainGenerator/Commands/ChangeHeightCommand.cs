@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
-using Topographer.ViewModels;
+using Topographer3D.ViewModels;
 
-namespace Topographer.Commands
+namespace Topographer3D.Commands
 {
     internal class ChangeHeightCommand : ICommand
     {
@@ -26,7 +26,8 @@ namespace Topographer.Commands
 
         public void Execute(object parameter)
         {
-            _mainViewModel.ChangeHeight();
+            float heightMultiplicator = (float)Convert.ToDouble(parameter);
+            _mainViewModel.ChangeHeight(heightMultiplicator);
         }
     }
 }
