@@ -17,7 +17,6 @@
     <Window.Resources>
         <Style TargetType="{x:Type Border}">
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Margin" Value="0"/>
             <Setter Property="BorderBrush" Value="{StaticResource TertiaryColor}"/>
             <Setter Property="Background" Value="{StaticResource SecondaryColor}"/>
         </Style>
@@ -39,22 +38,17 @@
         <KeyBinding Modifiers="Ctrl" Key="D6" Command="{Binding DetailResolutionCommand}" CommandParameter="1024"/>
         <KeyBinding Modifiers="Ctrl" Key="D7" Command="{Binding DetailResolutionCommand}" CommandParameter="2048"/>
         <KeyBinding Modifiers="Ctrl" Key="D8" Command="{Binding DetailResolutionCommand}" CommandParameter="4096"/>
-
-        <KeyBinding Modifiers="Ctrl" Key="H" Command="{Binding HelpCommand}"/>
-        <KeyBinding Modifiers="Alt" Key="N" Command="{Binding NoiseCommand}"/>
-        <KeyBinding Modifiers="Alt" Key="E" Command="{Binding ErodeCommand}"/>
-        <KeyBinding Modifiers="Alt" Key="C" Command="{Binding ColorizeCommand}"/>
-        <KeyBinding Modifiers="Alt" Key="A" Command="{Binding GenerateAllCommand}"/>
     </Window.InputBindings>
 
     <Grid Background="{StaticResource PrimaryColor}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition MinWidth="350" Width="0.25*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
             <RowDefinition/>
+            <RowDefinition Height="200"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
@@ -163,22 +157,25 @@
         </StackPanel>
 
         <!--3D VIEWPORT-->
-        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="4,0,2,0">
+        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="4,0,2,2">
             <views:Viewport/>
         </Border>
 
-        <!--TERRAIN OPTIONEN-->
-        <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="1" Margin="2, 0,4,0">
-            <ScrollViewer>
-                <views:TerrainSettings/>
-            </ScrollViewer>
+        <!--LAYER DETAILS-->
+        <Border  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="2" Margin="2,0,4,0">
+            <views:LayerDetails/>
+        </Border>
+
+        <!--LAYER MANAGER-->
+        <Border Grid.Column="0" Grid.Row="2" Margin="4,2,2,0">
+            <views:LayerManager/>
         </Border>
 
         <!--INFO TEXT UNTEN LINKS-->
-        <TextBlock Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="1" Height="20" Margin="5,2,0,3" x:Name="statusInformation"/>
+        <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="1" Height="20" Margin="5,2,0,3" x:Name="statusInformation"/>
 
         <!--INFO TEXT UNTEN RECHTS-->
-        <TextBlock Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="1" Height="20" Margin="0,2,5,3" HorizontalAlignment="Right"><Run Text="--/100"/></TextBlock>
+        <TextBlock Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="1" Height="20" Margin="0,2,5,3" HorizontalAlignment="Right"><Run Text="--/100"/></TextBlock>
 
     </Grid>
 </Window>

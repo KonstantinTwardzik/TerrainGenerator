@@ -4,29 +4,29 @@ using Topographer3D.ViewModels;
 
 namespace Topographer3D.Commands
 {
-    internal class NoiseCommand : ICommand
+    internal class ShowLayerSelectionCommand : ICommand
     {
-        private MainViewModel _mainViewModel;
+        private LayerManager _layerManager;
 
-        public NoiseCommand(MainViewModel mainViewModel)
+        public ShowLayerSelectionCommand(LayerManager layerManager)
         {
-            _mainViewModel = mainViewModel;
+            _layerManager = layerManager;
         }
 
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value;  }
+            remove { CommandManager.RequerySuggested -= value; }
         }
 
         public bool CanExecute(object parameter)
         {
-            return _mainViewModel.CanExecute;
+            return _layerManager.CanExecute;
         }
 
         public void Execute(object parameter)
         {
-            _mainViewModel.Noise();
+            _layerManager.ShowLayerAdding();
         }
     }
 }

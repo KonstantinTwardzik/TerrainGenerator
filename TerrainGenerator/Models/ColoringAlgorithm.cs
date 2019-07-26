@@ -11,14 +11,14 @@ namespace Topographer3D.Models
     {
         private byte[] _bgr;
         private GradientStopCollection _gradientStopCollection;
-        private double[] _heights;
-        private double _offset;
+        private float[] _heights;
+        private float _offset;
         private int _terrainSize;
-        private double _shift;
+        private float _shift;
         private bool _invert;
-        private double _min;
-        private double _max;
-        private double _range;
+        private float _min;
+        private float _max;
+        private float _range;
         private Random _random;
 
         public ColoringAlgorithm()
@@ -27,7 +27,7 @@ namespace Topographer3D.Models
             _random = new Random();
         }
 
-        public void UpdateValues(GradientStopCollection gradientStopCollection, double[] heights, int terrainSize, double contrast, bool invert)
+        public void UpdateValues(GradientStopCollection gradientStopCollection, float[] heights, int terrainSize, float contrast, bool invert)
         {
             _gradientStopCollection = gradientStopCollection;
             _heights = heights;
@@ -47,7 +47,7 @@ namespace Topographer3D.Models
         public byte[] ColorizeBorder(int x, int max)
         {
             x %= max;
-            _offset = (double)x / (double)max;
+            _offset = (float)x / (float)max;
             calculateColor();
             byte randomColorOffset = (byte)_random.Next(16);
             _bgr[0] += randomColorOffset;
@@ -58,19 +58,19 @@ namespace Topographer3D.Models
 
         public void calculateMinMax()
         {
-            _min = -0.01;
-            _max = 0.01;
-            double currentPoint;
-            double neighbour1;
-            double neighbour2;
-            double neighbour3;
-            double neighbour4;
-            double neighbour5;
-            double neighbour6;
-            double neighbour7;
-            double neighbour8;
-            double weightedNeighbour;
-            double check;
+            _min = -0.01f;
+            _max = 0.01f;
+            float currentPoint;
+            float neighbour1;
+            float neighbour2;
+            float neighbour3;
+            float neighbour4;
+            float neighbour5;
+            float neighbour6;
+            float neighbour7;
+            float neighbour8;
+            float weightedNeighbour;
+            float check;
 
             for (int x = 1; x < _terrainSize - 1; x++)
             {
@@ -86,7 +86,7 @@ namespace Topographer3D.Models
                     neighbour7 = _heights[(x + z * _terrainSize) - _terrainSize + 1];
                     neighbour8 = _heights[(x + z * _terrainSize) - _terrainSize - 1];
 
-                    weightedNeighbour = (neighbour1 + neighbour2 + neighbour3 + neighbour4 + neighbour5 + neighbour6 + neighbour7 + neighbour8) / 8.0;
+                    weightedNeighbour = (neighbour1 + neighbour2 + neighbour3 + neighbour4 + neighbour5 + neighbour6 + neighbour7 + neighbour8) / 8.0f;
 
                     check = currentPoint - weightedNeighbour;
 
@@ -108,21 +108,21 @@ namespace Topographer3D.Models
 
         public void calculateOffset(int x, int z)
         {
-            double currentPoint = _heights[(x + z * _terrainSize)];
+            float currentPoint = _heights[(x + z * _terrainSize)];
             _offset = 0;
 
             if (x > 0 && z > 0 && x < _terrainSize - 1 && z < _terrainSize - 1)
             {
-                double neighbour1 = _heights[(x + z * _terrainSize) + 1];
-                double neighbour2 = _heights[(x + z * _terrainSize) + _terrainSize];
-                double neighbour3 = _heights[(x + z * _terrainSize) + _terrainSize + 1];
-                double neighbour4 = _heights[(x + z * _terrainSize) + _terrainSize - 1];
-                double neighbour5 = _heights[(x + z * _terrainSize) - 1];
-                double neighbour6 = _heights[(x + z * _terrainSize) - _terrainSize];
-                double neighbour7 = _heights[(x + z * _terrainSize) - _terrainSize + 1];
-                double neighbour8 = _heights[(x + z * _terrainSize) - _terrainSize - 1];
+                float neighbour1 = _heights[(x + z * _terrainSize) + 1];
+                float neighbour2 = _heights[(x + z * _terrainSize) + _terrainSize];
+                float neighbour3 = _heights[(x + z * _terrainSize) + _terrainSize + 1];
+                float neighbour4 = _heights[(x + z * _terrainSize) + _terrainSize - 1];
+                float neighbour5 = _heights[(x + z * _terrainSize) - 1];
+                float neighbour6 = _heights[(x + z * _terrainSize) - _terrainSize];
+                float neighbour7 = _heights[(x + z * _terrainSize) - _terrainSize + 1];
+                float neighbour8 = _heights[(x + z * _terrainSize) - _terrainSize - 1];
 
-                double weightedNeighbour = (neighbour1 + neighbour2 + neighbour3 + neighbour4 + neighbour5 + neighbour6 + neighbour7 + neighbour8) / 8.0;
+                float weightedNeighbour = (neighbour1 + neighbour2 + neighbour3 + neighbour4 + neighbour5 + neighbour6 + neighbour7 + neighbour8) / 8.0f;
                 if (_invert)
                 {
                     _offset = (((weightedNeighbour - currentPoint) - _min) / _range) + _shift;
@@ -163,7 +163,7 @@ namespace Topographer3D.Models
                 }
                 left = stop;
             }
-            _offset = Math.Round((_offset - left.Offset) / (right.Offset - left.Offset), 2);
+            _offset = (float)Math.Round((_offset - left.Offset) / (right.Offset - left.Offset), 2);
             _bgr[0] = (byte)((right.Color.B - left.Color.B) * _offset + left.Color.B);
             _bgr[1] = (byte)((right.Color.G - left.Color.G) * _offset + left.Color.G);
             _bgr[2] = (byte)((right.Color.R - left.Color.R) * _offset + left.Color.R);

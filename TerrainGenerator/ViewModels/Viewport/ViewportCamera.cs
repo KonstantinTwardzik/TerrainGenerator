@@ -1,12 +1,8 @@
-﻿using HelixToolkit.Wpf.SharpDX;
-using Point3D = System.Windows.Media.Media3D.Point3D;
+﻿using Point3D = System.Windows.Media.Media3D.Point3D;
 using Vector3D = System.Windows.Media.Media3D.Vector3D;
-using System;
-using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Input;
 using Topographer3D.Commands;
-
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels
 {

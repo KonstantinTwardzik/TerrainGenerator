@@ -69,8 +69,7 @@ namespace Topographer3D.Models
             return x < xi ? xi - 1 : xi;
         }
 
-        public OpenSimplexNoise()
-            : this(DateTime.Now.Ticks)
+        public OpenSimplexNoise() : this(DateTime.Now.Ticks)
         {
         }
 

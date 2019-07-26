@@ -1,27 +1,31 @@
 ﻿using System;
 using System.Windows.Input;
 using Topographer3D.Commands;
-using System.ComponentModel;
 using System.Windows;
-using System.Collections.ObjectModel;
-using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf.SharpDX;
 using System.Windows.Forms;
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels
 {
     internal class MainViewModel : ObservableObject
     {
         #region Attributes 
-        private string _maxPath;
-        private string _maxFullPath;
+        private string maxPath;
+        private string maxFullPath;
+        private bool dragable;
+        private double oldLeft;
+        private double oldTop;
+        private double oldWidth;
+        private double oldHeight;
+
         #endregion
 
         #region Properties
         //MVVM 
         public Viewport Viewport { get; private set; }
-        public TerrainSettings TerrainSettings { get; private set; }
+        public TerrainEngine TerrainEngine { get; private set; }
         public ViewportCamera ViewportCamera { get; private set; }
+        public LayerManager LayerManager { get; private set; }
 
         //DetailResolution
         public bool Res16 { get; private set; }
@@ -52,8 +56,24 @@ namespace Topographer3D.ViewModels
             InitProperties();
         }
 
+        private void InitLogic()
+        {
+            TerrainEngine = new TerrainEngine();
+            ViewportCamera = new ViewportCamera();
+            Viewport = new Viewport(TerrainEngine, ViewportCamera);
+            LayerManager = new LayerManager(TerrainEngine);
+            TerrainEngine.InitLogic(LayerManager, this);
+        }
+
         private void InitProperties()
         {
+            // Window Size values
+            dragable = true;
+            oldLeft = App.Current.MainWindow.Left;
+            oldTop = App.Current.MainWindow.Top;
+            oldWidth = App.Current.MainWindow.Width;
+            oldHeight = App.Current.MainWindow.Height;
+
             Res16 = true;
             Res32 = true;
             Res64 = true;
@@ -70,25 +90,13 @@ namespace Topographer3D.ViewModels
             Height125 = true;
             Height150 = true;
 
-            _maxPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/Maximize.png";
-            _maxFullPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/MaximizeFullscreen.png";
-            MaxImagePath = _maxPath;
-        }
-
-        private void InitLogic()
-        {
-            TerrainSettings = new TerrainSettings();
-            ViewportCamera = new ViewportCamera();
-            Viewport = new Viewport(TerrainSettings, ViewportCamera);
-
+            maxPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/Maximize.png";
+            maxFullPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/MaximizeFullscreen.png";
+            MaxImagePath = maxPath;
         }
 
         private void InitCommands()
         {
-            NoiseCommand = new NoiseCommand(this);
-            ErodeCommand = new ErodeCommand(this);
-            ColorizeCommand = new ColorizeCommand(this);
-            GenerateAllCommand = new GenerateAllCommand(this);
             DragCommand = new DragCommand(this);
             MinimizeCommand = new MinimizeCommand(this);
             MaximizeCommand = new MaximizeCommand(this);
@@ -111,7 +119,10 @@ namespace Topographer3D.ViewModels
 
         public void DragWindow()
         {
-            App.Current.MainWindow.DragMove();
+            if(dragable)
+            {
+                App.Current.MainWindow.DragMove();
+            }
         }
 
         public void MinimizeApplication()
@@ -121,26 +132,47 @@ namespace Topographer3D.ViewModels
 
         public void MaximizeApplication()
         {
-            if (App.Current.MainWindow.WindowState == WindowState.Maximized)
+            if (!dragable)
             {
-                MaxImagePath = _maxPath;
-                App.Current.MainWindow.WindowState = WindowState.Normal;
+                MaxImagePath = maxPath;
+                dragable = true;
+
+                App.Current.MainWindow.Left = oldLeft;
+                App.Current.MainWindow.Top = oldTop;
+                App.Current.MainWindow.Width = oldWidth;
+                App.Current.MainWindow.Height = oldHeight;
+                App.Current.MainWindow.ResizeMode = ResizeMode.CanResizeWithGrip;
             }
-            else if (App.Current.MainWindow.WindowState == WindowState.Normal)
+            else
             {
-                MaxImagePath = _maxFullPath;
-                App.Current.MainWindow.WindowState = WindowState.Maximized;
+                MaxImagePath = maxFullPath;
+                dragable = false;
+
+                //safe old values
+                oldLeft = App.Current.MainWindow.Left;
+                oldTop = App.Current.MainWindow.Top;
+                oldWidth = App.Current.MainWindow.Width;
+                oldHeight = App.Current.MainWindow.Height;
+
+
+                // set new values
+                App.Current.MainWindow.Left = 0;
+                App.Current.MainWindow.Top = 0;
+                App.Current.MainWindow.Width = Screen.PrimaryScreen.WorkingArea.Width;
+                App.Current.MainWindow.Height = Screen.PrimaryScreen.WorkingArea.Height;
+                App.Current.MainWindow.ResizeMode = ResizeMode.NoResize;
             }
+
         }
 
         public void NewTerrain()
         {
-            TerrainSettings.TerrainSize = 512;
+            TerrainEngine.TerrainSize = 512;
             UpdateDetailResolution(512);
-            TerrainSettings.ResetHeights();
+            TerrainEngine.ResetHeights();
             ChangeMesh();
             InitProperties();
-            TerrainSettings.InitProperties();
+            TerrainEngine.InitProperties();
         }
 
         public void ChangeMesh()
@@ -293,63 +325,57 @@ namespace Topographer3D.ViewModels
                     break;
             }
 
-            TerrainSettings.ChangeDetailResolution(resolution);
+            TerrainEngine.ChangeDetailResolution(resolution);
             Viewport.InitMesh();
-            GetPreviousState();
+            //GetPreviousState();
         }
 
-        public void GetPreviousState()
-        {
-            if (TerrainSettings.isNoised && TerrainSettings.isEroded && TerrainSettings.isColored)
-            {
-                Noise();
-                Erode();
-                Colorize();
-            }
-            else if (TerrainSettings.isNoised && TerrainSettings.isEroded)
-            {
-                Noise();
-                Erode();
-            }
-            else if (TerrainSettings.isNoised)
-            {
-                Noise();
-            }
-        }
+        //public void GetPreviousState()
+        //{
+        //    if (TerrainEngine.isNoised && TerrainEngine.isEroded && TerrainEngine.isColored)
+        //    {
+        //        Noise();
+        //        Erode();
+        //        Colorize();
+        //    }
+        //    else if (TerrainEngine.isNoised && TerrainEngine.isEroded)
+        //    {
+        //        Noise();
+        //        Erode();
+        //    }
+        //    else if (TerrainEngine.isNoised)
+        //    {
+        //        Noise();
+        //    }
+        //}
 
         public void OpenWebsite()
         {
             System.Diagnostics.Process.Start("https://github.com/KonstantinTwardzik/Topographer3D/wiki");
         }
 
-        public void Noise()
-        {
-            TerrainSettings.OpenSimplexNoise();
-            ChangeMesh();
-        }
+        //public void Erode()
+        //{
+        //    TerrainEngine.Erode();
+        //    ChangeMesh();
+        //}
 
-        public void Erode()
-        {
-            TerrainSettings.Erode();
-            ChangeMesh();
-        }
+        //public void Colorize()
+        //{
+        //    TerrainEngine.Colorize();
+        //    Viewport.UpdateTexture();
+        //}
 
-        public void Colorize()
-        {
-            TerrainSettings.Colorize();
-            Viewport.UpdateTexture();
-        }
-
-        public void GenerateAll()
-        {
-            Noise();
-            Erode();
-            Colorize();
-        }
+        //public void GenerateAll()
+        //{
+        //    Noise();
+        //    Erode();
+        //    Colorize();
+        //}
 
         public void ExportMaps()
         {
-            TerrainSettings.CreateHeightMap();
+            TerrainEngine.CreateHeightMap();
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "png (.png) | *.png",
@@ -358,7 +384,7 @@ namespace Topographer3D.ViewModels
             Nullable<bool> result = saveFileDialog.ShowDialog();
             if (result == true)
             {
-                TerrainSettings.ExportMaps(saveFileDialog.FileName);
+                TerrainEngine.ExportMaps(saveFileDialog.FileName);
             }
 
 
@@ -373,10 +399,6 @@ namespace Topographer3D.ViewModels
 
         #region ICommands
         public bool CanExecute { get { return true; } }
-        public ICommand NoiseCommand { get; private set; }
-        public ICommand ErodeCommand { get; private set; }
-        public ICommand ColorizeCommand { get; private set; }
-        public ICommand GenerateAllCommand { get; private set; }
         public ICommand DragCommand { get; private set; }
         public ICommand MinimizeCommand { get; private set; }
         public ICommand MaximizeCommand { get; private set; }

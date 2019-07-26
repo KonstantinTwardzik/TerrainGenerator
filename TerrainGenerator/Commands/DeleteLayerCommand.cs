@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Windows.Input;
-using Topographer3D.ViewModels;
+using Topographer3D.ViewModels.Layers;
 
 namespace Topographer3D.Commands
 {
-    internal class GenerateAllCommand : ICommand
+    internal class DeleteLayerCommand : ICommand
     {
-        private MainViewModel _mainViewModel;
+        private BaseLayer _layer;
 
-        public GenerateAllCommand(MainViewModel mainViewModel)
+        public DeleteLayerCommand(BaseLayer layer)
         {
-            _mainViewModel = mainViewModel;
+            _layer = layer;
         }
 
         public event EventHandler CanExecuteChanged
@@ -21,12 +21,12 @@ namespace Topographer3D.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _mainViewModel.CanExecute;
+            return _layer.CanExecute;
         }
 
         public void Execute(object parameter)
         {
-            _mainViewModel.GenerateAll();
+            _layer.Delete();
         }
     }
 }

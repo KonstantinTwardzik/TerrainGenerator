@@ -160,28 +160,7 @@
             <Separator />
             <MenuItem Header="_Quit" Command="{Binding QuitCommand}" InputGestureText="Ctrl+Q"/>
         </MenuItem>
-        <MenuItem Header="_Edit">
-            <MenuItem  Header="_Generate Noises" InputGestureText="Alt+N" Command="{Binding NoiseCommand}">
-                <MenuItem.Icon>
-                    <Image  Source="../Assets/Icons/terrainNoise.png"/>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="_Generate Erosions" InputGestureText="Alt+E" Command="{Binding ErodeCommand}">
-                <MenuItem.Icon>
-                    <Image Source="../Assets/Icons/terrainErode.png"/>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="_Generate Colors" InputGestureText="Alt+C" Command="{Binding ColorizeCommand}">
-                <MenuItem.Icon>
-                    <Image Source="../Assets/Icons/terrainColorize.png"/>
-                </MenuItem.Icon>
-            </MenuItem>
-            <Separator/>
-            <MenuItem Header="_Generate All" InputGestureText="Alt+A" Command="{Binding GenerateAllCommand}">
-                <MenuItem.Icon>
-                    <Image Source="../Assets/Icons/terrainAll.png"/>
-                </MenuItem.Icon>
-            </MenuItem>
+        <MenuItem Header="_Edit" IsEnabled="False">
         </MenuItem>
         <MenuItem Header="_Terrain">
             <MenuItem Header="_Detail Resolution">

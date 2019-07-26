@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using Topographer3D.Commands;
 using HelixToolkit.Wpf.SharpDX.Shaders;
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels
 {
@@ -22,7 +23,7 @@ namespace Topographer3D.ViewModels
     {
         #region Properties
 
-        private TerrainSettings terrainSettings;
+        private TerrainEngine terrainSettings;
         private ViewportCamera viewportCamera;
         private MeshBuilder terrainMesh;
         private MeshBuilder borderMesh;
@@ -58,7 +59,7 @@ namespace Topographer3D.ViewModels
         #endregion
 
         #region Initialization
-        public Viewport(TerrainSettings terrainSettings, ViewportCamera viewportCamera)
+        public Viewport(TerrainEngine terrainSettings, ViewportCamera viewportCamera)
         {
             EffectsManager = new DefaultEffectsManager();
             this.terrainSettings = terrainSettings;
@@ -355,7 +356,6 @@ namespace Topographer3D.ViewModels
         public void UpdateMesh()
         {
             Vector3 point = new Vector3();
-
             //Update Terrainmesh
             for (int x = 0; x < terrainSettings.TerrainSize; x++)
             {
@@ -367,6 +367,7 @@ namespace Topographer3D.ViewModels
                 }
             }
             TerrainMeshMainGeometry3D = terrainMesh.ToMeshGeometry3D();
+
 
             for (int x = 1; x < terrainSettings.TerrainSize - 1; x++)
             {
@@ -381,6 +382,7 @@ namespace Topographer3D.ViewModels
                     terrainMesh.Normals[x + z * terrainSettings.TerrainSize] = Vector3.Cross(vec0, vec1);
                 }
             }
+
 
             //Update Bordermesh
             for (int z = 0; z < terrainSettings.TerrainSize; z++)
@@ -415,15 +417,14 @@ namespace Topographer3D.ViewModels
 
         public void UpdateTexture()
         {
-            TerrainMeshMainTexture = new TextureModel(terrainSettings.TerrainMainColors);
+            //TerrainMeshMainTexture = new TextureModel(terrainSettings.TerrainMainColors);
             TerrainMeshMainMaterial.DiffuseMap = TerrainMeshMainTexture;
-            TerrainMeshBorderTexture = new TextureModel(terrainSettings.TerrainBorderColors);
+            //TerrainMeshBorderTexture = new TextureModel(terrainSettings.TerrainBorderColors);
             TerrainMeshBorderMaterial.DiffuseMap = TerrainMeshBorderTexture;
         }
         #endregion
 
         #region Viewport Settings 
-
         public void ChangeViewportQuality(int quality)
         {
             switch (quality)
@@ -546,6 +547,15 @@ namespace Topographer3D.ViewModels
         }
         #endregion
 
+        #region ICommands
+        public bool CanExecute { get { return true; } }
+        public ICommand ChangeViewModeCommand { get; private set; }
+        public ICommand ChangeMaterialCommand { get; private set; }
+        public ICommand ChangeViewportQualityCommand { get; private set; }
+        public ICommand ChangeLightingModeCommand { get; private set; }
+        public ICommand ChangeShadingCommand { get; private set; }
+        #endregion
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -586,39 +596,6 @@ namespace Topographer3D.ViewModels
             // GC.SuppressFinalize(this);
         }
         #endregion
-
-        #region ICommands
-        public bool CanExecute { get { return true; } }
-        public ICommand ChangeViewModeCommand { get; private set; }
-        public ICommand ChangeMaterialCommand { get; private set; }
-        public ICommand ChangeViewportQualityCommand { get; private set; }
-        public ICommand ChangeLightingModeCommand { get; private set; }
-        public ICommand ChangeShadingCommand { get; private set; }
-        #endregion
     }
 
-    public abstract class ObservableObject : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName]string info = "")
-        {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(info));
-            }
-        }
-
-        protected bool SetValue<T>(ref T backingField, T value, [CallerMemberName]string propertyName = "")
-        {
-            if (object.Equals(backingField, value))
-            {
-                return false;
-            }
-
-            backingField = value;
-            this.OnPropertyChanged(propertyName);
-            return true;
-        }
-    }
 }

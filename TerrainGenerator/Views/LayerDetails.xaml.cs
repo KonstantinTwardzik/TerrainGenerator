@@ -18,9 +18,9 @@ namespace Topographer3D.Views
     /// <summary>
     /// Interaktionslogik für ViewportDirectX11.xaml
     /// </summary>
-    public partial class TerrainSettings : UserControl
+    public partial class LayerDetails : UserControl
     {
-        public TerrainSettings()
+        public LayerDetails()
         {
             InitializeComponent();
             this.DataContext = Application.Current.MainWindow.DataContext;

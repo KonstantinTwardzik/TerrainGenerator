@@ -8,7 +8,10 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
-
+        <!--Image-->
+        <Style TargetType="Image">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
 
         <!--Button-->
         <Style TargetType="Button">
@@ -25,16 +28,12 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="{StaticResource LighterBlue}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
                 </Trigger>
             </Style.Triggers>
-        </Style>
-        
-        <!--Image-->
-        <Style TargetType="Image">
-            <Setter Property="Margin" Value="5"/>
         </Style>
     </UserControl.Resources>
 
@@ -99,7 +98,7 @@
                 <Image Source="../Assets/Icons/LightingModeLocked.png"/>
             </Button>
             <Border BorderThickness="0.5" BorderBrush="LightGray"/>
-            
+
             <!--Phong Options-->
             <Button ToolTip="Flat Shading" Command="{Binding Viewport.ChangeShadingCommand}" CommandParameter="0">
                 <Image Source="../Assets/Icons/FlatShading.png"/>

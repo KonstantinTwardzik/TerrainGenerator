@@ -5,69 +5,24 @@ using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Topographer3D.Models;
+using Topographer3D.Utilities;
 using Color = System.Windows.Media.Color;
 
-namespace Topographer3D.ViewModels
+namespace Topographer3D.ViewModels.Layers
 {
-    public class TerrainSettings : INotifyPropertyChanged
+    class DetailColorizationLayer : BaseLayer
     {
-        #region Attributes
-        private double[] TerrainPointsUneroded;
-        private OpenSimplexNoise _openSimplexNoise;
-        private HydraulicErosion _hydraulicErosion;
         private ColoringAlgorithm _coloringAlgorithm;
-        public bool isNoised;
-        public bool isEroded;
-        public bool isColored;
 
-        //Texturing
-        private BitmapImage _colorMapImage;
-        private BitmapImage _heightMapImage;
-        private BitmapImage _borderMapImage;
         private LinearGradientBrush _gradientBorder;
         private Color color0Border;
         private Color color1Border;
         private Color color2Border;
         private Color color3Border;
         private Color color4Border;
-        #endregion
 
-        #region Properties
-        //Elementary Values
-        public double[] TerrainPoints { get; set; }
-        public int TerrainSize { get; set; }
-
-
-        //OpenSimplexNoise
-        public double OSNScale { get; set; }
-        public int OSNOctaves { get; set; }
-        public double OSNOctaveWeight { get; set; }
-        public double OSNScaleX { get; set; }
-        public double OSNScaleZ { get; set; }
-        public int OSNSeed { get; set; }
-
-
-        //Hydraulic Erosion 
-        public int HEIterations { get; set; }
-        public int HEMaxDropletLifetime { get; set; }
-        public int HESeed { get; set; }
-        public int HEErosionRadius { get; set; }
-        public double HEInertia { get; set; }
-        public double HESedimentCapacityFactor { get; set; }
-        public double HEMinSedimentCapacity { get; set; }
-        public double HEErodeSpeed { get; set; }
-        public double HEDepositSpeed { get; set; }
-        public double HEEvaporateSpeed { get; set; }
-        public double HEGravity { get; set; }
-        public bool HEErodeOver { get; set; }
-
-        // Coloring
-        public BitmapImage HeightMapImage { get; set; }
-        public BitmapImage ColorMapImage { get; set; }
-        public BitmapImage BorderMapImage { get; set; }
-
-        public double ColorShift { get; set; }
-        public bool ColorInvert { get; set; }
+        public MemoryStream TerrainMainColors { get; private set; }
+        public MemoryStream TerrainBorderColors { get; private set; }
 
         public LinearGradientBrush Gradient1 { get; set; }
         public LinearGradientBrush Gradient2 { get; set; }
@@ -85,32 +40,13 @@ namespace Topographer3D.ViewModels
         public bool Gradient6RB { get; set; }
         public bool Gradient7RB { get; set; }
 
-        public MemoryStream TerrainMainColors { get; private set; }
-        public MemoryStream TerrainBorderColors { get; private set; }
-        #endregion
+        public float ColorShift { get; set; }
+        public bool ColorInvert { get; set; }
 
-        #region Initialization
-        public TerrainSettings()
+        public DetailColorizationLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
-            InitHeights();
-            InitAttributes();
-            InitProperties();
-            InitGradients();
-        }
-
-        public void InitAttributes()
-        {
-            _openSimplexNoise = new OpenSimplexNoise();
-            _hydraulicErosion = new HydraulicErosion();
             _coloringAlgorithm = new ColoringAlgorithm();
 
-            isNoised = false;
-            isEroded = false;
-            isColored = false;
-
-            // Coloring
-            _colorMapImage = new BitmapImage();
-            _heightMapImage = new BitmapImage();
             _gradientBorder = new LinearGradientBrush();
             _gradientBorder.StartPoint = new System.Windows.Point(0, 0);
             _gradientBorder.EndPoint = new System.Windows.Point(1, 0);
@@ -120,36 +56,15 @@ namespace Topographer3D.ViewModels
             color2Border = new Color();
             color3Border = new Color();
             color4Border = new Color();
+
+            InitProperties();
+            InitGradients();
         }
 
-        public void InitProperties()
+        private void InitProperties()
         {
-            TerrainSize = 512;
-
-            //OpenSimplexNoise
-            OSNScale = 1.0f;
-            OSNOctaves = 6;
-            OSNOctaveWeight = 0.6;
-            OSNScaleX = 0.5f;
-            OSNScaleZ = 0.5f;
-            OSNSeed = 500;
-
-            //Hydraulic Erosion
-            HEIterations = 150000;
-            HEMaxDropletLifetime = 15;
-            HESeed = 1;
-            HEErosionRadius = 1;
-            HEInertia = 0.25;
-            HESedimentCapacityFactor = 1.5;
-            HEMinSedimentCapacity = 0.4;
-            HEErodeSpeed = 0.15;
-            HEDepositSpeed = 0.15;
-            HEEvaporateSpeed = 0.5;
-            HEGravity = 2;
-            HEErodeOver = false;
-
             //Coloring
-            ColorShift = 0.0;
+            ColorShift = 0.0f;
             ColorInvert = false;
             Gradient1RB = true;
             Gradient2RB = false;
@@ -160,11 +75,6 @@ namespace Topographer3D.ViewModels
             Gradient7RB = false;
         }
 
-        public void InitHeights()
-        {
-            TerrainSize = 512;
-            GenerateTerrainPoints();
-        }
 
         public void InitGradients()
         {
@@ -619,249 +529,8 @@ namespace Topographer3D.ViewModels
 
         }
 
-        private void GenerateTerrainPoints()
-        {
-            TerrainPoints = new double[TerrainSize * TerrainSize];
-            TerrainPointsUneroded = new double[TerrainSize * TerrainSize];
 
-            for (int x = 0; x < TerrainSize; x++)
-            {
-                for (int z = 0; z < TerrainSize; z++)
-                {
-                    TerrainPoints[x + z * TerrainSize] = 0;
-                    TerrainPointsUneroded[x + z * TerrainSize] = 0;
-                }
-            }
-        }
-        #endregion
-
-        #region Terrain Generation
-        public void ChangeDetailResolution(int terrainSize)
-        {
-            TerrainSize = terrainSize;
-            GenerateTerrainPoints();
-        }
-
-        private void ChangeBorderGradient(byte r0, byte g0, byte b0, byte r1, byte g1, byte b1, byte r2, byte g2, byte b2, byte r3, byte g3, byte b3, byte r4, byte g4, byte b4)
-        {
-            #region GradientBorder
-            _gradientBorder.GradientStops.Clear();
-
-            color0Border = Color.FromRgb(r0, g0, b0);
-            color1Border = Color.FromRgb(r1, g1, b1);
-            color2Border = Color.FromRgb(r2, g2, b2);
-            color3Border = Color.FromRgb(r3, g3, b3);
-            color4Border = Color.FromRgb(r4, g4, b4);
-
-            GradientStop stop0Border = new GradientStop();
-            stop0Border.Offset = 0;
-            stop0Border.Color = color0Border;
-            GradientStop stop1Border = new GradientStop();
-            stop1Border.Offset = 0.1;
-            stop1Border.Color = color0Border;
-            GradientStop stop2Border = new GradientStop();
-            stop2Border.Offset = 0.15;
-            stop2Border.Color = color1Border;
-            GradientStop stop3Border = new GradientStop();
-            stop3Border.Offset = 0.4;
-            stop3Border.Color = color1Border;
-            GradientStop stop4Border = new GradientStop();
-            stop4Border.Offset = 0.45;
-            stop4Border.Color = color2Border;
-            GradientStop stop5Border = new GradientStop();
-            stop5Border.Offset = 0.6;
-            stop5Border.Color = color2Border;
-            GradientStop stop6Border = new GradientStop();
-            stop6Border.Offset = 0.65;
-            stop6Border.Color = color3Border;
-            GradientStop stop7Border = new GradientStop();
-            stop7Border.Offset = 0.72;
-            stop7Border.Color = color3Border;
-            GradientStop stop8Border = new GradientStop();
-            stop8Border.Offset = 0.78;
-            stop8Border.Color = color4Border;
-            GradientStop stop9Border = new GradientStop();
-            stop9Border.Offset = 0.85;
-            stop9Border.Color = color4Border;
-            GradientStop stop10Border = new GradientStop();
-            stop10Border.Offset = 0.9;
-            stop10Border.Color = color0Border;
-            GradientStop stop11Border = new GradientStop();
-            stop11Border.Offset = 1.0;
-            stop11Border.Color = color0Border;
-
-            _gradientBorder.GradientStops.Add(stop0Border);
-            _gradientBorder.GradientStops.Add(stop1Border);
-            _gradientBorder.GradientStops.Add(stop2Border);
-            _gradientBorder.GradientStops.Add(stop3Border);
-            _gradientBorder.GradientStops.Add(stop4Border);
-            _gradientBorder.GradientStops.Add(stop5Border);
-            _gradientBorder.GradientStops.Add(stop6Border);
-            _gradientBorder.GradientStops.Add(stop7Border);
-            _gradientBorder.GradientStops.Add(stop8Border);
-            _gradientBorder.GradientStops.Add(stop9Border);
-            _gradientBorder.GradientStops.Add(stop10Border);
-            _gradientBorder.GradientStops.Add(stop11Border);
-            #endregion
-        }
-
-        public void ResetHeights()
-        {
-            for (int x = 0; x < TerrainSize; x++)
-            {
-                for (int z = 0; z < TerrainSize; z++)
-                {
-                    TerrainPoints[x + z * TerrainSize] = 0;
-                    TerrainPointsUneroded[x + z * TerrainSize] = 0;
-                }
-            }
-
-            isNoised = false;
-        }
-
-        public void OpenSimplexNoise()
-        {
-            double weight = 1;
-            double octaveMultiplier = 1;
-            double sizeCompensator = 1;
-
-            switch (TerrainSize)
-            {
-                case 256:
-                    sizeCompensator = 8;
-                    break;
-                case 512:
-                    sizeCompensator = 4;
-                    break;
-                case 1024:
-                    sizeCompensator = 2;
-                    break;
-                case 2048:
-                    sizeCompensator = 1;
-                    break;
-            }
-            ResetHeights();
-
-            for (int o = 0; o < OSNOctaves; o++)
-            {
-                for (int x = 0; x < TerrainSize; x++)
-                {
-                    for (int z = 0; z < TerrainSize; z++)
-                    {
-                        double value = 0;
-                        double xValue = ((((0.0005f / OSNScale) / OSNScaleX) * (x * sizeCompensator) + OSNSeed) * octaveMultiplier);
-                        double zValue = ((((0.0005f / OSNScale) / OSNScaleZ) * (z * sizeCompensator) + OSNSeed) * octaveMultiplier);
-                        if (o == 0)
-                        {
-                            value = (((_openSimplexNoise.Evaluate(xValue, zValue) * weight) + 1) / 2);
-                        }
-                        else
-                        {
-                            value = ((_openSimplexNoise.Evaluate(xValue, zValue) * weight) / 2);
-                        }
-
-                        TerrainPoints[x + z * TerrainSize] += value;
-
-                        if (TerrainPoints[x + z * TerrainSize] < 0)
-                        {
-                            TerrainPoints[x + z * TerrainSize] = 0;
-                        }
-                        TerrainPointsUneroded[x + z * TerrainSize] = TerrainPoints[x + z * TerrainSize];
-                    }
-                }
-                weight /= 2 - (OSNOctaveWeight - 0.5);
-                octaveMultiplier = o * 2;
-            }
-            isNoised = true;
-            isEroded = false;
-            isColored = false;
-        }
-
-        public void Erode()
-        {
-            if (!HEErodeOver && isEroded == true)
-            {
-                for (int x = 0; x < TerrainSize; x++)
-                {
-                    for (int z = 0; z < TerrainSize; z++)
-                    {
-                        TerrainPoints[x + z * TerrainSize] = TerrainPointsUneroded[x + z * TerrainSize];
-                    }
-                }
-            }
-
-            int seed = HESeed;
-            int iterations = HEIterations;
-            int erosionRadius = HEErosionRadius;
-            double inertia = 0.2 * HEInertia;
-            double sedimentCapacityFactor = HESedimentCapacityFactor;
-            double minSedimentCapacity = 0.001 + 0.025 * HEMinSedimentCapacity;
-            double erodeSpeed = HEErodeSpeed;
-            double depositSpeed = 0.5 * HEDepositSpeed;
-            double evaporateSpeed = 0.001 + 0.005 * HEEvaporateSpeed;
-            double gravity = HEGravity;
-            int maxDropletLifetime = HEMaxDropletLifetime;
-
-            switch (TerrainSize)
-            {
-                case 256:
-                    iterations *= 1;
-                    erosionRadius *= 1;
-                    inertia *= 1;
-                    sedimentCapacityFactor *= 1;
-                    minSedimentCapacity *= 1;
-                    erodeSpeed *= 1;
-                    depositSpeed *= 1;
-                    evaporateSpeed *= 1;
-                    gravity *= 1;
-                    maxDropletLifetime *= 1;
-                    break;
-                case 512:
-                    iterations *= 2;
-                    erosionRadius *= 2;
-                    inertia *= 2;
-                    sedimentCapacityFactor *= 2;
-                    minSedimentCapacity *= 2;
-                    erodeSpeed *= 2;
-                    depositSpeed *= 2;
-                    evaporateSpeed *= 2;
-                    gravity *= 2;
-                    maxDropletLifetime *= 2;
-                    break;
-                case 1024:
-                    iterations *= 4;
-                    erosionRadius *= 4;
-                    inertia *= 4;
-                    sedimentCapacityFactor *= 4;
-                    minSedimentCapacity *= 4;
-                    erodeSpeed *= 4;
-                    depositSpeed *= 4;
-                    evaporateSpeed *= 4;
-                    gravity *= 4;
-                    maxDropletLifetime *= 4;
-                    break;
-                case 2048:
-                    iterations *= 8;
-                    erosionRadius *= 8;
-                    inertia *= 8;
-                    sedimentCapacityFactor *= 8;
-                    minSedimentCapacity *= 8;
-                    erodeSpeed *= 8;
-                    depositSpeed *= 8;
-                    evaporateSpeed *= 8;
-                    gravity *= 8;
-                    maxDropletLifetime *= 8;
-                    break;
-            }
-
-            _hydraulicErosion.UpdateValues(seed, erosionRadius, inertia, sedimentCapacityFactor, minSedimentCapacity, erodeSpeed, depositSpeed, evaporateSpeed, gravity, maxDropletLifetime);
-            _hydraulicErosion.Erode(TerrainPoints, TerrainSize, iterations, false);
-
-            isEroded = true;
-            isColored = false;
-        }
-
-        public void Colorize()
+        public void Colorize(int TerrainSize, float[] TerrainPoints, BitmapImage _colorMapImage, BitmapImage _borderMapImage)
         {
             GradientStopCollection currentSelectedGradient;
 
@@ -979,80 +648,74 @@ namespace Topographer3D.ViewModels
             //_borderMapImage.Freeze();
             #endregion
 
-            isColored = true;
         }
 
-        public void CreateHeightMap()
+        private void ChangeBorderGradient(byte r0, byte g0, byte b0, byte r1, byte g1, byte b1, byte r2, byte g2, byte b2, byte r3, byte g3, byte b3, byte r4, byte g4, byte b4)
         {
-            //Heightmap
-            System.Windows.Media.PixelFormat pixelFormat = PixelFormats.Gray32Float;
-            int rawStride = (TerrainSize * pixelFormat.BitsPerPixel + 7) / 8;
-            byte[] rawImage = new byte[rawStride * TerrainSize];
+            #region GradientBorder
+            _gradientBorder.GradientStops.Clear();
 
-            // Filling the rawImage with Data
-            int count = 0;
-            for (int x = 0; x < TerrainSize; x++)
-            {
-                for (int z = 0; z < TerrainSize; z++)
-                {
-                    byte[] bytes = BitConverter.GetBytes((float)TerrainPoints[x + z * TerrainSize]);
-                    for (int i = 0; i < 4; i++)
-                    {
-                        if (count >= rawImage.Length)
-                        {
-                            break;
-                        }
-                        rawImage[count] = bytes[i];
-                        count++;
-                    }
-                }
-            }
-            BitmapSource bitmap = BitmapSource.Create(TerrainSize, TerrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            MemoryStream memoryStream = new MemoryStream();
-            _heightMapImage = new BitmapImage();
+            color0Border = Color.FromRgb(r0, g0, b0);
+            color1Border = Color.FromRgb(r1, g1, b1);
+            color2Border = Color.FromRgb(r2, g2, b2);
+            color3Border = Color.FromRgb(r3, g3, b3);
+            color4Border = Color.FromRgb(r4, g4, b4);
 
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            encoder.Save(memoryStream);
+            GradientStop stop0Border = new GradientStop();
+            stop0Border.Offset = 0;
+            stop0Border.Color = color0Border;
+            GradientStop stop1Border = new GradientStop();
+            stop1Border.Offset = 0.1;
+            stop1Border.Color = color0Border;
+            GradientStop stop2Border = new GradientStop();
+            stop2Border.Offset = 0.15;
+            stop2Border.Color = color1Border;
+            GradientStop stop3Border = new GradientStop();
+            stop3Border.Offset = 0.4;
+            stop3Border.Color = color1Border;
+            GradientStop stop4Border = new GradientStop();
+            stop4Border.Offset = 0.45;
+            stop4Border.Color = color2Border;
+            GradientStop stop5Border = new GradientStop();
+            stop5Border.Offset = 0.6;
+            stop5Border.Color = color2Border;
+            GradientStop stop6Border = new GradientStop();
+            stop6Border.Offset = 0.65;
+            stop6Border.Color = color3Border;
+            GradientStop stop7Border = new GradientStop();
+            stop7Border.Offset = 0.72;
+            stop7Border.Color = color3Border;
+            GradientStop stop8Border = new GradientStop();
+            stop8Border.Offset = 0.78;
+            stop8Border.Color = color4Border;
+            GradientStop stop9Border = new GradientStop();
+            stop9Border.Offset = 0.85;
+            stop9Border.Color = color4Border;
+            GradientStop stop10Border = new GradientStop();
+            stop10Border.Offset = 0.9;
+            stop10Border.Color = color0Border;
+            GradientStop stop11Border = new GradientStop();
+            stop11Border.Offset = 1.0;
+            stop11Border.Color = color0Border;
 
-            memoryStream.Position = 0;
-            _heightMapImage.BeginInit();
-            _heightMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
-            _heightMapImage.EndInit();
-            _heightMapImage.Freeze();
+            _gradientBorder.GradientStops.Add(stop0Border);
+            _gradientBorder.GradientStops.Add(stop1Border);
+            _gradientBorder.GradientStops.Add(stop2Border);
+            _gradientBorder.GradientStops.Add(stop3Border);
+            _gradientBorder.GradientStops.Add(stop4Border);
+            _gradientBorder.GradientStops.Add(stop5Border);
+            _gradientBorder.GradientStops.Add(stop6Border);
+            _gradientBorder.GradientStops.Add(stop7Border);
+            _gradientBorder.GradientStops.Add(stop8Border);
+            _gradientBorder.GradientStops.Add(stop9Border);
+            _gradientBorder.GradientStops.Add(stop10Border);
+            _gradientBorder.GradientStops.Add(stop11Border);
+            #endregion
         }
 
-        public void ExportMaps(String filePath)
+        protected override void Dispose()
         {
-            int index = filePath.LastIndexOf(@".");
-
-            if (_heightMapImage.IsFrozen)
-            {
-                String heightFilePath = filePath.Insert(index, "_height");
-                Save(_heightMapImage, heightFilePath);
-            }
-
-            if (_colorMapImage.IsFrozen)
-            {
-                String albedoFilePath = filePath.Insert(index, "_albedo");
-                Save(_colorMapImage, albedoFilePath);
-            }
+            throw new NotImplementedException();
         }
-
-        public void Save(BitmapSource image, string filePath)
-        {
-            BitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(image));
-
-            using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
-            {
-                encoder.Save(fileStream);
-            }
-        }
-        #endregion
-
-        #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
     }
 }

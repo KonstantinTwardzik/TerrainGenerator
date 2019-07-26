@@ -1,0 +1,558 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             x:Class="Topographer3D.Views.LayerDetails"
+             xmlns:local="clr-namespace:Topographer3D.ViewModels.Layers"
+             mc:Ignorable="d">
+
+
+
+    <UserControl.Resources>
+        <!--SLIDER-->
+        <Style TargetType="Slider">
+            <Setter Property="TickPlacement" Value="BottomRight"/>
+        </Style>
+
+        <!--TEXTBOX-->
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+
+        <!--TEXTBLOCK-->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource White}"/>
+        </Style>
+
+        <!--BUTTON-->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource TertiaryColor}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LighterBlue}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--DELETE BUTTON-->
+        <Style TargetType="Button" x:Key="DeleteButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Width" Value="44"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource TertiaryColor}" BorderThickness="0" CornerRadius="22">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--HEIGHT-->
+        <DataTemplate DataType="{x:Type local:HeightLayer}">
+            <Grid Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.25*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.25*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding ImagePath}" Margin="8,2,2,2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--HEIGHT-->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Height"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding Height, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding Height, Mode=TwoWay}"/>
+
+                <!--APPLICATION-->
+                <ComboBox Grid.Row="4" Grid.Column="0" ItemsSource="{Binding ApplicationModeEnum}" SelectedItem="{Binding CurrentApplicationMode, Mode=TwoWay}"></ComboBox>
+                <Button Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
+            </Grid>
+        </DataTemplate>
+
+        <!--SLOPE-->
+        <DataTemplate DataType="{x:Type local:SlopeLayer}">
+            <Grid Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!--HEADER-->
+                <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.25*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.25*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding ImagePath}" Margin="8,2,2,2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--START HEIGHT-->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Start Height"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding StartHeight, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding StartHeight, Mode=TwoWay}"/>
+                <!--END HEIGHT-->
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="End Height"/>
+                <Slider  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding EndHeight, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="4" Grid.Column="2" Text="{Binding EndHeight, Mode=TwoWay}"/>
+                <!--X DIRECTION-->
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="X Direction:"/>
+                <CheckBox  Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="1" Margin="0,45,0,0" HorizontalAlignment="Right" IsChecked="{Binding UseXDirection, Mode=TwoWay}"/>
+
+                <!--APPLICATION-->
+                <ComboBox Grid.Row="7" Grid.Column="0" ItemsSource="{Binding ApplicationModeEnum}" SelectedItem="{Binding CurrentApplicationMode, Mode=TwoWay}"></ComboBox>
+                <Button Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
+            </Grid>
+        </DataTemplate>
+
+        <!--SLOPE-->
+        <DataTemplate DataType="{x:Type local:IslandLayer}">
+            <Grid Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!--HEADER-->
+                <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.25*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.25*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding ImagePath}" Margin="8,2,2,2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--INNER HEIGHT-->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Inner Height"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding InnerHeight, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding InnerHeight, Mode=TwoWay}"/>
+                <!--OUTTER HEIGHT-->
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Outter Height"/>
+                <Slider  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding OutterHeight, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="4" Grid.Column="2" Text="{Binding OutterHeight, Mode=TwoWay}"/>
+                <!--SIZE-->
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Island Size"/>
+                <Slider  Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding Size, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="6" Grid.Column="2" Text="{Binding Size, Mode=TwoWay}"/>
+                <!--INTERPOLATION MODE-->
+                <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,5" FontSize="16" FontWeight="DemiBold" Text="Interpolation Mode"/>
+                <ComboBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Height="30" ItemsSource="{Binding InterpolationModeEnum}" SelectedItem="{Binding CurrentInterpolationMode, Mode=TwoWay}"></ComboBox>
+
+                <!--APPLICATION-->
+                <ComboBox Grid.Row="10" Grid.Column="0" ItemsSource="{Binding ApplicationModeEnum}" SelectedItem="{Binding CurrentApplicationMode, Mode=TwoWay}"></ComboBox>
+                <Button Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
+            </Grid>
+        </DataTemplate>
+
+
+        <!--OPEN SIMPLEX-->
+        <DataTemplate DataType="{x:Type local:OpenSimplexNoiseLayer}">
+            <Grid Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.25*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.25*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding ImagePath}" Margin="8,2,2,2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--SCALE-->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="2" TickFrequency="0.2" LargeChange="0.2"  Value="{Binding OSNScale, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding OSNScale, Mode=TwoWay}"/>
+                <!--SCALE X-->
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale X"/>
+                <Slider  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding OSNScaleX, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="4" Grid.Column="2" Text="{Binding OSNScaleX, Mode=TwoWay}"/>
+                <!--SCALE Z-->
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale Z"/>
+                <Slider  Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding OSNScaleZ, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="6" Grid.Column="2" Text="{Binding OSNScaleZ, Mode=TwoWay}"/>
+                <!--OCTAVES-->
+                <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Octaves"/>
+                <Slider  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Minimum="1" Maximum="15" TickFrequency="1" Value="{Binding OSNOctaves, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="8" Grid.Column="2" Text="{Binding OSNOctaves, Mode=TwoWay}"/>
+                <!--OCTAVE WEIGHT-->
+                <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Octave Weight"/>
+                <Slider  Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding OSNOctaveWeight, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="10" Grid.Column="2" Text="{Binding OSNOctaveWeight, Mode=TwoWay}"/>
+                <!--SEED-->
+                <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Seed"/>
+                <Slider  Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding OSNSeed, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="12" Grid.Column="2" Text="{Binding OSNSeed, Mode=TwoWay}"/>
+                <!--STRENGTH-->
+                <TextBlock Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Strength"/>
+                <Slider  Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.2"  Value="{Binding OSNStrength, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="14" Grid.Column="2" Text="{Binding OSNStrength, Mode=TwoWay}"/>
+
+                <!--APPLICATION-->
+                <ComboBox Grid.Row="16" Grid.Column="0" ItemsSource="{Binding ApplicationModeEnum}" SelectedItem="{Binding CurrentApplicationMode, Mode=TwoWay}"></ComboBox>
+                <Button Grid.Row="16" Grid.Column="1" Grid.ColumnSpan="2" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
+            </Grid>
+        </DataTemplate>
+
+        <!--VORONOI-->
+        <DataTemplate DataType="{x:Type local:VoronoiNoiseLayer}">
+            <Grid Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="10,0,0,0" Height="24" Style="{StaticResource DeleteButton}">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                <!--<Image Source="{Binding BigImagePath}" Width="300"/>-->
+
+                <!--SCALE-->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="2" TickFrequency="0.2" LargeChange="0.2"  Value="{Binding VoronoiScale, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding VoronoiScale, Mode=TwoWay}"/>
+                <!--SCALE X-->
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale X"/>
+                <Slider  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding VoronoiScaleX, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="4" Grid.Column="2" Text="{Binding VoronoiScaleX, Mode=TwoWay}"/>
+                <!--SCALE Z-->
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale Z"/>
+                <Slider  Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding VoronoiScaleZ, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="6" Grid.Column="2" Text="{Binding VoronoiScaleZ, Mode=TwoWay}"/>
+                <!--OCTAVES-->
+                <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Octaves"/>
+                <Slider  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Minimum="1" Maximum="15" TickFrequency="1" Value="{Binding VoronoiOctaves, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="8" Grid.Column="2" Text="{Binding VoronoiOctaves, Mode=TwoWay}"/>
+                <!--OCTAVE WEIGHT-->
+                <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Octave Weight"/>
+                <Slider  Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding VoronoiOctaveWeight, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="10" Grid.Column="2" Text="{Binding VoronoiOctaveWeight, Mode=TwoWay}"/>
+                <!--SEED-->
+                <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Seed"/>
+                <Slider  Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding VoronoiSeed, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="12" Grid.Column="2" Text="{Binding VoronoiSeed, Mode=TwoWay}"/>
+                <!--STRENGTH-->
+                <TextBlock Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Strength"/>
+                <Slider  Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.2"  Value="{Binding VoronoiStrength, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="14" Grid.Column="2" Text="{Binding VoronoiStrength, Mode=TwoWay}"/>
+
+                <!--APPLICATION-->
+                <ComboBox Grid.Row="16" Grid.Column="0" ItemsSource="{Binding ApplicationModeEnum}" SelectedItem="{Binding CurrentApplicationMode, Mode=TwoWay}"></ComboBox>
+                <Button Grid.Row="16" Grid.Column="1" Grid.ColumnSpan="2" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
+            </Grid>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <!--Erosions-->
+    <!--
+        <Border>
+            <StackPanel Margin="3">
+                <Label FontSize="14" FontWeight="Bold" Margin="0">Erosions</Label>
+                <TreeView>
+                    <TreeViewItem Header="Hydraulic Erosion" >
+                        <Label >Iterations</Label>
+                        <DockPanel>
+                            <Slider Minimum="10000" Maximum="500000" TickFrequency="100000" LargeChange="100000" Value="{Binding TerrainSettings.HEIterations, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettings.HEIterations, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Droplet Lifetime</Label>
+                        <DockPanel>
+                            <Slider Minimum="1" Maximum="40" TickFrequency="5" LargeChange="5" Value="{Binding TerrainSettings.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettings.HEMaxDropletLifetime, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Erosion Radius</Label>
+                        <DockPanel>
+                            <Slider Minimum="1" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding TerrainSettings.HEErosionRadius, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettings.HEErosionRadius, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Inertia</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettings.HEInertia, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettings.HEInertia, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label  ToolTip="How much sediment can a droplet carry">Sediment Capacity Factor</Label>
+                        <DockPanel>
+                            <Slider Minimum="0.5" Maximum="4" TickFrequency="0.5" LargeChange="0.5" Value="{Binding TerrainSettings.HESedimentCapacityFactor, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettings.HESedimentCapacityFactor, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Minimum Sediment Capacity</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettings.HEMinSedimentCapacity, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettings.HEMinSedimentCapacity, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label>Erode Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettings.HEErodeSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainSettings.HEErodeSpeed, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Deposit Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainSettings.HEDepositSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainEngine.HEDepositSpeed, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Evaporate Speed</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainEngine.HEEvaporateSpeed, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainEngine.HEEvaporateSpeed, Mode=TwoWay}"/>
+                        </DockPanel>
+                        <Label >Gravity</Label>
+                        <DockPanel>
+                            <Slider Minimum="0" Maximum="5" TickFrequency="1" LargeChange="1" Value="{Binding TerrainEngine.HEGravity, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainEngine.HEGravity, Mode=TwoWay}"/>
+                        </DockPanel>
+                    </TreeViewItem>
+                    <CheckBox IsChecked="{Binding TerrainEngine.HEErodeOver}" Margin="4">Erode on top of previous Erosion</CheckBox>
+                    <Button Content="Erode" Command="{Binding ErodeCommand}" Width="223" Height="50" Margin="4"/>
+                </TreeView>
+            </StackPanel>
+        </Border>
+
+        -->
+    <!--Colors-->
+    <!--
+        <Border>
+            <StackPanel Margin="3">
+                <Label FontSize="14" FontWeight="Bold" Margin="0">Colors</Label>
+                <TreeView>
+                    <TreeViewItem Header="Map Colors" >
+                        <RadioButton Content="Boreal" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient1RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainEngine.Gradient1}"/>
+                        </Border>
+
+                        <RadioButton Content="Canyon" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient2RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainEngine.Gradient2}"/>
+                        </Border>
+
+                        <RadioButton Content="Mountain" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient3RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainEngine.Gradient3}"/>
+                        </Border>
+
+                        <RadioButton Content="Mountain Snow" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient4RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainEngine.Gradient4}"/>
+                        </Border>
+
+                        <RadioButton Content="Desert" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient5RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainEngine.Gradient5}"/>
+                        </Border>
+
+                        <RadioButton Content="Ice" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient6RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainEngine.Gradient6}"/>
+                        </Border>
+
+                        <RadioButton Content="Alien" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient7RB}"/>
+                        <Border>
+                            <Rectangle Fill="{Binding TerrainEngine.Gradient7}"/>
+                        </Border>
+                        
+                        <Label >Color Shift</Label>
+                        <DockPanel>
+                            <Slider Minimum="-0.5" Maximum="0.5" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainEngine.ColorShift, Mode=TwoWay}"/>
+                            <TextBox Text="{Binding TerrainEngine.ColorShift, Mode=TwoWay}"/>
+                        </DockPanel>
+
+                        <CheckBox IsChecked="{Binding TerrainEngine.ColorInvert}" Margin="4">Invert Color Application</CheckBox>
+                    </TreeViewItem>
+                    
+                    <Button Content="Colorize" Command="{Binding ColorizeCommand}" Width="223" Height="50" Margin="4"/>
+                </TreeView>
+            </StackPanel>
+        </Border>-->
+
+    <!--LAYERS-->
+    <StackPanel>
+        <ItemsControl ItemsSource="{Binding LayerManager.LayerDetails}" ItemTemplate="{Binding LayerManager.ItemTemplateDetail}" IsEnabled="{Binding LayerManager.IsShowDetails}" Visibility="{Binding LayerManager.IsShowDetailsVisibility}"/>
+        <StackPanel IsEnabled="{Binding LayerManager.IsLayerSelection}" Visibility="{Binding LayerManager.IsLayerSelectionVisibility}" Margin="12">
+
+            <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50">
+                <TextBlock Text="Add new Layer" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Border>
+
+            <TextBlock Text="Raising" Margin="0,0,0,5"/>
+            <Button Content="Height" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Height"/>
+            <Button Content="Slope" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Slope"/>
+            <Button Content="Island" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Island"/>
+            <Button Content="Open Simplex Noise" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="OpenSimplex"/>
+            <Button Content="Voronoi Noise" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Voronoi"/>
+
+            <TextBlock Text="Erosion" Margin="0,15,0,5"/>
+            <Button Content="Hydraulic" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Hydraulic"/>
+
+            <TextBlock Text="Colorization" Margin="0,15,0,5"/>
+            <Button Content="Displacement Colorization" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="DisplacementColorization"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
