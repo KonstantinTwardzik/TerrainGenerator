@@ -172,10 +172,7 @@
         </Border>
 
         <!--INFO TEXT UNTEN LINKS-->
-        <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="1" Height="20" Margin="5,2,0,3" x:Name="statusInformation"/>
-
-        <!--INFO TEXT UNTEN RECHTS-->
-        <TextBlock Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="1" Height="20" Margin="0,2,5,3" HorizontalAlignment="Right"><Run Text="--/100"/></TextBlock>
+        <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="1" Height="20" Margin="5,2,0,3" Text="{Binding LayerManager.StatusBarText}" Foreground="{Binding LayerManager.StatusBarColor}"/>
 
     </Grid>
 </Window>

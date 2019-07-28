@@ -27,6 +27,13 @@ namespace Topographer3D.ViewModels
         public Visibility IsShowDetailsVisibility { get; private set; }
         public DataTemplate ItemTemplateDetail { get; private set; }
 
+        //Status Bar Bottom
+        private string LoadingColor = "#E86E48";
+        private string FinishedColor = "#72C1F2";
+        public string StatusBarColor { get; set; }
+        public string StatusBarText { get; set; }
+
+
         #endregion
 
         #region Initialization
@@ -42,6 +49,8 @@ namespace Topographer3D.ViewModels
         {
             Layers = new ObservableCollection<BaseLayer>();
             LayerDetails = new ObservableCollection<BaseLayer>();
+            StatusBarColor = FinishedColor;
+            StatusBarText = "Terrain Engine Waiting ...";
         }
 
         private void InitCommands()
@@ -59,7 +68,7 @@ namespace Topographer3D.ViewModels
                 case Layer.Height:
                     HeightLayer newHeightLayer = new HeightLayer(this, terrainEngine);
                     newHeightLayer.Name = GetName(Layer.Height, Layers.Count);
-                    newHeightLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIconSmall.png";
+                    newHeightLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIcon.png";
                     newHeightLayer.Position = Layers.Count;
                     Layers.Add(newHeightLayer);
                     ShowLayerDetails(newHeightLayer);
@@ -67,7 +76,7 @@ namespace Topographer3D.ViewModels
                 case Layer.Slope:
                     SlopeLayer newSlopeLayer = new SlopeLayer(this, terrainEngine);
                     newSlopeLayer.Name = GetName(Layer.Slope, Layers.Count);
-                    newSlopeLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIconSmall.png";
+                    newSlopeLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIcon.png";
                     newSlopeLayer.Position = Layers.Count;
                     Layers.Add(newSlopeLayer);
                     ShowLayerDetails(newSlopeLayer);
@@ -75,7 +84,7 @@ namespace Topographer3D.ViewModels
                 case Layer.Island:
                     IslandLayer newIslandLayer = new IslandLayer(this, terrainEngine);
                     newIslandLayer.Name = GetName(Layer.Island, Layers.Count);
-                    newIslandLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIconSmall.png";
+                    newIslandLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIcon.png";
                     newIslandLayer.Position = Layers.Count;
                     Layers.Add(newIslandLayer);
                     ShowLayerDetails(newIslandLayer);
@@ -83,7 +92,7 @@ namespace Topographer3D.ViewModels
                 case Layer.OpenSimplex:
                     OpenSimplexNoiseLayer newOSNLayer = new OpenSimplexNoiseLayer(this, terrainEngine);
                     newOSNLayer.Name = GetName(Layer.OpenSimplex, Layers.Count);
-                    newOSNLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIconSmall.png";
+                    newOSNLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIcon.png";
                     newOSNLayer.Position = Layers.Count;
                     Layers.Add(newOSNLayer);
                     ShowLayerDetails(newOSNLayer);
@@ -91,10 +100,19 @@ namespace Topographer3D.ViewModels
                 case Layer.Voronoi:
                     VoronoiNoiseLayer newVoronoiLayer = new VoronoiNoiseLayer(this, terrainEngine);
                     newVoronoiLayer.Name = GetName(Layer.Voronoi, Layers.Count);
-                    newVoronoiLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIconSmall.png";
+                    newVoronoiLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIcon.png";
                     newVoronoiLayer.Position = Layers.Count;
                     Layers.Add(newVoronoiLayer);
                     ShowLayerDetails(newVoronoiLayer);
+                    break;
+
+                case Layer.Hydraulic:
+                    HydraulicErosionLayer newHydrauliceErosionLayer = new HydraulicErosionLayer(this, terrainEngine);
+                    newHydrauliceErosionLayer.Name = GetName(Layer.Hydraulic, Layers.Count);
+                    newHydrauliceErosionLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/ErodeIcon.png";
+                    newHydrauliceErosionLayer.Position = Layers.Count;
+                    Layers.Add(newHydrauliceErosionLayer);
+                    ShowLayerDetails(newHydrauliceErosionLayer);
                     break;
             }
         }
@@ -102,6 +120,36 @@ namespace Topographer3D.ViewModels
         public void DeleteLayer(BaseLayer layer)
         {
             Layers.Remove(layer);
+            UpdateLayerView();
+
+        }
+
+        public void MoveLayer(BaseLayer layer, bool IsForward)
+        {
+            if (IsForward)
+            {
+                if (layer.Position != 0)
+                {
+                    Layers.RemoveAt(layer.Position);
+                    Layers.Insert(layer.Position - 1, layer);
+                }
+
+            }
+            else
+            {
+                if (layer.Position < Layers.Count - 1)
+                {
+                    Layers.RemoveAt(layer.Position);
+                    Layers.Insert(layer.Position + 1, layer);
+                }
+
+            }
+
+            UpdateLayerView();
+        }
+
+        private void UpdateLayerView()
+        {
             for (int i = 0; i < Layers.Count(); i++)
             {
                 Layers[i].Name = GetName(Layers[i].LayerType, i);
@@ -116,7 +164,7 @@ namespace Topographer3D.ViewModels
             {
                 ShowLayerAdding();
             }
-
+            StartCompleteCalculation();
         }
 
         private string GetName(Layer layerType, int layerPositon)
@@ -139,10 +187,24 @@ namespace Topographer3D.ViewModels
                 case Layer.Voronoi:
                     name = "Voronoi";
                     break;
+                case Layer.Hydraulic:
+                    name = "Hydraulic";
+                    break;
 
             }
             name = (layerPositon + 1) + " - " + name;
             return name;
+        }
+
+        private void StartCompleteCalculation()
+        {
+            if(Layers.Count != 0)
+            {
+                terrainEngine.StartCalculation(Layers[Layers.Count - 1]);
+            } else
+            {
+                terrainEngine.ResetHeights();
+            }
         }
 
         public void Calculate(BaseLayer layer)
@@ -167,6 +229,20 @@ namespace Topographer3D.ViewModels
             IsLayerSelectionVisibility = Visibility.Hidden;
             IsShowDetails = true;
             IsShowDetailsVisibility = Visibility.Visible;
+        }
+
+        public void SetStatusBar(bool IsOccupied)
+        {
+            if (IsOccupied)
+            {
+                StatusBarColor = LoadingColor;
+                StatusBarText = "Terrain Engine Calculating ...";
+            }
+            else
+            {
+                StatusBarColor = FinishedColor;
+                StatusBarText = "Terrain Engine Waiting ...";
+            }
         }
 
         #endregion

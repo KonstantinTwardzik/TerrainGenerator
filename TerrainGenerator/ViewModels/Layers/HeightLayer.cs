@@ -43,13 +43,13 @@ namespace Topographer3D.ViewModels.Layers
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
-            worker.DoWork += worker_DoWork;
+            worker.DoWork += HeightCalculation;
             worker.ProgressChanged += worker_ProgressChanged;
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
             worker.RunWorkerAsync(100000);
         }
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        private void HeightCalculation(object sender, DoWorkEventArgs e)
         {
             for (int x = 0; x < TerrainSize; x++)
             {

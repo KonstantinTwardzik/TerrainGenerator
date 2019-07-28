@@ -36,7 +36,7 @@ namespace Topographer3D.ViewModels.Layers
             OutterHeight = 0.0f;
             InnerHeight = 1.0f;
             Size = 0.5f;
-            CurrentInterpolationMode = InterpolationMode.Linear;
+            CurrentInterpolationMode = InterpolationMode.Smooth;
         }
 
         #endregion
@@ -58,11 +58,23 @@ namespace Topographer3D.ViewModels.Layers
         private void IslandCalculation(object sender, DoWorkEventArgs e)
         {
             float value = 0;
-            float difference = InnerHeight - OutterHeight;
-            float highestValue = InnerHeight;
+            float heightRange = InnerHeight - OutterHeight;
+            float highestValue = 1;
+            float lowestValue = 0;
             float distance = 0;
             float midPosition = TerrainSize / 2;
-            float maxDistance = midPosition;
+            float maxDistance = midPosition * (Size + 0.5f);
+
+            if (InnerHeight < OutterHeight)
+            {
+                highestValue = OutterHeight;
+                lowestValue = InnerHeight;
+            }
+            else
+            {
+                highestValue = InnerHeight;
+                lowestValue = OutterHeight;
+            }
 
             for (int x = 0; x < TerrainSize; x++)
             {
@@ -75,13 +87,40 @@ namespace Topographer3D.ViewModels.Layers
                     switch (CurrentInterpolationMode)
                     {
                         case InterpolationMode.Linear:
-                            value = highestValue - (((distance / maxDistance) + 0.5f - Size) * difference);
+                            if (OutterHeight >= InnerHeight)
+                            {
+                                value = lowestValue - ((distance / maxDistance) * heightRange);
+                            }
+                            else
+                            {
+                                value = highestValue - ((distance / maxDistance) * heightRange);
+                            }
+
+                            if (value < lowestValue)
+                            {
+                                value = lowestValue;
+                            }
+                            else if (value > highestValue)
+                            {
+                                value = highestValue;
+                            }
                             break;
-                        case InterpolationMode.EaseInEaseOut:
-                            value = highestValue - (((distance * (1/(float)Math.Sqrt(maxDistance))) + 0.5f - Size) * difference);
+                        case InterpolationMode.Smooth:
+                            if (heightRange < 0)
+                            {
+                                value = highestValue - (float)((Math.Cos(Math.PI - (1 - ((distance / maxDistance))) * Math.PI)) / 2.0f + 0.5f) * -heightRange;
+                            }
+                            else
+                            {
+                                value = lowestValue + (float)((Math.Cos(Math.PI - (1 - ((distance / maxDistance))) * Math.PI)) / 2.0f + 0.5f) * heightRange;
+                            }
+
+                            if (distance >= maxDistance)
+                            {
+                                value = OutterHeight;
+                            }
                             break;
                     }
-
 
                     TerrainPoints[x + z * TerrainSize] = ApplyMode(TerrainPoints[x + z * TerrainSize], value);
                 }
@@ -145,6 +184,6 @@ namespace Topographer3D.ViewModels.Layers
     public enum InterpolationMode
     {
         Linear,
-        EaseInEaseOut
+        Smooth
     }
 }

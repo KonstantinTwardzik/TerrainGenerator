@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,8 @@ namespace Topographer3D.Models
         private int seed;
         private int erosionRadius = 2;
         private float inertia = 0.025f; // At zero, water will instantly change direction to flow downhill. At 1, water will never change direction. 
-        private float sedimentCapacityFactor = 2; // Multiplier for how much sediment a droplet can carry
-        private float minSedimentCapacity = 0.005f; // Used to prevent carry capacity getting too close to zero on flatter terrain
+        private float sedimentCapacityFactor = 5; // Multiplier for how much sediment a droplet can carry
+        private float minSedimentCapacity = 0.001f; // Used to prevent carry capacity getting too close to zero on flatter terrain
         private float erodeSpeed = 0.15f;
         private float depositSpeed = 0.15f;
         private float evaporateSpeed = 0.005f;
@@ -62,7 +63,7 @@ namespace Topographer3D.Models
             this.maxDropletLifetime = maxDropletLifetime;
         }
 
-        public void Erode(float[] map, int mapSize, int numIterations = 1, bool resetSeed = false)
+        public void Erode(float[] map, int mapSize, int numIterations, bool resetSeed)
         {
             Initialize(mapSize, resetSeed);
 
@@ -164,7 +165,11 @@ namespace Topographer3D.Models
                     }
 
                     water *= (1 - evaporateSpeed);
+
+
                 }
+
+
             }
         }
 

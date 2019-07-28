@@ -58,7 +58,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Assets\T3D.ico</ApplicationIcon>
+    <ApplicationIcon>T3D.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>E58258D1E2CB69D1C8585C84E6BDE58D4B2500A6</ManifestCertificateThumbprint>
@@ -151,6 +151,7 @@
     <Compile Include="Commands\MinimizeCommand.cs" />
     <Compile Include="Commands\ChangeMaterialCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Commands\MoveLayerCommand.cs" />
     <Compile Include="Commands\NewCommand.cs" />
     <Compile Include="Commands\ChangeViewModeCommand.cs" />
     <Compile Include="Commands\QuitCommand.cs" />
@@ -334,10 +335,18 @@
     <Resource Include="Assets\Icons\RaiseIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\Icons\RaiseIconSmall.png" />
+    <Resource Include="Assets\Icons\DeleteLayer.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\Icons\DeleteLayer.png" />
+    <Resource Include="Assets\Icons\ColorizeIcon.png" />
+    <Resource Include="Assets\Icons\ErodeIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\LeftArrow.png" />
+    <Resource Include="Assets\Icons\RightArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="T3D.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.5.1.1\build\Fody.targets" Condition="Exists('..\packages\Fody.5.1.1\build\Fody.targets')" />

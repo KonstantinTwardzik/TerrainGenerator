@@ -10,7 +10,6 @@ namespace Topographer3D.ViewModels.Layers
         private OpenSimplexNoise _openSimplexNoise;
         private float[] TerrainPoints;
         private int TerrainSize;
-        private int sizeCompensator;
 
         #endregion
 
@@ -47,11 +46,10 @@ namespace Topographer3D.ViewModels.Layers
         #endregion
 
         #region TerrainEngine Processing
-        public void StartOpenSimplexNoise(int TerrainSize, float[] TerrainPoints, int sizeCompensator)
+        public void StartOpenSimplexNoise(int TerrainSize, float[] TerrainPoints)
         {
             this.TerrainSize = TerrainSize;
             this.TerrainPoints = TerrainPoints;
-            this.sizeCompensator = sizeCompensator;
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
@@ -65,7 +63,24 @@ namespace Topographer3D.ViewModels.Layers
         {
             float octaveWeight = 1;
             float octaveMultiplier = 1;
+            int sizeCompensator = 1;
             float[] helper = new float[TerrainPoints.Length];
+
+            switch (TerrainSize)
+            {
+                case 256:
+                    sizeCompensator = 8;
+                    break;
+                case 512:
+                    sizeCompensator = 4;
+                    break;
+                case 1024:
+                    sizeCompensator = 2;
+                    break;
+                case 2048:
+                    sizeCompensator = 1;
+                    break;
+            }
 
             for (int octaves = 0; octaves < OSNOctaves; octaves++)
             {

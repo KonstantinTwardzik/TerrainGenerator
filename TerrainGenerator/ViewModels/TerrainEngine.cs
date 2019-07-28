@@ -75,14 +75,12 @@ namespace Topographer3D.ViewModels
         private void GenerateTerrainPoints()
         {
             TerrainPoints = new float[TerrainSize * TerrainSize];
-            //TerrainPointsUneroded = new float[TerrainSize * TerrainSize];
 
             for (int x = 0; x < TerrainSize; x++)
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
                     TerrainPoints[x + z * TerrainSize] = 0;
-                    //TerrainPointsUneroded[x + z * TerrainSize] = 0;
                 }
             }
         }
@@ -100,6 +98,7 @@ namespace Topographer3D.ViewModels
                 }
 
                 currentLayerPosition = layer.Position;
+                ResetHeights();
                 StartLayerCalculation(0);
             }
             else
@@ -108,7 +107,7 @@ namespace Topographer3D.ViewModels
                 currentLayerPosition = layer.Position;
                 StartLayerCalculation(startCalculatioPosition);
             }
-
+            layerManager.SetStatusBar(true);
 
 
         }
@@ -122,28 +121,15 @@ namespace Topographer3D.ViewModels
             {
                 StartLayerCalculation(currentLayer);
             }
+            else
+            {
+                layerManager.SetStatusBar(false);
+            }
 
         }
 
         private void StartLayerCalculation(int layerPosition)
         {
-            int sizeCompensator = 1;
-            switch (TerrainSize)
-            {
-                case 256:
-                    sizeCompensator = 8;
-                    break;
-                case 512:
-                    sizeCompensator = 4;
-                    break;
-                case 1024:
-                    sizeCompensator = 2;
-                    break;
-                case 2048:
-                    sizeCompensator = 1;
-                    break;
-            }
-
             BaseLayer currentLayer = layerManager.Layers[layerPosition];
 
             switch (currentLayer.LayerType)
@@ -162,12 +148,16 @@ namespace Topographer3D.ViewModels
                     break;
                 case Layer.OpenSimplex:
                     OpenSimplexNoiseLayer OSNLayer = currentLayer as OpenSimplexNoiseLayer;
-                    OSNLayer.StartOpenSimplexNoise(TerrainSize, TerrainPoints, sizeCompensator);
+                    OSNLayer.StartOpenSimplexNoise(TerrainSize, TerrainPoints);
+                    break;
+
+                case Layer.Hydraulic:
+                    HydraulicErosionLayer hydraulicErosionLayer = currentLayer as HydraulicErosionLayer;
+                    hydraulicErosionLayer.StartErosion(TerrainSize, TerrainPoints);
                     break;
             }
 
         }
-
 
         public void ChangeDetailResolution(int terrainSize)
         {
@@ -182,10 +172,9 @@ namespace Topographer3D.ViewModels
                 for (int z = 0; z < TerrainSize; z++)
                 {
                     TerrainPoints[x + z * TerrainSize] = 0;
-                    //TerrainPointsUneroded[x + z * TerrainSize] = 0;
                 }
             }
-
+            mainViewModel.ChangeMesh();
         }
 
         public void CreateHeightMap()

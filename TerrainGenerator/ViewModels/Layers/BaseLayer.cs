@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Topographer3D.Commands;
 using Topographer3D.Utilities;
@@ -13,7 +14,7 @@ namespace Topographer3D.ViewModels.Layers
         protected LayerManager layerManager;
         protected TerrainEngine terrainEngine;
         private string LoadingColor = "#E86E48";
-        private string FinishedColor = "#3A9EEB";
+        private string FinishedColor = "#72C1F2";
 
         #endregion
 
@@ -25,6 +26,7 @@ namespace Topographer3D.ViewModels.Layers
         public string ProgressBarColor { get; set; }
         public bool IsProcessed { get; set; }
         public Layer LayerType { get; set; }
+        public Visibility HasApplicationMode { get; set; }
 
         public ApplicationMode CurrentApplicationMode { get; set; }
         public IEnumerable<ApplicationMode> ApplicationModeEnum { get { return Enum.GetValues(typeof(ApplicationMode)).Cast<ApplicationMode>(); } }
@@ -45,6 +47,7 @@ namespace Topographer3D.ViewModels.Layers
         {
             Unprocessed();
             CurrentApplicationMode = ApplicationMode.Normal;
+            HasApplicationMode = Visibility.Visible;
         }
 
         private void InitCommands()
@@ -52,6 +55,7 @@ namespace Topographer3D.ViewModels.Layers
             ShowLayerDetailsCommand = new ShowLayerDetailsCommand(this);
             CalculateCommand = new CalculateCommand(this);
             DeleteLayerCommand = new DeleteLayerCommand(this);
+            MoveLayerCommand = new MoveLayerCommand(this);
         }
 
         #endregion
@@ -87,6 +91,11 @@ namespace Topographer3D.ViewModels.Layers
             Calculate();
         }
 
+        public void MoveLayer(bool IsForward)
+        {
+            layerManager.MoveLayer(this, IsForward);
+        }
+
         #endregion
 
         #region Abstract Functions
@@ -99,6 +108,7 @@ namespace Topographer3D.ViewModels.Layers
         public ICommand ShowLayerDetailsCommand { get; private set; }
         public ICommand CalculateCommand { get; private set; }
         public ICommand DeleteLayerCommand { get; private set; }
+        public ICommand MoveLayerCommand { get; private set; }
         #endregion
 
     }

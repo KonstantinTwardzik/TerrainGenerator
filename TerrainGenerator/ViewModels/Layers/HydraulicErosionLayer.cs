@@ -1,11 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using Topographer3D.Models;
 
 namespace Topographer3D.ViewModels.Layers
 {
-    class ThermalErosionLayer : BaseLayer
+    class HydraulicErosionLayer : BaseLayer
     {
         private HydraulicErosion hydraulicErosion;
+        private float[] TerrainPoints;
+        private int TerrainSize;
 
         //Hydraulic Erosion 
         public int HEIterations { get; set; }
@@ -19,9 +22,8 @@ namespace Topographer3D.ViewModels.Layers
         public float HEDepositSpeed { get; set; }
         public float HEEvaporateSpeed { get; set; }
         public float HEGravity { get; set; }
-        public bool HEErodeOver { get; set; }
 
-        public ThermalErosionLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
+        public HydraulicErosionLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
             hydraulicErosion = new HydraulicErosion();
             InitProperties();
@@ -29,34 +31,36 @@ namespace Topographer3D.ViewModels.Layers
 
         private void InitProperties()
         {
-            //Hydraulic Erosion
-            HEIterations = 150000;
+            LayerType = Layer.Hydraulic;
+            HasApplicationMode = System.Windows.Visibility.Hidden;
+            HEIterations = 50000;
             HEMaxDropletLifetime = 15;
             HESeed = 1;
             HEErosionRadius = 1;
             HEInertia = 0.25f;
-            HESedimentCapacityFactor = 1.5f;
-            HEMinSedimentCapacity = 0.4f;
+            HESedimentCapacityFactor = 3.0f;
+            HEMinSedimentCapacity = 0.1f;
             HEErodeSpeed = 0.15f;
             HEDepositSpeed = 0.15f;
             HEEvaporateSpeed = 0.5f;
             HEGravity = 2;
-            HEErodeOver = false;
         }
 
-        public void Erode(int TerrainSize, float[] TerrainPoints, int sizeCompensator)
+        public void StartErosion(int TerrainSize, float[] TerrainPoints)
         {
-            //if (!HEErodeOver && isEroded == true)
-            //{
-            //    for (int x = 0; x < TerrainSize; x++)
-            //    {
-            //        for (int z = 0; z < TerrainSize; z++)
-            //        {
-            //            //TerrainPoints[x + z * TerrainSize] = (float)TerrainPointsUneroded[x + z * TerrainSize];
-            //        }
-            //    }
-            //}
+            this.TerrainSize = TerrainSize;
+            this.TerrainPoints = TerrainPoints;
 
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += ErosionCalculation;
+            worker.ProgressChanged += worker_ProgressChanged;
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.RunWorkerAsync(100000);
+        }
+
+        private void ErosionCalculation(object sender, DoWorkEventArgs e)
+        {
             int seed = HESeed;
             int iterations = HEIterations;
             int erosionRadius = HEErosionRadius;
@@ -122,13 +126,33 @@ namespace Topographer3D.ViewModels.Layers
             }
 
             hydraulicErosion.UpdateValues(seed, erosionRadius, inertia, sedimentCapacityFactor, minSedimentCapacity, erodeSpeed, depositSpeed, evaporateSpeed, gravity, maxDropletLifetime);
+
+
             hydraulicErosion.Erode(TerrainPoints, TerrainSize, iterations, false);
 
+            //int progressPercentage = (int)(((float)iteration / (float)numIterations) * 100);
+            //(sender as BackgroundWorker).ReportProgress(progressPercentage);
+        }
+
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            ProgressPercentage = e.ProgressPercentage;
+        }
+
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Processed();
+            terrainEngine.WorkerComplete(this, TerrainPoints);
+            Dispose();
         }
 
         protected override void Dispose()
         {
-            throw new NotImplementedException();
+            TerrainPoints = null;
         }
+
+
+
     }
 }

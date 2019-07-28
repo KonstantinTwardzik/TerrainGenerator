@@ -7,12 +7,50 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
+        <!--ARROW BUTTON-->
+        <Style TargetType="Button" x:Key="Arrow Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource TertiaryColor}" BorderThickness="0" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightestBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+
         <DataTemplate x:Key="itemTemplate">
             <Button Width="100" Height="188" Margin="2,4,2,4" BorderThickness="1" BorderBrush="{StaticResource TertiaryColor}" VerticalAlignment="Top" Command="{Binding ShowLayerDetailsCommand}">
                 <StackPanel>
-                    <Image Source="{Binding ImagePath}" Margin="10,15,10,25"/>
+                    <Image Source="{Binding ImagePath}" Width="64" Margin="0,10,0,15"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Command="{Binding MoveLayerCommand}" CommandParameter="true" Style="{StaticResource Arrow Button}" Margin="2,2,24,2">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/LeftArrow.png" Width="16"/>
+                            </Button.Content>
+                        </Button>
+                        <Button Command="{Binding MoveLayerCommand}" CommandParameter="false" Style="{StaticResource Arrow Button}" Margin="24,2,2,2">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/RightArrow.png" Width="16"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
                     <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
-                    <ComboBox  Margin="2" BorderThickness="1" ItemsSource="{Binding ApplicationModeEnum}" SelectedItem="{Binding CurrentApplicationMode, Mode=TwoWay}"/>
+                    <ComboBox  Margin="2" BorderThickness="1" ItemsSource="{Binding ApplicationModeEnum}" SelectedItem="{Binding CurrentApplicationMode, Mode=TwoWay}" Visibility="{Binding HasApplicationMode, Mode=TwoWay}"/>
                     <ProgressBar Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding ProgressPercentage}" Margin="2" Height="20" Foreground="{Binding ProgressBarColor}" Background="{StaticResource SecondaryColor}" BorderThickness="1" BorderBrush="{StaticResource TertiaryColor}"/>
                 </StackPanel>
             </Button>
@@ -62,7 +100,7 @@
                 </Style>
             </Button.Style>
         </Button>
-       
+
     </StackPanel>
 
 
