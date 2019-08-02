@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -42,7 +45,9 @@ namespace Topographer3D.ViewModels.Layers
         public bool Gradient7RB { get; set; }
 
         public float ColorShift { get; set; }
-        public bool ColorInvert { get; set; }
+
+        public IEnumerable<ColorApplicationMode> ColorApplicationModeEnum { get { return Enum.GetValues(typeof(ColorApplicationMode)).Cast<ColorApplicationMode>(); } }
+        public ColorApplicationMode CurrentColorApplicationMode { get; set; }
 
         #endregion
 
@@ -70,7 +75,7 @@ namespace Topographer3D.ViewModels.Layers
             LayerType = Layer.DetailColorization;
             HasApplicationMode = Visibility.Hidden;
             ColorShift = 0.0f;
-            ColorInvert = false;
+            CurrentColorApplicationMode = ColorApplicationMode.Normal;
             Gradient1RB = true;
             Gradient2RB = false;
             Gradient3RB = false;
@@ -594,6 +599,12 @@ namespace Topographer3D.ViewModels.Layers
                 return;
             }
             #endregion
+
+            bool ColorInvert = false; 
+            if (CurrentColorApplicationMode == ColorApplicationMode.Normal)
+            {
+                ColorInvert = true;
+            }
 
             #region ColorMap                                                                       
             PixelFormat pixelFormat = PixelFormats.Bgr24;

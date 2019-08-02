@@ -7,9 +7,25 @@
              xmlns:Layer="clr-namespace:Topographer3D.ViewModels.Layers"
              mc:Ignorable="d">
 
-
-
     <UserControl.Resources>
+        <!--RADIO BUTTON-->
+        <Style TargetType="{x:Type RadioButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                        <Border BorderBrush="{StaticResource TertiaryColor}" BorderThickness="1" x:Name="PART_Border" Height="50" Width="auto">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource LighterBlue}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!--SLIDER-->
         <Style TargetType="Slider">
             <Setter Property="TickPlacement" Value="BottomRight"/>
@@ -95,7 +111,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <!--HEADER-->
                 <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
                     <Grid>
@@ -174,7 +190,7 @@
                         </Button>
                     </Grid>
                 </Border>
-                
+
                 <!--START HEIGHT-->
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Start Height"/>
                 <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding StartHeight, Mode=TwoWay}"/>
@@ -246,7 +262,7 @@
                         </Button>
                     </Grid>
                 </Border>
-                
+
                 <!--INNER HEIGHT-->
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Inner Height"/>
                 <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding InnerHeight, Mode=TwoWay}"/>
@@ -353,7 +369,7 @@
             </Grid>
         </DataTemplate>
 
-        <!--VORONOI-->
+        <!--VORONOI  NOT IMPLEMENTED YET-->
         <DataTemplate DataType="{x:Type Layer:VoronoiNoiseLayer}">
             <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="0">
                 <Grid.ColumnDefinitions>
@@ -537,17 +553,15 @@
             </Grid>
         </DataTemplate>
 
-        <!--HYDRAULIC EROSION-->
+        <!--DETAIL COLORIZATION-->
         <DataTemplate DataType="{x:Type Layer:DetailColorizationLayer}">
-            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="950">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="800">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -591,52 +605,58 @@
                     </Grid>
                 </Border>
 
-                <RadioButton Grid.Row="1" Content="Boreal" GroupName="ColorRBs" IsChecked="{Binding Gradient1RB}"/>
-                <Border Grid.Row="2" Grid.ColumnSpan="3" Height="50">
-                    <Rectangle Fill="{Binding Gradient1}"/>
-                </Border>
+                <RadioButton Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" GroupName="ColorRBs" IsChecked="{Binding Gradient1RB}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding Gradient1}"/>
+                    </RadioButton.Content>
+                </RadioButton>
 
-                <RadioButton Grid.Row="3" Content="Canyon" GroupName="ColorRBs" IsChecked="{Binding Gradient2RB}"/>
-                <Border Grid.Row="4" Grid.ColumnSpan="3" Height="50">
-                    <Rectangle Fill="{Binding Gradient2}"/>
-                </Border>
+                <RadioButton Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Gradient2RB}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding Gradient2}"/>
+                    </RadioButton.Content>
+                </RadioButton>
 
-                <RadioButton Grid.Row="5" Content="Mountain" GroupName="ColorRBs" IsChecked="{Binding Gradient3RB}"/>
-                <Border Grid.Row="6" Grid.ColumnSpan="3" Height="50" >
-                    <Rectangle Fill="{Binding Gradient3}"/>
-                </Border>
+                <RadioButton Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Gradient3RB}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding Gradient3}"/>
+                    </RadioButton.Content>
+                </RadioButton>
 
-                <RadioButton Grid.Row="7" Content="Mountain Snow" GroupName="ColorRBs" IsChecked="{Binding Gradient4RB}"/>
-                <Border Grid.Row="8" Grid.ColumnSpan="3" Height="50">
-                    <Rectangle Fill="{Binding Gradient4}"/>
-                </Border>
+                <RadioButton Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Gradient4RB}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding Gradient4}"/>
+                    </RadioButton.Content>
+                </RadioButton>
 
-                <RadioButton Grid.Row="9" Content="Desert" GroupName="ColorRBs" IsChecked="{Binding Gradient5RB}"/>
-                <Border Grid.Row="10" Grid.ColumnSpan="3" Height="50">
-                    <Rectangle Fill="{Binding Gradient5}"/>
-                </Border>
+                <RadioButton Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Gradient5RB}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding Gradient5}"/>
+                    </RadioButton.Content>
+                </RadioButton>
 
-                <RadioButton Grid.Row="11" Content="Ice" GroupName="ColorRBs" IsChecked="{Binding Gradient6RB}"/>
-                <Border Grid.Row="12" Grid.ColumnSpan="3" Height="50">
-                    <Rectangle Fill="{Binding Gradient6}"/>
-                </Border>
+                <RadioButton Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Gradient6RB}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding Gradient6}"/>
+                    </RadioButton.Content>
+                </RadioButton>
 
-                <RadioButton Grid.Row="13" Content="Alien" GroupName="ColorRBs" IsChecked="{Binding Gradient7RB}"/>
-                <Border Grid.Row="14" Grid.ColumnSpan="3" Height="50">
-                    <Rectangle Fill="{Binding Gradient7}"/>
-                </Border>
+                <RadioButton Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Gradient7RB}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding Gradient7}"/>
+                    </RadioButton.Content>
+                </RadioButton>
 
                 <Label Grid.Row="15">Color Shift</Label>
-                <DockPanel Grid.Row="16">
-                    <Slider Minimum="-0.5" Maximum="0.5" TickFrequency="0.1" LargeChange="0.1" Value="{Binding ColorShift, Mode=TwoWay}"/>
-                    <TextBox Text="{Binding ColorShift, Mode=TwoWay}"/>
-                </DockPanel>
+                <Slider Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="2" Minimum="-0.5" Maximum="0.5" TickFrequency="0.1" LargeChange="0.1" Value="{Binding ColorShift, Mode=TwoWay}"/>
+                <TextBox Grid.Row="16" Grid.Column="3" Text="{Binding ColorShift}"/>
 
-                <CheckBox Grid.Row="17" IsChecked="{Binding ColorInvert}" Margin="4">Invert Color Application</CheckBox>
-
+                <!--COLOR MODE-->
+                <TextBlock Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,5" FontSize="16" FontWeight="DemiBold" Text="Color Application Mode"/>
+                <ComboBox Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="3" Height="30" ItemsSource="{Binding ColorApplicationModeEnum}" SelectedItem="{Binding CurrentColorApplicationMode, Mode=TwoWay}"></ComboBox>
 
                 <!--APPLICATION-->
-                <Button Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="3" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
+                <Button Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="3" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
             </Grid>
         </DataTemplate>
 
