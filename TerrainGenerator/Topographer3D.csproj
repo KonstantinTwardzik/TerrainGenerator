@@ -159,14 +159,15 @@
     <Compile Include="Commands\ChangeViewCommand.cs" />
     <Compile Include="Commands\ShowLayerDetailsCommand.cs" />
     <Compile Include="Commands\ShowLayerSelectionCommand.cs" />
-    <Compile Include="Commands\UpdateMeshCommand.cs" />
     <Compile Include="Commands\DetailResolutionCommand.cs" />
-    <Compile Include="Utilities\BackgroundWorkerQueue.cs" />
+    <Compile Include="Models\RestrictedCamera.cs" />
+    <Compile Include="Utilities\Application.cs" />
+    <Compile Include="Utilities\Enums.cs" />
     <Compile Include="Utilities\ObservableObject.cs" />
     <Compile Include="ViewModels\Layers\BaseLayer.cs" />
-    <Compile Include="Models\ColoringAlgorithm.cs" />
-    <Compile Include="Models\HydraulicErosion.cs" />
-    <Compile Include="Models\OpenSimplexNoise.cs" />
+    <Compile Include="Models\DetailColoringAlgorithm.cs" />
+    <Compile Include="Models\HydraulicErosionAlgorithm.cs" />
+    <Compile Include="Models\OpenSimplexNoiseAlgorithm.cs" />
     <Compile Include="ViewModels\Layers\HeightLayer.cs" />
     <Compile Include="ViewModels\Layers\DetailColorizationLayer.cs" />
     <Compile Include="ViewModels\Layers\HydraulicErosionLayer.cs" />
@@ -188,7 +189,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\MouseUtilities.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MenuBar.xaml.cs">
       <DependentUpon>MenuBar.xaml</DependentUpon>

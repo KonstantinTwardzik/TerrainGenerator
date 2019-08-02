@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Topographer3D.Models;
@@ -12,7 +10,10 @@ namespace Topographer3D.ViewModels.Layers
 {
     class DetailColorizationLayer : BaseLayer
     {
-        private ColoringAlgorithm _coloringAlgorithm;
+        #region ATTRIUBTES & PROPERTIES
+        private DetailColoringAlgorithm _coloringAlgorithm;
+        private int TerrainSize;
+        private float[] TerrainPoints;
 
         private LinearGradientBrush _gradientBorder;
         private Color color0Border;
@@ -43,9 +44,12 @@ namespace Topographer3D.ViewModels.Layers
         public float ColorShift { get; set; }
         public bool ColorInvert { get; set; }
 
+        #endregion
+
+        #region INITIALIZATION
         public DetailColorizationLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
-            _coloringAlgorithm = new ColoringAlgorithm();
+            _coloringAlgorithm = new DetailColoringAlgorithm();
 
             _gradientBorder = new LinearGradientBrush();
             _gradientBorder.StartPoint = new System.Windows.Point(0, 0);
@@ -63,7 +67,8 @@ namespace Topographer3D.ViewModels.Layers
 
         private void InitProperties()
         {
-            //Coloring
+            LayerType = Layer.DetailColorization;
+            HasApplicationMode = Visibility.Hidden;
             ColorShift = 0.0f;
             ColorInvert = false;
             Gradient1RB = true;
@@ -74,7 +79,6 @@ namespace Topographer3D.ViewModels.Layers
             Gradient6RB = false;
             Gradient7RB = false;
         }
-
 
         public void InitGradients()
         {
@@ -526,11 +530,26 @@ namespace Topographer3D.ViewModels.Layers
             Gradient7.GradientStops.Add(stop79);
             Gradient7.GradientStops.Add(stop710);
             #endregion
-
         }
 
+        #endregion
 
-        public void Colorize(int TerrainSize, float[] TerrainPoints, BitmapImage _colorMapImage, BitmapImage _borderMapImage)
+        #region TERRAIN ENGINE PROCESSING
+        public void StartColorization(int TerrainSize, float[] TerrainPoints)
+        {
+            // Not multithreaded yet!
+            this.TerrainSize = TerrainSize;
+            this.TerrainPoints = TerrainPoints;
+
+
+            ColorizeCalculate();
+
+            Processed();
+            terrainEngine.SingleLayerCalculationComplete(this, TerrainMainColors, TerrainBorderColors);
+            Dispose();
+        }
+
+        public void ColorizeCalculate()
         {
             GradientStopCollection currentSelectedGradient;
 
@@ -581,7 +600,6 @@ namespace Topographer3D.ViewModels.Layers
             int rawStride = (TerrainSize * pixelFormat.BitsPerPixel + 7) / 8;
             byte[] rawImage = new byte[rawStride * TerrainSize];
 
-
             _coloringAlgorithm.UpdateValues(currentSelectedGradient, TerrainPoints, TerrainSize, ColorShift, ColorInvert);
             _coloringAlgorithm.calculateMinMax();
 
@@ -596,7 +614,6 @@ namespace Topographer3D.ViewModels.Layers
                         rawImage[count] = RGB[i];
                         count++;
                     }
-
                 }
             }
 
@@ -604,16 +621,11 @@ namespace Topographer3D.ViewModels.Layers
             BitmapSource bitmap = BitmapSource.Create(TerrainSize, TerrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             TerrainMainColors = new MemoryStream();
-            _colorMapImage = new BitmapImage();
 
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
             encoder.Save(TerrainMainColors);
 
             TerrainMainColors.Position = 0;
-            //_colorMapImage.BeginInit();
-            //_colorMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
-            //_colorMapImage.EndInit();
-            //_colorMapImage.Freeze();
             #endregion
 
             #region BorderMap
@@ -636,16 +648,11 @@ namespace Topographer3D.ViewModels.Layers
             BitmapSource bitmapBorder = BitmapSource.Create(width, height, 96, 96, pixelFormat, null, rawImageBorder, rawStrideBorder);
             PngBitmapEncoder encoderBorder = new PngBitmapEncoder();
             TerrainBorderColors = new MemoryStream();
-            _borderMapImage = new BitmapImage();
 
             encoderBorder.Frames.Add(BitmapFrame.Create(bitmapBorder));
             encoderBorder.Save(TerrainBorderColors);
 
             TerrainBorderColors.Position = 0;
-            //_borderMapImage.BeginInit();
-            //_borderMapImage.StreamSource = new MemoryStream(memoryStreamBorder.ToArray());
-            //_borderMapImage.EndInit();
-            //_borderMapImage.Freeze();
             #endregion
 
         }
@@ -713,9 +720,14 @@ namespace Topographer3D.ViewModels.Layers
             #endregion
         }
 
+        #endregion
+
+        #region DISPOSABLE
         protected override void Dispose()
         {
-            throw new NotImplementedException();
+            TerrainPoints = null;
         }
+
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using Topographer3D.Utilities;
 using Topographer3D.ViewModels;
 
 namespace Topographer3D.Commands

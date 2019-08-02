@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels.Layers
 {
+    // VORONOI NOT IMPLEMENTED YET
     class VoronoiNoiseLayer : BaseLayer
     {
         //private VoronoiNoise voronoiNoise;

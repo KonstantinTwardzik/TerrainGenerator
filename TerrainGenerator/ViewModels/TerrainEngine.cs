@@ -1,48 +1,36 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Topographer3D.Models;
 using Topographer3D.Utilities;
 using Topographer3D.ViewModels.Layers;
-using Color = System.Windows.Media.Color;
 
 namespace Topographer3D.ViewModels
 {
     class TerrainEngine : ObservableObject
     {
-        #region Attributes
+        #region ATTRIBUTES & PROPERTIES
+        // LOGIC
         private LayerManager layerManager;
         private MainViewModel mainViewModel;
-
         private int currentLayerPosition;
 
-        //Texturing
-        private BitmapImage _colorMapImage;
-        private BitmapImage _heightMapImage;
-        private BitmapImage _borderMapImage;
-        #endregion
-
-        #region Properties
-        //Elementary Values
-        public float[] TerrainPoints { get; set; }
+        // TERRAIN VALUES
+        public float[] TerrainHeights { get; set; }
+        public float[] PreviousTerrainHeights { get; set; }
         public int TerrainSize { get; set; }
 
-
-        // Coloring
+        // MAP EXPORT
         public BitmapImage HeightMapImage { get; set; }
         public BitmapImage ColorMapImage { get; set; }
-        public BitmapImage BorderMapImage { get; set; }
         #endregion
 
-        #region Initialization
+        #region INITIALIZATION
         public TerrainEngine()
         {
-            InitHeights();
-            InitAttributes();
-            InitProperties();
+            currentLayerPosition = 0;
+            TerrainSize = 512;
+            FlattenTerrain();
         }
 
         internal void InitLogic(LayerManager layerManager, MainViewModel mainViewModel)
@@ -51,84 +39,62 @@ namespace Topographer3D.ViewModels
             this.mainViewModel = mainViewModel;
         }
 
-        public void InitAttributes()
+        internal void FlattenTerrain()
         {
-            // Coloring
-            _colorMapImage = new BitmapImage();
-            _heightMapImage = new BitmapImage();
-            currentLayerPosition = 0;
-        }
-
-        public void InitProperties()
-        {
-            TerrainSize = 512;
-
-
-        }
-
-        public void InitHeights()
-        {
-            TerrainSize = 512;
-            GenerateTerrainPoints();
-        }
-
-        private void GenerateTerrainPoints()
-        {
-            TerrainPoints = new float[TerrainSize * TerrainSize];
+            TerrainHeights = new float[TerrainSize * TerrainSize];
+            PreviousTerrainHeights = new float[TerrainSize * TerrainSize];
 
             for (int x = 0; x < TerrainSize; x++)
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    TerrainPoints[x + z * TerrainSize] = 0;
+                    TerrainHeights[x + z * TerrainSize] = 0;
                 }
             }
+        }
+
+        internal void SetTerrainSize(int terrainSize)
+        {
+            TerrainSize = terrainSize;
         }
         #endregion
 
-        #region Terrain Generation
+        #region LAYER HANDLING
 
-        public void StartCalculation(BaseLayer layer)
+        public void StartCalculationToLayer(BaseLayer layer)
         {
-            if (layer.Position <= currentLayerPosition || currentLayerPosition == 0)
-            {
-                foreach (BaseLayer layer0 in layerManager.Layers)
-                {
-                    layer0.Unprocessed();
-                }
-
-                currentLayerPosition = layer.Position;
-                ResetHeights();
-                StartLayerCalculation(0);
-            }
-            else
-            {
-                int startCalculatioPosition = currentLayerPosition + 1;
-                currentLayerPosition = layer.Position;
-                StartLayerCalculation(startCalculatioPosition);
-            }
             layerManager.SetStatusBar(true);
-
-
-        }
-
-        internal void WorkerComplete(BaseLayer layer, float[] terrainPoints)
-        {
-            TerrainPoints = terrainPoints;
-            mainViewModel.ChangeMesh();
-            int currentLayer = layer.Position + 1;
-            if (currentLayer <= currentLayerPosition)
+            if (layer.Position < currentLayerPosition || currentLayerPosition == 0)
             {
-                StartLayerCalculation(currentLayer);
+                ResetTerrainEngine();
+                currentLayerPosition = layer.Position;
+                SingleLayerCalculationStart(0);
+            }
+            else if (layer.Position == currentLayerPosition && layerManager.Layers[currentLayerPosition - 1].IsProcessed == true)
+            {
+                for (int x = 0; x < TerrainSize; x++)
+                {
+                    for (int z = 0; z < TerrainSize; z++)
+                    {
+                        TerrainHeights[x + z * TerrainSize] = PreviousTerrainHeights[x + z * TerrainSize];
+                    }
+                }
+                SingleLayerCalculationStart(layer.Position);
+            }
+            else if (layer.Position > currentLayerPosition)
+            {
+                int startCalculationPosition = currentLayerPosition + 1;
+                currentLayerPosition = layer.Position;
+                SingleLayerCalculationStart(startCalculationPosition);
             }
             else
             {
-                layerManager.SetStatusBar(false);
+                Console.WriteLine("Fehler");
+                
             }
-
         }
 
-        private void StartLayerCalculation(int layerPosition)
+        private void SingleLayerCalculationStart(int layerPosition)
         {
             BaseLayer currentLayer = layerManager.Layers[layerPosition];
 
@@ -136,47 +102,88 @@ namespace Topographer3D.ViewModels
             {
                 case Layer.Height:
                     HeightLayer heightLayer = currentLayer as HeightLayer;
-                    heightLayer.StartHeight(TerrainSize, TerrainPoints);
+                    heightLayer.StartHeight(TerrainSize, TerrainHeights);
                     break;
                 case Layer.Slope:
                     SlopeLayer slopeLayer = currentLayer as SlopeLayer;
-                    slopeLayer.StartSlope(TerrainSize, TerrainPoints);
+                    slopeLayer.StartSlope(TerrainSize, TerrainHeights);
                     break;
                 case Layer.Island:
                     IslandLayer islandLayer = currentLayer as IslandLayer;
-                    islandLayer.StartIsland(TerrainSize, TerrainPoints);
+                    islandLayer.StartIsland(TerrainSize, TerrainHeights);
                     break;
                 case Layer.OpenSimplex:
                     OpenSimplexNoiseLayer OSNLayer = currentLayer as OpenSimplexNoiseLayer;
-                    OSNLayer.StartOpenSimplexNoise(TerrainSize, TerrainPoints);
+                    OSNLayer.StartOpenSimplexNoise(TerrainSize, TerrainHeights);
                     break;
 
                 case Layer.Hydraulic:
                     HydraulicErosionLayer hydraulicErosionLayer = currentLayer as HydraulicErosionLayer;
-                    hydraulicErosionLayer.StartErosion(TerrainSize, TerrainPoints);
+                    hydraulicErosionLayer.StartErosion(TerrainSize, TerrainHeights);
+                    break;
+
+                case Layer.DetailColorization:
+                    DetailColorizationLayer detailColorizationLayer = currentLayer as DetailColorizationLayer;
+                    detailColorizationLayer.StartColorization(TerrainSize, TerrainHeights);
                     break;
             }
 
         }
 
-        public void ChangeDetailResolution(int terrainSize)
+        internal void SingleLayerCalculationComplete(BaseLayer layer, float[] terrainHeights)
         {
-            TerrainSize = terrainSize;
-            GenerateTerrainPoints();
-        }
-
-        public void ResetHeights()
-        {
-            for (int x = 0; x < TerrainSize; x++)
+            if (layer.Position < currentLayerPosition)
             {
-                for (int z = 0; z < TerrainSize; z++)
+                for (int x = 0; x < TerrainSize; x++)
                 {
-                    TerrainPoints[x + z * TerrainSize] = 0;
+                    for (int z = 0; z < TerrainSize; z++)
+                    {
+                        PreviousTerrainHeights[x + z * TerrainSize] = terrainHeights[x + z * TerrainSize];
+                    }
                 }
             }
-            mainViewModel.ChangeMesh();
+            TerrainHeights = terrainHeights;
+            mainViewModel.UpdateMesh();
+            StartNextLayerCalculation(layer);
         }
 
+        internal void SingleLayerCalculationComplete(BaseLayer layer, MemoryStream terrainMainColors, MemoryStream terrainBorderColors)
+        {
+            mainViewModel.UpdateTextures(terrainMainColors, terrainBorderColors);
+            CreateAlbedoMap(terrainMainColors);
+            StartNextLayerCalculation(layer);
+        }
+
+        private void StartNextLayerCalculation(BaseLayer layer)
+        {
+            int currentLayer = layer.Position + 1;
+            if (currentLayer <= currentLayerPosition)
+            {
+                SingleLayerCalculationStart(currentLayer);
+
+            }
+            else
+            {
+                layerManager.SetStatusBar(false);
+            }
+        }
+
+        internal void ResetTerrainEngine()
+        {
+            currentLayerPosition = 0;
+            foreach (BaseLayer layer in layerManager.Layers)
+            {
+                layer.Unprocessed();
+            }
+            FlattenTerrain();
+            mainViewModel.UpdateMesh();
+            mainViewModel.ResetTextures();
+
+        }
+
+        #endregion
+
+        #region EXPORT MAPS
         public void CreateHeightMap()
         {
             //Heightmap
@@ -190,7 +197,7 @@ namespace Topographer3D.ViewModels
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    byte[] bytes = BitConverter.GetBytes((float)TerrainPoints[x + z * TerrainSize]);
+                    byte[] bytes = BitConverter.GetBytes((float)TerrainHeights[x + z * TerrainSize]);
                     for (int i = 0; i < 4; i++)
                     {
                         if (count >= rawImage.Length)
@@ -205,32 +212,44 @@ namespace Topographer3D.ViewModels
             BitmapSource bitmap = BitmapSource.Create(TerrainSize, TerrainSize, 96, 96, pixelFormat, null, rawImage, rawStride);
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             MemoryStream memoryStream = new MemoryStream();
-            _heightMapImage = new BitmapImage();
+            HeightMapImage = new BitmapImage();
 
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
             encoder.Save(memoryStream);
 
             memoryStream.Position = 0;
-            _heightMapImage.BeginInit();
-            _heightMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
-            _heightMapImage.EndInit();
-            _heightMapImage.Freeze();
+            HeightMapImage.BeginInit();
+            HeightMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
+            HeightMapImage.EndInit();
+            HeightMapImage.Freeze();
+        }
+
+        public void CreateAlbedoMap(MemoryStream terrainMainColors)
+        {
+            MemoryStream memoryStream = terrainMainColors;
+            ColorMapImage = new BitmapImage();
+
+            terrainMainColors.Position = 0;
+            ColorMapImage.BeginInit();
+            ColorMapImage.StreamSource = new MemoryStream(memoryStream.ToArray());
+            ColorMapImage.EndInit();
+            ColorMapImage.Freeze();
         }
 
         public void ExportMaps(String filePath)
         {
             int index = filePath.LastIndexOf(@".");
 
-            if (_heightMapImage.IsFrozen)
+            if (HeightMapImage.IsFrozen)
             {
                 String heightFilePath = filePath.Insert(index, "_height");
-                Save(_heightMapImage, heightFilePath);
+                Save(HeightMapImage, heightFilePath);
             }
 
-            if (_colorMapImage.IsFrozen)
+            if (ColorMapImage.IsFrozen)
             {
                 String albedoFilePath = filePath.Insert(index, "_albedo");
-                Save(_colorMapImage, albedoFilePath);
+                Save(ColorMapImage, albedoFilePath);
             }
         }
 
@@ -244,7 +263,7 @@ namespace Topographer3D.ViewModels
                 encoder.Save(fileStream);
             }
         }
-        #endregion
 
+        #endregion
     }
 }

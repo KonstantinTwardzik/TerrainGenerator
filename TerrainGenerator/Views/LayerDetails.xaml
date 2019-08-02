@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              x:Class="Topographer3D.Views.LayerDetails"
-             xmlns:local="clr-namespace:Topographer3D.ViewModels.Layers"
+             xmlns:Layer="clr-namespace:Topographer3D.ViewModels.Layers"
              mc:Ignorable="d">
 
 
@@ -81,21 +81,22 @@
         </Style>
 
         <!--HEIGHT-->
-        <DataTemplate DataType="{x:Type local:HeightLayer}">
-            <Grid Margin="12">
+        <DataTemplate DataType="{x:Type Layer:HeightLayer}">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-
+                
+                <!--HEADER-->
                 <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -110,7 +111,7 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
                             <Button.Content>
-                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Width="24"/>
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -128,29 +129,29 @@
         </DataTemplate>
 
         <!--SLOPE-->
-        <DataTemplate DataType="{x:Type local:SlopeLayer}">
-            <Grid Margin="12">
+        <DataTemplate DataType="{x:Type Layer:SlopeLayer}">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="650">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!--HEADER-->
@@ -168,12 +169,12 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
                             <Button.Content>
-                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Width="24"/>
                             </Button.Content>
                         </Button>
                     </Grid>
                 </Border>
-
+                
                 <!--START HEIGHT-->
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Start Height"/>
                 <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding StartHeight, Mode=TwoWay}"/>
@@ -204,25 +205,25 @@
         </DataTemplate>
 
         <!--ISLAND-->
-        <DataTemplate DataType="{x:Type local:IslandLayer}">
-            <Grid Margin="12">
+        <DataTemplate DataType="{x:Type Layer:IslandLayer}">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!--HEADER-->
@@ -240,12 +241,12 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
                             <Button.Content>
-                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Width="24"/>
                             </Button.Content>
                         </Button>
                     </Grid>
                 </Border>
-
+                
                 <!--INNER HEIGHT-->
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Inner Height"/>
                 <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.1"  Value="{Binding InnerHeight, Mode=TwoWay}"/>
@@ -269,8 +270,8 @@
         </DataTemplate>
 
         <!--OPEN SIMPLEX-->
-        <DataTemplate DataType="{x:Type local:OpenSimplexNoiseLayer}">
-            <Grid Margin="12">
+        <DataTemplate DataType="{x:Type Layer:OpenSimplexNoiseLayer}">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="650">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.5*"/>
@@ -292,10 +293,11 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
+                <!--HEADER-->
                 <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -310,7 +312,7 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
                             <Button.Content>
-                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Width="24"/>
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -352,8 +354,8 @@
         </DataTemplate>
 
         <!--VORONOI-->
-        <DataTemplate DataType="{x:Type local:VoronoiNoiseLayer}">
-            <Grid Margin="12">
+        <DataTemplate DataType="{x:Type Layer:VoronoiNoiseLayer}">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.5*"/>
@@ -375,21 +377,30 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
+                <!--HEADER-->
                 <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <Button Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="10,0,0,0" Height="24" Style="{StaticResource DeleteButton}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.25*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.25*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding ImagePath}" Margin="8,2,2,2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
                             <Button.Content>
-                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png"/>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Width="24"/>
                             </Button.Content>
                         </Button>
-                    </StackPanel>
+                    </Grid>
                 </Border>
-                <!--<Image Source="{Binding BigImagePath}" Width="300"/>-->
 
                 <!--SCALE-->
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale"/>
@@ -427,8 +438,8 @@
         </DataTemplate>
 
         <!--HYDRAULIC EROSION-->
-        <DataTemplate DataType="{x:Type local:HydraulicErosionLayer}">
-            <Grid Margin="12">
+        <DataTemplate DataType="{x:Type Layer:HydraulicErosionLayer}">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="950">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.5*"/>
@@ -456,7 +467,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
@@ -474,7 +485,7 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
                             <Button.Content>
-                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Margin="8"/>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Width="24"/>
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -482,7 +493,7 @@
 
                 <!--ITERATIONS-->
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Iterations"/>
-                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="1" Maximum="100000" TickFrequency="10000" LargeChange="10000"  Value="{Binding HEIterations, Mode=TwoWay}"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="500000" TickFrequency="100000" LargeChange="100000"  Value="{Binding HEIterations, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding HEIterations, Mode=TwoWay}"/>
                 <!--DROPLET LIFETIME-->
                 <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Droplet Lifetime"/>
@@ -526,72 +537,122 @@
             </Grid>
         </DataTemplate>
 
+        <!--HYDRAULIC EROSION-->
+        <DataTemplate DataType="{x:Type Layer:DetailColorizationLayer}">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="950">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.25*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.25*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding ImagePath}" Margin="8,2,2,2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Width="24"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <RadioButton Grid.Row="1" Content="Boreal" GroupName="ColorRBs" IsChecked="{Binding Gradient1RB}"/>
+                <Border Grid.Row="2" Grid.ColumnSpan="3" Height="50">
+                    <Rectangle Fill="{Binding Gradient1}"/>
+                </Border>
+
+                <RadioButton Grid.Row="3" Content="Canyon" GroupName="ColorRBs" IsChecked="{Binding Gradient2RB}"/>
+                <Border Grid.Row="4" Grid.ColumnSpan="3" Height="50">
+                    <Rectangle Fill="{Binding Gradient2}"/>
+                </Border>
+
+                <RadioButton Grid.Row="5" Content="Mountain" GroupName="ColorRBs" IsChecked="{Binding Gradient3RB}"/>
+                <Border Grid.Row="6" Grid.ColumnSpan="3" Height="50" >
+                    <Rectangle Fill="{Binding Gradient3}"/>
+                </Border>
+
+                <RadioButton Grid.Row="7" Content="Mountain Snow" GroupName="ColorRBs" IsChecked="{Binding Gradient4RB}"/>
+                <Border Grid.Row="8" Grid.ColumnSpan="3" Height="50">
+                    <Rectangle Fill="{Binding Gradient4}"/>
+                </Border>
+
+                <RadioButton Grid.Row="9" Content="Desert" GroupName="ColorRBs" IsChecked="{Binding Gradient5RB}"/>
+                <Border Grid.Row="10" Grid.ColumnSpan="3" Height="50">
+                    <Rectangle Fill="{Binding Gradient5}"/>
+                </Border>
+
+                <RadioButton Grid.Row="11" Content="Ice" GroupName="ColorRBs" IsChecked="{Binding Gradient6RB}"/>
+                <Border Grid.Row="12" Grid.ColumnSpan="3" Height="50">
+                    <Rectangle Fill="{Binding Gradient6}"/>
+                </Border>
+
+                <RadioButton Grid.Row="13" Content="Alien" GroupName="ColorRBs" IsChecked="{Binding Gradient7RB}"/>
+                <Border Grid.Row="14" Grid.ColumnSpan="3" Height="50">
+                    <Rectangle Fill="{Binding Gradient7}"/>
+                </Border>
+
+                <Label Grid.Row="15">Color Shift</Label>
+                <DockPanel Grid.Row="16">
+                    <Slider Minimum="-0.5" Maximum="0.5" TickFrequency="0.1" LargeChange="0.1" Value="{Binding ColorShift, Mode=TwoWay}"/>
+                    <TextBox Text="{Binding ColorShift, Mode=TwoWay}"/>
+                </DockPanel>
+
+                <CheckBox Grid.Row="17" IsChecked="{Binding ColorInvert}" Margin="4">Invert Color Application</CheckBox>
+
+
+                <!--APPLICATION-->
+                <Button Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="3" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
+            </Grid>
+        </DataTemplate>
+
     </UserControl.Resources>
 
-    <!--Colors-->
-    <!--
-        <Border>
-            <StackPanel Margin="3">
-                <Label FontSize="14" FontWeight="Bold" Margin="0">Colors</Label>
-                <TreeView>
-                    <TreeViewItem Header="Map Colors" >
-                        <RadioButton Content="Boreal" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient1RB}"/>
-                        <Border>
-                            <Rectangle Fill="{Binding TerrainEngine.Gradient1}"/>
-                        </Border>
 
-                        <RadioButton Content="Canyon" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient2RB}"/>
-                        <Border>
-                            <Rectangle Fill="{Binding TerrainEngine.Gradient2}"/>
-                        </Border>
 
-                        <RadioButton Content="Mountain" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient3RB}"/>
-                        <Border>
-                            <Rectangle Fill="{Binding TerrainEngine.Gradient3}"/>
-                        </Border>
 
-                        <RadioButton Content="Mountain Snow" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient4RB}"/>
-                        <Border>
-                            <Rectangle Fill="{Binding TerrainEngine.Gradient4}"/>
-                        </Border>
-
-                        <RadioButton Content="Desert" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient5RB}"/>
-                        <Border>
-                            <Rectangle Fill="{Binding TerrainEngine.Gradient5}"/>
-                        </Border>
-
-                        <RadioButton Content="Ice" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient6RB}"/>
-                        <Border>
-                            <Rectangle Fill="{Binding TerrainEngine.Gradient6}"/>
-                        </Border>
-
-                        <RadioButton Content="Alien" GroupName="ColorRBs" IsChecked="{Binding TerrainEngine.Gradient7RB}"/>
-                        <Border>
-                            <Rectangle Fill="{Binding TerrainEngine.Gradient7}"/>
-                        </Border>
-                        
-                        <Label >Color Shift</Label>
-                        <DockPanel>
-                            <Slider Minimum="-0.5" Maximum="0.5" TickFrequency="0.1" LargeChange="0.1" Value="{Binding TerrainEngine.ColorShift, Mode=TwoWay}"/>
-                            <TextBox Text="{Binding TerrainEngine.ColorShift, Mode=TwoWay}"/>
-                        </DockPanel>
-
-                        <CheckBox IsChecked="{Binding TerrainEngine.ColorInvert}" Margin="4">Invert Color Application</CheckBox>
-                    </TreeViewItem>
-                    
-                    <Button Content="Colorize" Command="{Binding ColorizeCommand}" Width="223" Height="50" Margin="4"/>
-                </TreeView>
-            </StackPanel>
-        </Border>-->
 
     <!--LAYERS-->
 
-        <StackPanel>
+    <ScrollViewer>
+        <Grid>
+            <ItemsControl Grid.Row="0" ItemsSource="{Binding LayerManager.LayerDetails}"  IsEnabled="{Binding LayerManager.IsShowDetails}" Visibility="{Binding LayerManager.IsShowDetailsVisibility}"/>
 
-            <ItemsControl ItemsSource="{Binding LayerManager.LayerDetails}" ItemTemplate="{Binding LayerManager.ItemTemplateDetail}" IsEnabled="{Binding LayerManager.IsShowDetails}" Visibility="{Binding LayerManager.IsShowDetailsVisibility}"/>
-
-            <StackPanel IsEnabled="{Binding LayerManager.IsLayerSelection}" Visibility="{Binding LayerManager.IsLayerSelectionVisibility}" Margin="12" >
-
+            <StackPanel Grid.Row="0" IsEnabled="{Binding LayerManager.IsLayerSelection}" Visibility="{Binding LayerManager.IsLayerSelectionVisibility}" Margin="12" >
                 <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50">
                     <TextBlock Text="Add new Layer" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Border>
@@ -601,15 +662,16 @@
                 <Button Content="Slope" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Slope"/>
                 <Button Content="Island" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Island"/>
                 <Button Content="Open Simplex Noise" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="OpenSimplex"/>
-                <Button Content="Voronoi Noise" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Voronoi"/>
+                <!--<Button Content="Voronoi Noise" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Voronoi"/>-->
 
                 <TextBlock Text="Erosion" Margin="0,15,0,5"/>
                 <Button Content="Hydraulic" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Hydraulic"/>
 
                 <TextBlock Text="Colorization" Margin="0,15,0,5"/>
-                <Button Content="Displacement Colorization" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="DisplacementColorization"/>
+                <Button Content="Detail Colorization" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="DetailColorization"/>
             </StackPanel>
 
-    </StackPanel>
+        </Grid>
+    </ScrollViewer>
 
 </UserControl>

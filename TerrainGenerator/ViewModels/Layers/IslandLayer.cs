@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels.Layers
 {
     class IslandLayer : BaseLayer
     {
-        #region Attributes
+        #region ATTRIBUTES & PROPERTIES
         private float[] TerrainPoints;
         private int TerrainSize;
 
-        #endregion
-
-        #region Properties
         public float OutterHeight { get; set; }
         public float InnerHeight { get; set; }
         public float Size { get; set; }
@@ -24,7 +20,7 @@ namespace Topographer3D.ViewModels.Layers
 
         #endregion
 
-        #region Initialization
+        #region INITIALIZATION
         public IslandLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
             InitProperties();
@@ -50,8 +46,8 @@ namespace Topographer3D.ViewModels.Layers
             BackgroundWorker worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.DoWork += IslandCalculation;
-            worker.ProgressChanged += ProgressChanged;
-            worker.RunWorkerCompleted += CalculationCompleted;
+            worker.ProgressChanged += IslandUpdate;
+            worker.RunWorkerCompleted += IslandComplete;
             worker.RunWorkerAsync(100000);
         }
 
@@ -122,7 +118,7 @@ namespace Topographer3D.ViewModels.Layers
                             break;
                     }
 
-                    TerrainPoints[x + z * TerrainSize] = ApplyMode(TerrainPoints[x + z * TerrainSize], value);
+                    TerrainPoints[x + z * TerrainSize] = Application.Apply(TerrainPoints[x + z * TerrainSize], value, CurrentApplicationMode);
                 }
 
                 int progressPercentage = (int)(((float)x / (float)TerrainSize) * 100);
@@ -130,60 +126,26 @@ namespace Topographer3D.ViewModels.Layers
             }
         }
 
-        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void IslandUpdate(object sender, ProgressChangedEventArgs e)
         {
             ProgressPercentage = e.ProgressPercentage;
         }
 
-        private void CalculationCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void IslandComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             Processed();
-            terrainEngine.WorkerComplete(this, TerrainPoints);
+            terrainEngine.SingleLayerCalculationComplete(this, TerrainPoints);
             Dispose();
         }
 
-        private float ApplyMode(float oldValue, float applyValue)
-        {
-            float newValue = 0;
-            switch (CurrentApplicationMode)
-            {
-                case ApplicationMode.Normal:
-                    newValue = applyValue;
-                    break;
-                case ApplicationMode.Add:
-                    newValue = oldValue + applyValue;
-                    break;
-                case ApplicationMode.Multiply:
-                    newValue = oldValue * applyValue;
-                    break;
-                case ApplicationMode.Subtract:
-                    newValue = oldValue - applyValue;
-                    break;
-            }
-            if (newValue < 0)
-            {
-                newValue = 0;
-            }
-            else if (newValue > 1)
-            {
-                newValue = 1;
-            }
-            return newValue;
-        }
+        #endregion
 
+        #region DISPOSABLE
         protected override void Dispose()
         {
             TerrainPoints = null;
         }
 
-
         #endregion
-
-    }
-
-    public enum InterpolationMode
-    {
-        Linear,
-        Smooth
     }
 }

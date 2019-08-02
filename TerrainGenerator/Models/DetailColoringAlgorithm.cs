@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace Topographer3D.Models
 {
-    class ColoringAlgorithm
+    class DetailColoringAlgorithm
     {
         private byte[] _bgr;
         private GradientStopCollection _gradientStopCollection;
@@ -21,7 +18,7 @@ namespace Topographer3D.Models
         private float _range;
         private Random _random;
 
-        public ColoringAlgorithm()
+        public DetailColoringAlgorithm()
         {
             _bgr = new byte[3];
             _random = new Random();

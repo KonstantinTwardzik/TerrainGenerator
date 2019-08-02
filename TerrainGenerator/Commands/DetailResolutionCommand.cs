@@ -27,7 +27,7 @@ namespace Topographer3D.Commands
         public void Execute(object parameter)
         {
             int resolution = Convert.ToInt32(parameter);
-            _mainViewModel.UpdateDetailResolution(resolution);
+            _mainViewModel.UpdateTerrainSize(resolution);
         }
     }
 }

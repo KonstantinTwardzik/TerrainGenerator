@@ -10,15 +10,12 @@ namespace Topographer3D.ViewModels.Layers
 {
     abstract class BaseLayer : ObservableObject
     {
-        #region Attributes
-        protected LayerManager layerManager;
+        #region ATTRIBUTES & PROPERTIES
+        public LayerManager LayerManager { get; private set; }
         protected TerrainEngine terrainEngine;
         private string LoadingColor = "#E86E48";
         private string FinishedColor = "#72C1F2";
 
-        #endregion
-
-        #region Properties
         public int Position { get; set; }
         public string Name { get; set; }
         public string ImagePath { get; set; }
@@ -27,17 +24,15 @@ namespace Topographer3D.ViewModels.Layers
         public bool IsProcessed { get; set; }
         public Layer LayerType { get; set; }
         public Visibility HasApplicationMode { get; set; }
-
         public ApplicationMode CurrentApplicationMode { get; set; }
         public IEnumerable<ApplicationMode> ApplicationModeEnum { get { return Enum.GetValues(typeof(ApplicationMode)).Cast<ApplicationMode>(); } }
 
-
         #endregion
 
-        #region Initialization
+        #region INITIALIZATION
         public BaseLayer(LayerManager layerManager, TerrainEngine terrainEngine)
         {
-            this.layerManager = layerManager;
+            LayerManager = layerManager;
             this.terrainEngine = terrainEngine;
             InitProperties();
             InitCommands();
@@ -60,7 +55,7 @@ namespace Topographer3D.ViewModels.Layers
 
         #endregion
 
-        #region Button Handling
+        #region TERRAIN ENGINE PROCESSING
         internal void Processed()
         {
             ProgressPercentage = 100;
@@ -77,33 +72,34 @@ namespace Topographer3D.ViewModels.Layers
 
         public void Calculate()
         {
-            layerManager.Calculate(this);
+            Unprocessed();
+            LayerManager.Calculate(this);
         }
 
         public void Delete()
         {
-            layerManager.DeleteLayer(this);
+            LayerManager.DeleteLayer(this);
         }
 
         public void ShowLayerDetails()
         {
-            layerManager.ShowLayerDetails(this);
+            LayerManager.ShowLayerDetails(this);
             Calculate();
         }
 
         public void MoveLayer(bool IsForward)
         {
-            layerManager.MoveLayer(this, IsForward);
+            LayerManager.MoveLayer(this, IsForward);
         }
 
         #endregion
 
-        #region Abstract Functions
+        #region DISPOSABLE SUPPORT
         protected abstract void Dispose();
 
         #endregion
 
-        #region ICommands
+        #region ICOMMANDS
         public bool CanExecute { get { return true; } }
         public ICommand ShowLayerDetailsCommand { get; private set; }
         public ICommand CalculateCommand { get; private set; }
@@ -113,14 +109,7 @@ namespace Topographer3D.ViewModels.Layers
 
     }
 
-    public enum ApplicationMode
-    {
-        Normal,
-        Add,
-        Subtract,
-        Multiply,
 
-    }
 
 
 }

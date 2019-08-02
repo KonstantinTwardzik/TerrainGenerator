@@ -10,7 +10,7 @@
         ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
         Background="{StaticResource PrimaryColor}"
-        Title="Topographer 3D" Height="800 " Width="1280"  MinHeight="600" MinWidth="800"
+        Title="Topographer 3D" Height="{Binding LayerManager.ViewHeight, Mode=OneWayToSource, NotifyOnTargetUpdated=True}" Width="1280"  MinHeight="600" MinWidth="800"
         BorderThickness="1"
         BorderBrush="{StaticResource SecondaryColor}">
 
@@ -48,7 +48,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
             <RowDefinition/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="218"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
@@ -168,11 +168,13 @@
 
         <!--LAYER MANAGER-->
         <Border Grid.Column="0" Grid.Row="2" Margin="4,2,2,0">
-            <views:LayerManager/>
+            <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Hidden">
+                <views:LayerManager/>
+            </ScrollViewer>
         </Border>
 
         <!--INFO TEXT UNTEN LINKS-->
-        <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="1" Height="20" Margin="5,2,0,3" Text="{Binding LayerManager.StatusBarText}" Foreground="{Binding LayerManager.StatusBarColor}"/>
+        <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="1" Height="25" Margin="5,2,0,3" Text="{Binding LayerManager.StatusBarText}" Foreground="{Binding LayerManager.StatusBarColor}"/>
 
     </Grid>
 </Window>

@@ -32,8 +32,7 @@
             </Style.Triggers>
         </Style>
 
-
-        <DataTemplate x:Key="itemTemplate">
+        <DataTemplate x:Key="LayerTemplate">
             <Button Width="100" Height="188" Margin="2,4,2,4" BorderThickness="1" BorderBrush="{StaticResource TertiaryColor}" VerticalAlignment="Top" Command="{Binding ShowLayerDetailsCommand}">
                 <StackPanel>
                     <Image Source="{Binding ImagePath}" Width="64" Margin="0,10,0,15"/>
@@ -60,7 +59,7 @@
     <StackPanel Orientation="Horizontal">
 
         <!--LAYERS-->
-        <ItemsControl ItemsSource="{Binding LayerManager.Layers}" ItemTemplate="{StaticResource itemTemplate}" Margin="2,0,0,0">
+        <ItemsControl ItemsSource="{Binding LayerManager.Layers}" ItemTemplate="{StaticResource LayerTemplate}" Margin="2,0,0,0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />

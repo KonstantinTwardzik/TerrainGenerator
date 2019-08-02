@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels.Layers
 {
     class HeightLayer : BaseLayer
     {
-        #region Attributes
+        #region ATTRIBUTES & PROPERTIES
         private float[] TerrainPoints;
         private int TerrainSize;
-
-        #endregion
-
-        #region Properties
         public float Height { get; set; }
 
-
         #endregion
 
-        #region Initialization
+        #region INITIALIZATION
         public HeightLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
             InitProperties();
@@ -35,7 +26,7 @@ namespace Topographer3D.ViewModels.Layers
 
         #endregion
 
-        #region TerrainEngine Processing
+        #region TERRAIN ENGINE PROCESSING
         public void StartHeight(int TerrainSize, float[] TerrainPoints)
         {
             this.TerrainSize = TerrainSize;
@@ -44,8 +35,8 @@ namespace Topographer3D.ViewModels.Layers
             BackgroundWorker worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.DoWork += HeightCalculation;
-            worker.ProgressChanged += worker_ProgressChanged;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.ProgressChanged += HeightUpdate;
+            worker.RunWorkerCompleted += HeightFinished;
             worker.RunWorkerAsync(100000);
         }
 
@@ -55,7 +46,7 @@ namespace Topographer3D.ViewModels.Layers
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    TerrainPoints[x + z * TerrainSize] = ApplyMode(TerrainPoints[x + z * TerrainSize], Height);
+                    TerrainPoints[x + z * TerrainSize] = Application.Apply(TerrainPoints[x + z * TerrainSize], Height, CurrentApplicationMode);
                 }
 
                 int progressPercentage = (int)(((float)x / (float)TerrainSize) * 100);
@@ -63,57 +54,26 @@ namespace Topographer3D.ViewModels.Layers
             }
         }
 
-        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void HeightUpdate(object sender, ProgressChangedEventArgs e)
         {
             ProgressPercentage = e.ProgressPercentage;
         }
 
-
-        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void HeightFinished(object sender, RunWorkerCompletedEventArgs e)
         {
             Processed();
-            terrainEngine.WorkerComplete(this, TerrainPoints);
+            terrainEngine.SingleLayerCalculationComplete(this, TerrainPoints);
             Dispose();
         }
 
+        #endregion
 
-        private float ApplyMode(float oldValue, float applyValue)
-        {
-            float newValue = 0;
-            switch (CurrentApplicationMode)
-            {
-                case ApplicationMode.Normal:
-                    newValue = applyValue;
-                    break;
-                case ApplicationMode.Add:
-                    newValue = oldValue + applyValue;
-                    break;
-                case ApplicationMode.Multiply:
-                    newValue = oldValue * applyValue;
-                    break;
-                case ApplicationMode.Subtract:
-                    newValue = oldValue - applyValue;
-                    break;
-            }
-            if (newValue < 0)
-            {
-                newValue = 0;
-            }
-            else if (newValue > 1)
-            {
-                newValue = 1;
-            }
-            return newValue;
-        }
-
+        #region DISPOSABLE SUPPORT
         protected override void Dispose()
         {
             TerrainPoints = null;
         }
 
-
         #endregion
-
-
     }
 }

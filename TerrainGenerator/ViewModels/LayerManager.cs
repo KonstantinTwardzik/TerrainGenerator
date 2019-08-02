@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
 using Topographer3D.Commands;
-using Topographer3D.Models;
 using Topographer3D.Utilities;
 using Topographer3D.ViewModels.Layers;
 
@@ -13,44 +10,50 @@ namespace Topographer3D.ViewModels
 {
     class LayerManager : ObservableObject
     {
-        #region Attributes
+        #region ATTRIBUTES & PROPERTIES
         private TerrainEngine terrainEngine;
-
-        #endregion
-
-        #region Properties 
-        public ObservableCollection<BaseLayer> Layers { get; private set; }
-        public ObservableCollection<BaseLayer> LayerDetails { get; private set; }
-        public bool IsLayerSelection { get; private set; }
-        public bool IsShowDetails { get; private set; }
-        public Visibility IsLayerSelectionVisibility { get; private set; }
-        public Visibility IsShowDetailsVisibility { get; private set; }
-        public DataTemplate ItemTemplateDetail { get; private set; }
 
         //Status Bar Bottom
         private string LoadingColor = "#E86E48";
         private string FinishedColor = "#72C1F2";
+        private bool TerrainEngineIsOccupied;
+
+        // LAYERS
+        public ObservableCollection<BaseLayer> Layers { get; private set; }
+        public ObservableCollection<BaseLayer> LayerDetails { get; private set; }
+
+        // VIEW SUPPORT
+        public bool IsLayerSelection { get; private set; }
+        public bool IsShowDetails { get; private set; }
+        public Visibility IsLayerSelectionVisibility { get; private set; }
+        public Visibility IsShowDetailsVisibility { get; private set; }
+        public double ViewHeight
+        {
+            set
+            {
+                LayerDetailHeight = value - 100;
+            }
+        }
+        public double LayerDetailHeight { get; private set; }
         public string StatusBarColor { get; set; }
         public string StatusBarText { get; set; }
 
-
         #endregion
 
-        #region Initialization
+        #region INITIALIZATION
         public LayerManager(TerrainEngine terrainEngine)
         {
             this.terrainEngine = terrainEngine;
             InitProperties();
             InitCommands();
-            ShowLayerAdding();
         }
 
         private void InitProperties()
         {
             Layers = new ObservableCollection<BaseLayer>();
             LayerDetails = new ObservableCollection<BaseLayer>();
-            StatusBarColor = FinishedColor;
-            StatusBarText = "Terrain Engine Waiting ...";
+            ShowLayerAdding();
+            SetStatusBar(false);
         }
 
         private void InitCommands()
@@ -58,9 +61,10 @@ namespace Topographer3D.ViewModels
             AddLayerCommand = new AddLayerCommand(this);
             ShowLayerSelectionCommand = new ShowLayerSelectionCommand(this);
         }
+
         #endregion
 
-        #region Button Handling
+        #region LAYER LOGIC
         public void AddNewLayer(Layer layerType)
         {
             switch (layerType)
@@ -114,6 +118,15 @@ namespace Topographer3D.ViewModels
                     Layers.Add(newHydrauliceErosionLayer);
                     ShowLayerDetails(newHydrauliceErosionLayer);
                     break;
+
+                case Layer.DetailColorization:
+                    DetailColorizationLayer newDetailColorizationLayer = new DetailColorizationLayer(this, terrainEngine);
+                    newDetailColorizationLayer.Name = GetName(Layer.DetailColorization, Layers.Count);
+                    newDetailColorizationLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/ColorizeIcon.png";
+                    newDetailColorizationLayer.Position = Layers.Count;
+                    Layers.Add(newDetailColorizationLayer);
+                    ShowLayerDetails(newDetailColorizationLayer);
+                    break;
             }
         }
 
@@ -121,7 +134,12 @@ namespace Topographer3D.ViewModels
         {
             Layers.Remove(layer);
             UpdateLayerView();
+        }
 
+        public void DeleteAllLayers()
+        {
+            Layers.Clear();
+            UpdateLayerView();
         }
 
         public void MoveLayer(BaseLayer layer, bool IsForward)
@@ -133,7 +151,6 @@ namespace Topographer3D.ViewModels
                     Layers.RemoveAt(layer.Position);
                     Layers.Insert(layer.Position - 1, layer);
                 }
-
             }
             else
             {
@@ -142,7 +159,6 @@ namespace Topographer3D.ViewModels
                     Layers.RemoveAt(layer.Position);
                     Layers.Insert(layer.Position + 1, layer);
                 }
-
             }
 
             UpdateLayerView();
@@ -164,7 +180,8 @@ namespace Topographer3D.ViewModels
             {
                 ShowLayerAdding();
             }
-            StartCompleteCalculation();
+
+            terrainEngine.ResetTerrainEngine();
         }
 
         private string GetName(Layer layerType, int layerPositon)
@@ -190,28 +207,26 @@ namespace Topographer3D.ViewModels
                 case Layer.Hydraulic:
                     name = "Hydraulic";
                     break;
+                case Layer.DetailColorization:
+                    name = "Detail Color";
+                    break;
 
             }
             name = (layerPositon + 1) + " - " + name;
             return name;
         }
 
-        private void StartCompleteCalculation()
+        public void Calculate(BaseLayer layer)
         {
-            if(Layers.Count != 0)
+            if (!TerrainEngineIsOccupied)
             {
-                terrainEngine.StartCalculation(Layers[Layers.Count - 1]);
-            } else
-            {
-                terrainEngine.ResetHeights();
+                terrainEngine.StartCalculationToLayer(layer);
             }
         }
 
-        public void Calculate(BaseLayer layer)
-        {
-            terrainEngine.StartCalculation(layer);
-        }
+        #endregion
 
+        #region VIEWS LOGIC
         public void ShowLayerAdding()
         {
             LayerDetails.Clear();
@@ -237,31 +252,22 @@ namespace Topographer3D.ViewModels
             {
                 StatusBarColor = LoadingColor;
                 StatusBarText = "Terrain Engine Calculating ...";
+                TerrainEngineIsOccupied = true;
             }
             else
             {
                 StatusBarColor = FinishedColor;
                 StatusBarText = "Terrain Engine Waiting ...";
+                TerrainEngineIsOccupied = false;
             }
         }
 
         #endregion
 
-        #region ICommands
+        #region ICOMMANDS
         public bool CanExecute { get { return true; } }
         public ICommand AddLayerCommand { get; private set; }
         public ICommand ShowLayerSelectionCommand { get; private set; }
         #endregion
     }
-
-    enum Layer
-    {
-        Height,
-        Slope,
-        Island,
-        OpenSimplex,
-        Voronoi,
-        Hydraulic,
-        DisplacementColorization
-    };
 }

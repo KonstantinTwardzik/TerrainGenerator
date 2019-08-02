@@ -1,19 +1,16 @@
 ﻿using System.ComponentModel;
-using System.Threading;
 using Topographer3D.Models;
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels.Layers
 {
-  class OpenSimplexNoiseLayer : BaseLayer
+    class OpenSimplexNoiseLayer : BaseLayer
     {
-        #region Attributes
-        private OpenSimplexNoise _openSimplexNoise;
+        #region ATTRIBUTES & PROPERTIES
+        private OpenSimplexNoiseAlgorithm _openSimplexNoise;
         private float[] TerrainPoints;
         private int TerrainSize;
 
-        #endregion
-
-        #region Properties
         public float OSNScale { get; set; }
         public float OSNScaleX { get; set; }
         public float OSNScaleZ { get; set; }
@@ -24,10 +21,10 @@ namespace Topographer3D.ViewModels.Layers
 
         #endregion
 
-        #region Initialization
+        #region INITIALIZATION
         public OpenSimplexNoiseLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
-            _openSimplexNoise = new OpenSimplexNoise();
+            _openSimplexNoise = new OpenSimplexNoiseAlgorithm();
             InitProperties();
         }
 
@@ -45,7 +42,7 @@ namespace Topographer3D.ViewModels.Layers
 
         #endregion
 
-        #region TerrainEngine Processing
+        #region TERRAIN ENGINE PROCESSING
         public void StartOpenSimplexNoise(int TerrainSize, float[] TerrainPoints)
         {
             this.TerrainSize = TerrainSize;
@@ -53,13 +50,13 @@ namespace Topographer3D.ViewModels.Layers
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
-            worker.DoWork += worker_DoWork;
-            worker.ProgressChanged += worker_ProgressChanged;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.DoWork += OpenSimplexNoiseCalculation;
+            worker.ProgressChanged += OpenSimplexNoiseUpdate;
+            worker.RunWorkerCompleted += OpenSimplexNoiseComplete;
             worker.RunWorkerAsync(100000);
         }
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        private void OpenSimplexNoiseCalculation(object sender, DoWorkEventArgs e)
         {
             float octaveWeight = 1;
             float octaveMultiplier = 1;
@@ -68,16 +65,29 @@ namespace Topographer3D.ViewModels.Layers
 
             switch (TerrainSize)
             {
-                case 256:
+                case 16:
+                    sizeCompensator = 256;
+                    break;
+                case 32:
+                    sizeCompensator = 128;
+                    break;
+                case 64:
+                    sizeCompensator = 64;
+                    break;
+                case 128:
+                    sizeCompensator = 32;
+                    break;
+
+                case 512:
                     sizeCompensator = 8;
                     break;
-                case 512:
+                case 1024:
                     sizeCompensator = 4;
                     break;
-                case 1024:
+                case 2048:
                     sizeCompensator = 2;
                     break;
-                case 2048:
+                case 4096:
                     sizeCompensator = 1;
                     break;
             }
@@ -89,8 +99,8 @@ namespace Topographer3D.ViewModels.Layers
                     for (int z = 0; z < TerrainSize; z++)
                     {
                         float value = 0;
-                        float xValue = (float)((((0.0005f / OSNScale) / OSNScaleX) * (x * sizeCompensator) + OSNSeed) * octaveMultiplier);
-                        float zValue = (float)((((0.0005f / OSNScale) / OSNScaleZ) * (z * sizeCompensator) + OSNSeed) * octaveMultiplier);
+                        float xValue = (float)((((0.00025f / OSNScale) / OSNScaleX) * (x * sizeCompensator) + OSNSeed) * octaveMultiplier);
+                        float zValue = (float)((((0.00025f / OSNScale) / OSNScaleZ) * (z * sizeCompensator) + OSNSeed) * octaveMultiplier);
                         if (octaves == 0)
                         {
                             value = (float)(((_openSimplexNoise.Evaluate(xValue, zValue) * octaveWeight) + 1) / 2);
@@ -114,63 +124,30 @@ namespace Topographer3D.ViewModels.Layers
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    TerrainPoints[x + z * TerrainSize] = ApplyMode(TerrainPoints[x + z * TerrainSize], helper[x + z * TerrainSize]);
+                    TerrainPoints[x + z * TerrainSize] = Application.Apply(TerrainPoints[x + z * TerrainSize], helper[x + z * TerrainSize], CurrentApplicationMode);
                 }
             }
-
-
         }
 
-        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void OpenSimplexNoiseUpdate(object sender, ProgressChangedEventArgs e)
         {
             ProgressPercentage = e.ProgressPercentage;
         }
 
-        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void OpenSimplexNoiseComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             Processed();
-            terrainEngine.WorkerComplete(this, TerrainPoints);
+            terrainEngine.SingleLayerCalculationComplete(this, TerrainPoints);
             Dispose();
-        }
-
-        private float ApplyMode(float oldValue, float applyValue)
-        {
-            float newValue = 0;
-            switch (CurrentApplicationMode)
-            {
-                case ApplicationMode.Normal:
-                    newValue = applyValue;
-                    break;
-                case ApplicationMode.Add:
-                    newValue = oldValue + applyValue;
-                    break;
-                case ApplicationMode.Multiply:
-                    newValue = oldValue * applyValue;
-                    break;
-                case ApplicationMode.Subtract:
-                    newValue = oldValue - applyValue;
-                    break;
-            }
-            if (newValue < 0)
-            {
-                newValue = 0;
-            }
-            else if (newValue > 1)
-            {
-                newValue = 1;
-            }
-            return newValue;
         }
 
         #endregion
 
-        #region Button Handling
+        #region DISPOSABLE
         protected override void Dispose()
         {
             TerrainPoints = null;
         }
-
-
 
         #endregion
     }

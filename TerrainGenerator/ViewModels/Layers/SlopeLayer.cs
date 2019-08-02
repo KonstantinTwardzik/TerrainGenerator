@@ -2,23 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels.Layers
 {
     class SlopeLayer : BaseLayer
     {
-        #region Attributes
+        #region ATTRIBUTES & PROPERTIES
         private float[] TerrainPoints;
         private int TerrainSize;
         private int startPosition;
         private int endPosition;
 
-        #endregion
-
-        #region Properties
         public float StartHeight { get; set; }
         public float EndHeight { get; set; }
-
         public int StartPosition
         {
             get
@@ -48,10 +45,9 @@ namespace Topographer3D.ViewModels.Layers
         public IEnumerable<InterpolationMode> InterpolationModeEnum { get { return Enum.GetValues(typeof(InterpolationMode)).Cast<InterpolationMode>(); } }
         public InterpolationMode CurrentInterpolationMode { get; set; }
 
-
         #endregion
 
-        #region Initialization
+        #region INITIALIZATION
         public SlopeLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
             InitProperties();
@@ -70,7 +66,7 @@ namespace Topographer3D.ViewModels.Layers
 
         #endregion
 
-        #region TerrainEngine Processing
+        #region TERRAIN ENGINE PROCESSING
         public void StartSlope(int TerrainSize, float[] TerrainPoints)
         {
             this.TerrainSize = TerrainSize;
@@ -79,8 +75,8 @@ namespace Topographer3D.ViewModels.Layers
             BackgroundWorker worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.DoWork += SlopeCalculation;
-            worker.ProgressChanged += ProgressChanged;
-            worker.RunWorkerCompleted += CalculationCompleted;
+            worker.ProgressChanged += SlopeUpdate;
+            worker.RunWorkerCompleted += SlopeComplete;
             worker.RunWorkerAsync(100000);
         }
 
@@ -204,65 +200,33 @@ namespace Topographer3D.ViewModels.Layers
                             break;
 
                     }
-                    TerrainPoints[x + z * TerrainSize] = ApplyMode(TerrainPoints[x + z * TerrainSize], value);
+                    TerrainPoints[x + z * TerrainSize] = Application.Apply(TerrainPoints[x + z * TerrainSize], value, CurrentApplicationMode);
                 }
                 int progressPercentage = (int)(((float)x / (float)TerrainSize) * 100);
                 (sender as BackgroundWorker).ReportProgress(progressPercentage);
             }
         }
 
-        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void SlopeUpdate(object sender, ProgressChangedEventArgs e)
         {
             ProgressPercentage = e.ProgressPercentage;
         }
 
-        private void CalculationCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void SlopeComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             Processed();
-            terrainEngine.WorkerComplete(this, TerrainPoints);
+            terrainEngine.SingleLayerCalculationComplete(this, TerrainPoints);
             Dispose();
         }
 
-        private float ApplyMode(float oldValue, float applyValue)
-        {
-            float newValue = 0;
-            switch (CurrentApplicationMode)
-            {
-                case ApplicationMode.Normal:
-                    newValue = applyValue;
-                    break;
-                case ApplicationMode.Add:
-                    newValue = oldValue + applyValue;
-                    break;
-                case ApplicationMode.Multiply:
-                    newValue = oldValue * applyValue;
-                    break;
-                case ApplicationMode.Subtract:
-                    newValue = oldValue - applyValue;
-                    break;
-            }
-            if (newValue < 0)
-            {
-                newValue = 0;
-            }
-            else if (newValue > 1)
-            {
-                newValue = 1;
-            }
-            return newValue;
-        }
+        #endregion
 
+        #region DISPOSABLE
         protected override void Dispose()
         {
             TerrainPoints = null;
         }
 
         #endregion
-    }
-
-    public enum Direction
-    {
-        X_Axis,
-        Z_Axis
     }
 }
