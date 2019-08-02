@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Windows.Input;
 using Topographer3D.ViewModels;
+using Topographer3D.ViewModels.Layers;
 
 namespace Topographer3D.Commands
 {
-    internal class DetailResolutionCommand : ICommand
+    internal class MoveLayerCommand : ICommand
     {
-        private MainViewModel _mainViewModel;
+        private BaseLayer _baseLayer;
 
-        public DetailResolutionCommand(MainViewModel mainViewModel)
+        public MoveLayerCommand(BaseLayer baseLayer)
         {
-            _mainViewModel = mainViewModel;
+            _baseLayer = baseLayer;
         }
 
         public event EventHandler CanExecuteChanged
@@ -21,13 +22,14 @@ namespace Topographer3D.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _mainViewModel.CanExecute;
+            return _baseLayer.CanExecute;
         }
 
         public void Execute(object parameter)
         {
-            int resolution = Convert.ToInt32(parameter);
-            _mainViewModel.UpdateTerrainSize(resolution);
+            bool ToFront = Convert.ToBoolean(parameter);
+            _baseLayer.MoveLayer(ToFront);
+
         }
     }
 }

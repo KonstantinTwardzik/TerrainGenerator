@@ -1,29 +1,33 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Input;
-using Topographer3D.Commands;
-using System.ComponentModel;
 using System.Windows;
-using System.Collections.ObjectModel;
-using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf.SharpDX;
 using System.Windows.Forms;
+using Topographer3D.Commands;
+using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels
 {
     internal class MainViewModel : ObservableObject
     {
-        #region Attributes 
-        private string _maxPath;
-        private string _maxFullPath;
-        #endregion
+        #region ATTRIBUTES & PROPERTIES 
+        // MAXIMIZE WINDOW LOGIC
+        private string maxPath;
+        private string maxFullPath;
+        private bool dragable;
+        private double oldLeft;
+        private double oldTop;
+        private double oldWidth;
+        private double oldHeight;
+        public string MaxImagePath { get; private set; }
 
-        #region Properties
-        //MVVM 
+        // LOGIC 
         public Viewport Viewport { get; private set; }
-        public TerrainSettings TerrainSettings { get; private set; }
+        public TerrainEngine TerrainEngine { get; private set; }
         public ViewportCamera ViewportCamera { get; private set; }
+        public LayerManager LayerManager { get; private set; }
 
-        //DetailResolution
+        // TERRAIN SIZES
         public bool Res16 { get; private set; }
         public bool Res32 { get; private set; }
         public bool Res64 { get; private set; }
@@ -33,7 +37,7 @@ namespace Topographer3D.ViewModels
         public bool Res2048 { get; private set; }
         public bool Res4096 { get; private set; }
 
-        //HeightMultiplicator
+        // HEIGHT MULTIPLICATOR
         public bool Height25 { get; private set; }
         public bool Height50 { get; private set; }
         public bool Height75 { get; private set; }
@@ -41,10 +45,9 @@ namespace Topographer3D.ViewModels
         public bool Height125 { get; private set; }
         public bool Height150 { get; private set; }
 
-        public string MaxImagePath { get; private set; }
         #endregion
 
-        #region Initialization
+        #region INITIALIZATION
         public MainViewModel()
         {
             InitLogic();
@@ -52,8 +55,24 @@ namespace Topographer3D.ViewModels
             InitProperties();
         }
 
+        private void InitLogic()
+        {
+            TerrainEngine = new TerrainEngine();
+            ViewportCamera = new ViewportCamera();
+            Viewport = new Viewport(TerrainEngine, ViewportCamera);
+            LayerManager = new LayerManager(TerrainEngine);
+            TerrainEngine.InitLogic(LayerManager, this);
+        }
+
         private void InitProperties()
         {
+            // Window Size values
+            dragable = true;
+            oldLeft = App.Current.MainWindow.Left;
+            oldTop = App.Current.MainWindow.Top;
+            oldWidth = App.Current.MainWindow.Width;
+            oldHeight = App.Current.MainWindow.Height;
+
             Res16 = true;
             Res32 = true;
             Res64 = true;
@@ -70,40 +89,26 @@ namespace Topographer3D.ViewModels
             Height125 = true;
             Height150 = true;
 
-            _maxPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/Maximize.png";
-            _maxFullPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/MaximizeFullscreen.png";
-            MaxImagePath = _maxPath;
-        }
-
-        private void InitLogic()
-        {
-            TerrainSettings = new TerrainSettings();
-            ViewportCamera = new ViewportCamera();
-            Viewport = new Viewport(TerrainSettings, ViewportCamera);
-
+            maxPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/Maximize.png";
+            maxFullPath = "pack://application:,,,/Topographer3D;component/Assets/Icons/MaximizeFullscreen.png";
+            MaxImagePath = maxPath;
         }
 
         private void InitCommands()
         {
-            NoiseCommand = new NoiseCommand(this);
-            ErodeCommand = new ErodeCommand(this);
-            ColorizeCommand = new ColorizeCommand(this);
-            GenerateAllCommand = new GenerateAllCommand(this);
             DragCommand = new DragCommand(this);
             MinimizeCommand = new MinimizeCommand(this);
             MaximizeCommand = new MaximizeCommand(this);
             QuitCommand = new QuitCommand(this);
             NewCommand = new NewCommand(this);
             ExportCommand = new ExportCommand(this);
-            UpdateMeshCommand = new UpdateMeshCommand(this);
             ChangeHeightCommand = new ChangeHeightCommand(this);
             DetailResolutionCommand = new DetailResolutionCommand(this);
             HelpCommand = new HelpCommand(this);
-
         }
         #endregion
 
-        #region Button Handling
+        #region WINDOW BEHAVIOUR
         public void QuitApplication()
         {
             System.Windows.Application.Current.Shutdown();
@@ -111,7 +116,10 @@ namespace Topographer3D.ViewModels
 
         public void DragWindow()
         {
-            App.Current.MainWindow.DragMove();
+            if (dragable)
+            {
+                App.Current.MainWindow.DragMove();
+            }
         }
 
         public void MinimizeApplication()
@@ -121,95 +129,60 @@ namespace Topographer3D.ViewModels
 
         public void MaximizeApplication()
         {
-            if (App.Current.MainWindow.WindowState == WindowState.Maximized)
+            if (!dragable)
             {
-                MaxImagePath = _maxPath;
-                App.Current.MainWindow.WindowState = WindowState.Normal;
+                MaxImagePath = maxPath;
+                dragable = true;
+
+                App.Current.MainWindow.Left = oldLeft;
+                App.Current.MainWindow.Top = oldTop;
+                App.Current.MainWindow.Width = oldWidth;
+                App.Current.MainWindow.Height = oldHeight;
+                App.Current.MainWindow.ResizeMode = ResizeMode.CanResizeWithGrip;
             }
-            else if (App.Current.MainWindow.WindowState == WindowState.Normal)
+            else
             {
-                MaxImagePath = _maxFullPath;
-                App.Current.MainWindow.WindowState = WindowState.Maximized;
+                MaxImagePath = maxFullPath;
+                dragable = false;
+
+                //safe old values
+                oldLeft = App.Current.MainWindow.Left;
+                oldTop = App.Current.MainWindow.Top;
+                oldWidth = App.Current.MainWindow.Width;
+                oldHeight = App.Current.MainWindow.Height;
+
+
+                // set new values
+                App.Current.MainWindow.Left = 0;
+                App.Current.MainWindow.Top = 0;
+                App.Current.MainWindow.Width = Screen.PrimaryScreen.WorkingArea.Width;
+                App.Current.MainWindow.Height = Screen.PrimaryScreen.WorkingArea.Height;
+                App.Current.MainWindow.ResizeMode = ResizeMode.NoResize;
             }
+
         }
 
-        public void NewTerrain()
-        {
-            TerrainSettings.TerrainSize = 512;
-            UpdateDetailResolution(512);
-            TerrainSettings.ResetHeights();
-            ChangeMesh();
-            InitProperties();
-            TerrainSettings.InitProperties();
-        }
+        #endregion
 
-        public void ChangeMesh()
+        #region TERRAIN FUNCTIONS
+        public void UpdateMesh()
         {
             Viewport.UpdateMesh();
+        }
+
+        public void UpdateTextures(MemoryStream terrainMainColors, MemoryStream terrainBorderColors)
+        {
+            Viewport.UpdateTexture(terrainMainColors, terrainBorderColors);
+        }
+
+        public void ResetTextures()
+        {
             Viewport.GenerateDefaultTexture();
         }
 
-        public void ChangeHeight(float heightMulitplicator)
+        public void UpdateTerrainSize(int terrainSize)
         {
-            switch (heightMulitplicator)
-            {
-                case 25:
-                    Height25 = false;
-                    Height50 = true;
-                    Height75 = true;
-                    Height100 = true;
-                    Height125 = true;
-                    Height150 = true;
-                    break;
-                case 50:
-                    Height25 = true;
-                    Height50 = false;
-                    Height75 = true;
-                    Height100 = true;
-                    Height125 = true;
-                    Height150 = true;
-                    break;
-                case 75:
-                    Height25 = true;
-                    Height50 = true;
-                    Height75 = false;
-                    Height100 = true;
-                    Height125 = true;
-                    Height150 = true;
-                    break;
-                case 100:
-                    Height25 = true;
-                    Height50 = true;
-                    Height75 = true;
-                    Height100 = false;
-                    Height125 = true;
-                    Height150 = true;
-                    break;
-                case 125:
-                    Height25 = true;
-                    Height50 = true;
-                    Height75 = true;
-                    Height100 = true;
-                    Height125 = false;
-                    Height150 = true;
-                    break;
-                case 150:
-                    Height25 = true;
-                    Height50 = true;
-                    Height75 = true;
-                    Height100 = true;
-                    Height125 = true;
-                    Height150 = false;
-                    break;
-            }
-
-            Viewport.HeightMultiplicator = heightMulitplicator / 100.0f;
-            Viewport.UpdateMesh();
-        }
-
-        public void UpdateDetailResolution(int resolution)
-        {
-            switch (resolution)
+            switch (terrainSize)
             {
                 case 16:
                     Res16 = false;
@@ -293,28 +266,80 @@ namespace Topographer3D.ViewModels
                     break;
             }
 
-            TerrainSettings.ChangeDetailResolution(resolution);
-            Viewport.InitMesh();
-            GetPreviousState();
+            TerrainEngine.SetTerrainSize(terrainSize);
+            Viewport.InitModel();
+            Viewport.InitDefaultViewportSettings();
+            TerrainEngine.ResetTerrainEngine();
         }
 
-        public void GetPreviousState()
+        public void ChangeHeight(float heightMulitplicator)
         {
-            if (TerrainSettings.isNoised && TerrainSettings.isEroded && TerrainSettings.isColored)
+            switch (heightMulitplicator)
             {
-                Noise();
-                Erode();
-                Colorize();
+                case 25:
+                    Height25 = false;
+                    Height50 = true;
+                    Height75 = true;
+                    Height100 = true;
+                    Height125 = true;
+                    Height150 = true;
+                    break;
+                case 50:
+                    Height25 = true;
+                    Height50 = false;
+                    Height75 = true;
+                    Height100 = true;
+                    Height125 = true;
+                    Height150 = true;
+                    break;
+                case 75:
+                    Height25 = true;
+                    Height50 = true;
+                    Height75 = false;
+                    Height100 = true;
+                    Height125 = true;
+                    Height150 = true;
+                    break;
+                case 100:
+                    Height25 = true;
+                    Height50 = true;
+                    Height75 = true;
+                    Height100 = false;
+                    Height125 = true;
+                    Height150 = true;
+                    break;
+                case 125:
+                    Height25 = true;
+                    Height50 = true;
+                    Height75 = true;
+                    Height100 = true;
+                    Height125 = false;
+                    Height150 = true;
+                    break;
+                case 150:
+                    Height25 = true;
+                    Height50 = true;
+                    Height75 = true;
+                    Height100 = true;
+                    Height125 = true;
+                    Height150 = false;
+                    break;
             }
-            else if (TerrainSettings.isNoised && TerrainSettings.isEroded)
-            {
-                Noise();
-                Erode();
-            }
-            else if (TerrainSettings.isNoised)
-            {
-                Noise();
-            }
+
+            Viewport.HeightMultiplicator = heightMulitplicator / 100.0f;
+            Viewport.UpdateMesh();
+        }
+
+        #endregion
+
+        #region OTHER FUNCTIONS
+        public void NewTerrain()
+        {
+            TerrainEngine.TerrainSize = 512;
+            UpdateTerrainSize(512);
+            InitProperties();
+            LayerManager.DeleteAllLayers();
+            Viewport.GenerateDefaultTexture();
         }
 
         public void OpenWebsite()
@@ -322,34 +347,9 @@ namespace Topographer3D.ViewModels
             System.Diagnostics.Process.Start("https://github.com/KonstantinTwardzik/Topographer3D/wiki");
         }
 
-        public void Noise()
-        {
-            TerrainSettings.OpenSimplexNoise();
-            ChangeMesh();
-        }
-
-        public void Erode()
-        {
-            TerrainSettings.Erode();
-            ChangeMesh();
-        }
-
-        public void Colorize()
-        {
-            TerrainSettings.Colorize();
-            Viewport.UpdateTexture();
-        }
-
-        public void GenerateAll()
-        {
-            Noise();
-            Erode();
-            Colorize();
-        }
-
         public void ExportMaps()
         {
-            TerrainSettings.CreateHeightMap();
+            TerrainEngine.CreateHeightMap();
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "png (.png) | *.png",
@@ -358,31 +358,19 @@ namespace Topographer3D.ViewModels
             Nullable<bool> result = saveFileDialog.ShowDialog();
             if (result == true)
             {
-                TerrainSettings.ExportMaps(saveFileDialog.FileName);
+                TerrainEngine.ExportMaps(saveFileDialog.FileName);
             }
-
-
         }
 
-        public static Point GetMousePosition()
-        {
-            System.Drawing.Point point = Control.MousePosition;
-            return new Point(point.X, point.Y);
-        }
         #endregion
 
-        #region ICommands
+        #region ICOMMANDS
         public bool CanExecute { get { return true; } }
-        public ICommand NoiseCommand { get; private set; }
-        public ICommand ErodeCommand { get; private set; }
-        public ICommand ColorizeCommand { get; private set; }
-        public ICommand GenerateAllCommand { get; private set; }
         public ICommand DragCommand { get; private set; }
         public ICommand MinimizeCommand { get; private set; }
         public ICommand MaximizeCommand { get; private set; }
         public ICommand QuitCommand { get; private set; }
         public ICommand NewCommand { get; private set; }
-        public ICommand UpdateMeshCommand { get; private set; }
         public ICommand ChangeHeightCommand { get; private set; }
         public ICommand DetailResolutionCommand { get; private set; }
         public ICommand HelpCommand { get; private set; }

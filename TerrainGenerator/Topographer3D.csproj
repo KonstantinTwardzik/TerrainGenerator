@@ -58,7 +58,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Assets\T3D.ico</ApplicationIcon>
+    <ApplicationIcon>T3D.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>E58258D1E2CB69D1C8585C84E6BDE58D4B2500A6</ManifestCertificateThumbprint>
@@ -139,32 +139,49 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\AddLayerCommand.cs" />
+    <Compile Include="Commands\CalculateCommand.cs" />
     <Compile Include="Commands\ChangeHeightCommand.cs" />
     <Compile Include="Commands\ChangeLightingModeCommand.cs" />
     <Compile Include="Commands\ChangeShadingCommand.cs" />
     <Compile Include="Commands\ChangeViewportQualityCommand.cs" />
+    <Compile Include="Commands\DeleteLayerCommand.cs" />
     <Compile Include="Commands\DragCommand.cs" />
-    <Compile Include="Commands\GenerateAllCommand.cs" />
     <Compile Include="Commands\MaximizeCommand.cs" />
     <Compile Include="Commands\MinimizeCommand.cs" />
     <Compile Include="Commands\ChangeMaterialCommand.cs" />
-    <Compile Include="Commands\NoiseCommand.cs" />
-    <Compile Include="Commands\ErodeCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Commands\MoveLayerCommand.cs" />
     <Compile Include="Commands\NewCommand.cs" />
     <Compile Include="Commands\ChangeViewModeCommand.cs" />
     <Compile Include="Commands\QuitCommand.cs" />
-    <Compile Include="Commands\ColorizeCommand.cs" />
     <Compile Include="Commands\ExportCommand.cs" />
     <Compile Include="Commands\ChangeViewCommand.cs" />
-    <Compile Include="Commands\UpdateMeshCommand.cs" />
+    <Compile Include="Commands\ShowLayerDetailsCommand.cs" />
+    <Compile Include="Commands\ShowLayerSelectionCommand.cs" />
     <Compile Include="Commands\DetailResolutionCommand.cs" />
-    <Compile Include="Models\ColoringAlgorithm.cs" />
-    <Compile Include="Models\HydraulicErosion.cs" />
-    <Compile Include="Models\OpenSimplexNoise.cs" />
-    <Compile Include="ViewModels\ViewportCamera.cs" />
-    <Compile Include="ViewModels\TerrainSettings.cs" />
-    <Compile Include="ViewModels\Viewport.cs" />
+    <Compile Include="Models\RestrictedCamera.cs" />
+    <Compile Include="Utilities\Application.cs" />
+    <Compile Include="Utilities\Enums.cs" />
+    <Compile Include="Utilities\ObservableObject.cs" />
+    <Compile Include="ViewModels\Layers\BaseLayer.cs" />
+    <Compile Include="Models\DetailColoringAlgorithm.cs" />
+    <Compile Include="Models\HydraulicErosionAlgorithm.cs" />
+    <Compile Include="Models\OpenSimplexNoiseAlgorithm.cs" />
+    <Compile Include="ViewModels\Layers\HeightLayer.cs" />
+    <Compile Include="ViewModels\Layers\DetailColorizationLayer.cs" />
+    <Compile Include="ViewModels\Layers\HydraulicErosionLayer.cs" />
+    <Compile Include="ViewModels\Layers\IslandLayer.cs" />
+    <Compile Include="ViewModels\Layers\SlopeLayer.cs" />
+    <Compile Include="ViewModels\Layers\VoronoiNoiseLayer.cs" />
+    <Compile Include="ViewModels\LayerManager.cs" />
+    <Compile Include="ViewModels\Layers\OpenSimplexNoiseLayer.cs" />
+    <Compile Include="ViewModels\Viewport\ViewportCamera.cs" />
+    <Compile Include="ViewModels\TerrainEngine.cs" />
+    <Compile Include="ViewModels\Viewport\Viewport.cs" />
+    <Compile Include="Views\LayerManager.xaml.cs">
+      <DependentUpon>LayerManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -172,17 +189,20 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\MouseUtilities.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MenuBar.xaml.cs">
       <DependentUpon>MenuBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TerrainSettings.xaml.cs">
-      <DependentUpon>TerrainSettings.xaml</DependentUpon>
+    <Compile Include="Views\LayerDetails.xaml.cs">
+      <DependentUpon>LayerDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Viewport.xaml.cs">
       <DependentUpon>Viewport.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\LayerManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -191,7 +211,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TerrainSettings.xaml">
+    <Page Include="Views\LayerDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -301,6 +321,32 @@
   <ItemGroup>
     <Resource Include="Assets\Icons\FlatShading.png" />
     <Resource Include="Assets\Icons\PhongShading.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\AddLayer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\AddLayerWhite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\noiseTest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\RaiseIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\DeleteLayer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\ColorizeIcon.png" />
+    <Resource Include="Assets\Icons\ErodeIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\LeftArrow.png" />
+    <Resource Include="Assets\Icons\RightArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="T3D.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.5.1.1\build\Fody.targets" Condition="Exists('..\packages\Fody.5.1.1\build\Fody.targets')" />

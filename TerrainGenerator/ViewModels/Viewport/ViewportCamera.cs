@@ -1,24 +1,22 @@
-﻿using HelixToolkit.Wpf.SharpDX;
-using Point3D = System.Windows.Media.Media3D.Point3D;
-using Vector3D = System.Windows.Media.Media3D.Vector3D;
-using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows.Media.Media3D;
 using System.Windows.Input;
 using Topographer3D.Commands;
-
+using Topographer3D.Utilities;
+using Topographer3D.Models;
 
 namespace Topographer3D.ViewModels
 {
-
     public class ViewportCamera : ObservableObject
     {
+        #region PROPERTIES
         public RestrictedCamera Camera { get; private set; }
         public bool IsOrthographic { get; set; }
         private bool isDynamicLighting;
         public Vector3D DirectionalLightDirection { get; private set; }
 
+        #endregion
 
+        #region INITIALIZATION
         public ViewportCamera()
         {
             InitCamera();
@@ -40,9 +38,12 @@ namespace Topographer3D.ViewModels
             ChangeLightingModeCommand = new ChangeLightingModeCommand(this);
         }
 
+        #endregion
+
+        #region COMMAND HANDLING
         public void SetView(int view)
         {
-            Camera.ActivateManual = true;
+            Camera.ActivateManualy = true;
             switch (view)
             {
                 // IsometricView
@@ -109,7 +110,7 @@ namespace Topographer3D.ViewModels
                     }
                     break;
             }
-            Camera.ActivateManual = false;
+            Camera.ActivateManualy = false;
         }
 
         public void SetPerspectiveCam()
@@ -151,86 +152,12 @@ namespace Topographer3D.ViewModels
             }
         }
 
-        #region ICommands 
+        #endregion
+
+        #region ICOMMANDS
         public bool CanExecute { get { return true; } }
         public ICommand ChangeViewCommand { get; private set; }
         public ICommand ChangeLightingModeCommand { get; private set; }
         #endregion
-    }
-
-    public class RestrictedCamera : HelixToolkit.Wpf.SharpDX.PerspectiveCamera
-    {
-        private Vector3D oldLookDir;
-        public bool IsLocked { get; set; }
-        public bool ActivateManual { get; set; }
-
-        private ViewportCamera vpc;
-
-        public RestrictedCamera(ViewportCamera vpc)
-        {
-            ActivateManual = false;
-            this.vpc = vpc;
-        }
-
-
-        public override Point3D Position
-        {
-            get
-            {
-                return base.Position;
-            }
-
-            set
-            {
-                if (ActivateManual || value.Y >= 0 && (sameSign(base.Position.X, value.X) || sameSign(base.Position.Z, value.Z)))
-                {
-                    base.Position = value;
-                    this.IsLocked = false;
-
-                }
-                else
-                {
-                    this.IsLocked = true;
-                    base.LookDirection = this.oldLookDir;
-                }
-            }
-        }
-
-        public override Vector3D LookDirection
-        {
-            get
-            {
-                return base.LookDirection;
-            }
-
-            set
-            {
-                this.oldLookDir = base.LookDirection;
-                base.LookDirection = value;
-                vpc.UpdateLight(value);
-            }
-        }
-
-        public override Vector3D UpDirection
-        {
-            get
-            {
-                return base.UpDirection;
-            }
-
-            set
-            {
-                if (!this.IsLocked)
-                {
-                    base.UpDirection = value;
-                }
-            }
-        }
-
-        bool sameSign(double num1, double num2)
-        {
-            return num1 >= 0 && num2 >= 0 || num1 < 0 && num2 < 0;
-        }
-
     }
 }

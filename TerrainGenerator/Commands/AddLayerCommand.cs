@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Windows.Input;
+using Topographer3D.Utilities;
 using Topographer3D.ViewModels;
 
 namespace Topographer3D.Commands
 {
-    internal class ErodeCommand : ICommand
+    internal class AddLayerCommand : ICommand
     {
-        private MainViewModel _mainViewModel;
+        private LayerManager _layerManager;
 
-        public ErodeCommand(MainViewModel mainViewModel)
+        public AddLayerCommand(LayerManager layerManager)
         {
-            _mainViewModel = mainViewModel;
+            _layerManager = layerManager;
         }
 
         public event EventHandler CanExecuteChanged
@@ -21,12 +22,14 @@ namespace Topographer3D.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _mainViewModel.CanExecute;
+            return _layerManager.CanExecute;
         }
 
         public void Execute(object parameter)
         {
-            _mainViewModel.Erode();
+            Layer layer = (Layer)Enum.Parse(typeof(Layer), parameter.ToString());
+            _layerManager.AddNewLayer(layer);
+
         }
     }
 }

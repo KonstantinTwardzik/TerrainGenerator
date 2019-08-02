@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Topographer3D.Models
 {
-    public class OpenSimplexNoise
+    public class OpenSimplexNoiseAlgorithm
     {
         private const double STRETCH_2D = -0.211324865405187;    //(1/Math.sqrt(2+1)-1)/2;
         private const double SQUISH_2D = 0.366025403784439;      //(Math.sqrt(2+1)-1)/2;
@@ -24,7 +22,7 @@ namespace Topographer3D.Models
         private static Contribution2[] lookup2D;
 
 
-        static OpenSimplexNoise()
+        static OpenSimplexNoiseAlgorithm()
         {
             var base2D = new int[][]
             {
@@ -69,12 +67,11 @@ namespace Topographer3D.Models
             return x < xi ? xi - 1 : xi;
         }
 
-        public OpenSimplexNoise()
-            : this(DateTime.Now.Ticks)
+        public OpenSimplexNoiseAlgorithm() : this(DateTime.Now.Ticks)
         {
         }
 
-        public OpenSimplexNoise(long seed)
+        public OpenSimplexNoiseAlgorithm(long seed)
         {
             perm = new byte[256];
             perm2D = new byte[256];
