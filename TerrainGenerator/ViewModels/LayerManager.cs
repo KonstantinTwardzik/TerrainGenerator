@@ -144,24 +144,26 @@ namespace Topographer3D.ViewModels
 
         public void MoveLayer(BaseLayer layer, bool IsForward)
         {
-            if (IsForward)
+            if (!TerrainEngineIsOccupied)
             {
-                if (layer.Position != 0)
+                if (IsForward)
                 {
-                    Layers.RemoveAt(layer.Position);
-                    Layers.Insert(layer.Position - 1, layer);
+                    if (layer.Position != 0)
+                    {
+                        Layers.RemoveAt(layer.Position);
+                        Layers.Insert(layer.Position - 1, layer);
+                    }
                 }
-            }
-            else
-            {
-                if (layer.Position < Layers.Count - 1)
+                else
                 {
-                    Layers.RemoveAt(layer.Position);
-                    Layers.Insert(layer.Position + 1, layer);
+                    if (layer.Position < Layers.Count - 1)
+                    {
+                        Layers.RemoveAt(layer.Position);
+                        Layers.Insert(layer.Position + 1, layer);
+                    }
                 }
+                UpdateLayerView();
             }
-
-            UpdateLayerView();
         }
 
         private void UpdateLayerView()

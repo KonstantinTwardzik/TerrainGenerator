@@ -72,13 +72,17 @@ namespace Topographer3D.ViewModels
             }
             else if (layer.Position == currentLayerPosition && layerManager.Layers[currentLayerPosition - 1].IsProcessed == true)
             {
-                for (int x = 0; x < TerrainSize; x++)
+                if (layer.LayerType != Layer.DetailColorization)
                 {
-                    for (int z = 0; z < TerrainSize; z++)
+                    for (int x = 0; x < TerrainSize; x++)
                     {
-                        TerrainHeights[x + z * TerrainSize] = PreviousTerrainHeights[x + z * TerrainSize];
+                        for (int z = 0; z < TerrainSize; z++)
+                        {
+                            TerrainHeights[x + z * TerrainSize] = PreviousTerrainHeights[x + z * TerrainSize];
+                        }
                     }
                 }
+
                 SingleLayerCalculationStart(layer.Position);
             }
             else if (layer.Position > currentLayerPosition)
