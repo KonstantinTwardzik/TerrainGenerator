@@ -181,6 +181,7 @@
     <Compile Include="Models\DetailColoringAlgorithm.cs" />
     <Compile Include="Models\HydraulicErosionAlgorithm.cs" />
     <Compile Include="Models\OpenSimplexNoiseAlgorithm.cs" />
+    <Compile Include="ViewModels\Layers\HeightColorizationLayer.cs" />
     <Compile Include="ViewModels\Layers\HeightLayer.cs" />
     <Compile Include="ViewModels\Layers\DetailColorizationLayer.cs" />
     <Compile Include="ViewModels\Layers\HydraulicErosionLayer.cs" />

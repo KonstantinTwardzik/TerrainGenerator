@@ -13,10 +13,11 @@ namespace Topographer3D.ViewModels.Layers
 {
     class DetailColorizationLayer : BaseLayer
     {
-        #region ATTRIUBTES & PROPERTIES
+        #region ATTRIBUTES & PROPERTIES
         private DetailColoringAlgorithm _coloringAlgorithm;
         private int TerrainSize;
         private float[] TerrainPoints;
+        private byte[] rawImage;
 
         private LinearGradientBrush _gradientBorder;
         private Color color0Border;
@@ -550,7 +551,7 @@ namespace Topographer3D.ViewModels.Layers
             ColorizeCalculate();
 
             Processed();
-            terrainEngine.SingleLayerCalculationComplete(this, TerrainMainColors, TerrainBorderColors);
+            terrainEngine.SingleLayerCalculationComplete(this, TerrainMainColors, TerrainBorderColors, rawImage);
             Dispose();
         }
 
@@ -609,7 +610,7 @@ namespace Topographer3D.ViewModels.Layers
             #region ColorMap                                                                       
             PixelFormat pixelFormat = PixelFormats.Bgr24;
             int rawStride = (TerrainSize * pixelFormat.BitsPerPixel + 7) / 8;
-            byte[] rawImage = new byte[rawStride * TerrainSize];
+            rawImage = new byte[rawStride * TerrainSize];
 
             _coloringAlgorithm.UpdateValues(currentSelectedGradient, TerrainPoints, TerrainSize, ColorShift, ColorInvert);
             _coloringAlgorithm.calculateMinMax();

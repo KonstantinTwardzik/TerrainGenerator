@@ -127,6 +127,14 @@ namespace Topographer3D.ViewModels
                     Layers.Add(newDetailColorizationLayer);
                     ShowLayerDetails(newDetailColorizationLayer);
                     break;
+                case Layer.HeightColorization:
+                    HeightColorizationLayer newHeightColorizationLayer = new HeightColorizationLayer(this, terrainEngine);
+                    newHeightColorizationLayer.Name = GetName(Layer.HeightColorization, Layers.Count);
+                    newHeightColorizationLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/ColorizeIcon.png";
+                    newHeightColorizationLayer.Position = Layers.Count;
+                    Layers.Add(newHeightColorizationLayer);
+                    ShowLayerDetails(newHeightColorizationLayer);
+                    break;
             }
         }
 
@@ -212,6 +220,9 @@ namespace Topographer3D.ViewModels
                 case Layer.DetailColorization:
                     name = "Detail Color";
                     break;
+                case Layer.HeightColorization:
+                    name = "Height Color";
+                    break;
 
             }
             name = (layerPositon + 1) + " - " + name;
@@ -222,6 +233,7 @@ namespace Topographer3D.ViewModels
         {
             if (!TerrainEngineIsOccupied)
             {
+                layer.Unprocessed();
                 terrainEngine.StartCalculationToLayer(layer);
             }
         }

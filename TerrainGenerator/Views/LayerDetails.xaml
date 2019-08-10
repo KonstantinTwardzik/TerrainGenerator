@@ -13,7 +13,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type RadioButton}">
-                        <Border BorderBrush="{StaticResource TertiaryColor}" BorderThickness="1" x:Name="PART_Border" Height="50" Width="auto">
+                        <Border BorderBrush="{StaticResource TertiaryColor}" BorderThickness="1" x:Name="PART_Border" Height="25" Width="auto">
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -555,13 +555,14 @@
 
         <!--DETAIL COLORIZATION-->
         <DataTemplate DataType="{x:Type Layer:DetailColorizationLayer}">
-            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="800">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="600">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -660,6 +661,322 @@
             </Grid>
         </DataTemplate>
 
+        <!--HEIGHT COLORIZATION-->
+        <DataTemplate DataType="{x:Type Layer:HeightColorizationLayer}">
+            <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="2000">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Background="{StaticResource LighterBlue}" Margin="0,5,0,10" CornerRadius="25" BorderThickness="0" Height="50"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.25*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.25*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding ImagePath}" Margin="8,2,2,2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontSize="24" FontWeight="DemiBold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Grid.Row="0" Grid.Column="2" Command="{Binding DeleteLayerCommand}" BorderThickness="0" Margin="2,2,8,2" Style="{StaticResource DeleteButton}">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Topographer3D;component/Assets/Icons/DeleteLayer.png" Width="24"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--MIN HEIGHT-->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Minimum Height"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.2"  Value="{Binding MinHeight, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding MinHeight, Mode=TwoWay}"/>
+
+                <!--MAX HEIGHT-->
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Maximum Height"/>
+                <Slider  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.2"  Value="{Binding MaxHeight, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="4" Grid.Column="2" Text="{Binding MaxHeight, Mode=TwoWay}"/>
+
+                <!--COLOR NOISE-->
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Color Noise"/>
+                <Slider  Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.2"  Value="{Binding ColorNoise, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="6" Grid.Column="2" Text="{Binding ColorNoise, Mode=TwoWay}"/>
+
+                <!--HEIGHT NOISE AMOUNT-->
+                <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Height Noise Amount"/>
+                <Slider  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.2"  Value="{Binding HeightNoiseAmount, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="8" Grid.Column="2" Text="{Binding HeightNoiseAmount, Mode=TwoWay}"/>
+
+                <!--HEIGHT NOISE SCALE-->
+                <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Height Noise Scale"/>
+                <Slider  Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="3" TickFrequency="0.5" LargeChange="0.5"  Value="{Binding HeightNoiseScale, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="10" Grid.Column="2" Text="{Binding HeightNoiseScale, Mode=TwoWay}"/>
+
+                <RadioButton Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" GroupName="ColorRBs" IsChecked="{Binding Color10Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush10}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color11Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush11}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color12Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush12}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color13Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush13}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color14Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush14}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color20Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush20}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color21Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush21}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color22Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush22}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color23Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush23}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                
+                <RadioButton Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color24Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush24}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                
+                <RadioButton Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color30Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush30}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                
+                <RadioButton Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color31Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush31}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="23" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color32Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush32}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="24" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color33Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush33}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="25" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color34Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush34}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color40Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush40}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="27" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color41Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush41}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color42Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush42}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="29" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color43Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush43}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="30" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color44Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush44}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                
+                <RadioButton Grid.Row="31" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color50Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush50}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton Grid.Row="32" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color51Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush51}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                
+                <RadioButton Grid.Row="33" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color52Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush52}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                
+                <RadioButton Grid.Row="34" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color53Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush53}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="35" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color54Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush54}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                
+                <RadioButton Grid.Row="36" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color60Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush60}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton Grid.Row="37" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color61Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush61}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="38" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color62Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush62}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="39" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color63Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush63}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="40" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color64Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush64}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="41" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color70Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush70}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="42" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color71Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush71}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="43" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color72Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush72}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="44" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color73Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush73}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+
+                <RadioButton Grid.Row="45" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" GroupName="ColorRBs" IsChecked="{Binding Color74Bool}">
+                    <RadioButton.Content>
+                        <Rectangle Fill="{Binding ColorBrush74}"/>
+                    </RadioButton.Content>
+                </RadioButton>
+ 
+                <!--APPLICATION-->
+                <Button Grid.Row="47" Grid.Column="0" Grid.ColumnSpan="3" Content="Apply" Margin="4,0,0,0" FontSize="16" FontWeight="DemiBold" Command="{Binding CalculateCommand}"/>
+            </Grid>
+        </DataTemplate>
     </UserControl.Resources>
 
 
@@ -689,6 +1006,7 @@
 
                 <TextBlock Text="Colorization" Margin="0,15,0,5"/>
                 <Button Content="Detail Colorization" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="DetailColorization"/>
+                <Button Content="Height Colorization" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="HeightColorization"/>
             </StackPanel>
 
         </Grid>

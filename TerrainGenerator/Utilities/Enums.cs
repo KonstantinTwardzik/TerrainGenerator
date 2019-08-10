@@ -14,7 +14,8 @@ namespace Topographer3D.Utilities
         OpenSimplex,
         Voronoi,
         Hydraulic,
-        DetailColorization
+        DetailColorization, 
+        HeightColorization
     }
 
     public enum ApplicationMode

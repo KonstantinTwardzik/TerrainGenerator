@@ -172,7 +172,12 @@ namespace Topographer3D.ViewModels
 
         public void UpdateTextures(MemoryStream terrainMainColors, MemoryStream terrainBorderColors)
         {
-            Viewport.UpdateTexture(terrainMainColors, terrainBorderColors);
+            Viewport.UpdateTextures(terrainMainColors, terrainBorderColors);
+        }
+
+        public void UpdateTexture(MemoryStream terrainMainColors)
+        {
+            Viewport.UpdateTexture(terrainMainColors);
         }
 
         public void ResetTextures()

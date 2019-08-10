@@ -15,14 +15,19 @@ namespace Topographer3D.ViewModels
         private MainViewModel mainViewModel;
         private int currentLayerPosition;
 
+
         // TERRAIN VALUES
         public float[] TerrainHeights { get; set; }
         public float[] PreviousTerrainHeights { get; set; }
+
+        public byte[] PreviousColors { get; set; }
+        public byte[] CurrentColors { get; set; }
         public int TerrainSize { get; set; }
 
         // MAP EXPORT
         public BitmapImage HeightMapImage { get; set; }
         public BitmapImage ColorMapImage { get; set; }
+
         #endregion
 
         #region INITIALIZATION
@@ -66,12 +71,15 @@ namespace Topographer3D.ViewModels
             layerManager.SetStatusBar(true);
             if (layer.Position < currentLayerPosition || currentLayerPosition == 0)
             {
+                Console.WriteLine("layer.Position < currentLayerPosition || currentLayerPosition == 0");
                 ResetTerrainEngine();
                 currentLayerPosition = layer.Position;
                 SingleLayerCalculationStart(0);
             }
+
             else if (layer.Position == currentLayerPosition && layerManager.Layers[currentLayerPosition - 1].IsProcessed == true)
             {
+                Console.WriteLine("layer.Position == currentLayerPosition && layerManager.Layers[currentLayerPosition - 1].IsProcessed == true");
                 if (layer.LayerType != Layer.DetailColorization)
                 {
                     for (int x = 0; x < TerrainSize; x++)
@@ -82,11 +90,30 @@ namespace Topographer3D.ViewModels
                         }
                     }
                 }
-
                 SingleLayerCalculationStart(layer.Position);
             }
             else if (layer.Position > currentLayerPosition)
             {
+                Console.WriteLine("layer.Position > currentLayerPosition");
+                for (int x = 0; x < TerrainSize; x++)
+                {
+                    for (int z = 0; z < TerrainSize; z++)
+                    {
+                        PreviousTerrainHeights[x + z * TerrainSize] = TerrainHeights[x + z * TerrainSize];
+                    }
+                }
+                if(CurrentColors != null)
+                {
+                    PreviousColors = new byte[CurrentColors.Length];
+                    for (int i = 0; i < CurrentColors.Length; i++)
+                    {
+                        PreviousColors[i] = CurrentColors[i];
+                        
+                    }
+
+                }
+
+
                 int startCalculationPosition = currentLayerPosition + 1;
                 currentLayerPosition = layer.Position;
                 SingleLayerCalculationStart(startCalculationPosition);
@@ -94,7 +121,7 @@ namespace Topographer3D.ViewModels
             else
             {
                 Console.WriteLine("Fehler");
-                
+
             }
         }
 
@@ -130,6 +157,10 @@ namespace Topographer3D.ViewModels
                     DetailColorizationLayer detailColorizationLayer = currentLayer as DetailColorizationLayer;
                     detailColorizationLayer.StartColorization(TerrainSize, TerrainHeights);
                     break;
+                case Layer.HeightColorization:
+                    HeightColorizationLayer heightColorizationLayer = currentLayer as HeightColorizationLayer;
+                    heightColorizationLayer.StartColorization(TerrainSize, TerrainHeights, PreviousColors);
+                    break;
             }
 
         }
@@ -151,9 +182,44 @@ namespace Topographer3D.ViewModels
             StartNextLayerCalculation(layer);
         }
 
-        internal void SingleLayerCalculationComplete(BaseLayer layer, MemoryStream terrainMainColors, MemoryStream terrainBorderColors)
+        internal void SingleLayerCalculationComplete(BaseLayer layer, MemoryStream terrainMainColors, MemoryStream terrainBorderColors, byte[] currentColors)
         {
+            if (layer.Position < currentLayerPosition)
+            {
+                PreviousColors = new byte[currentColors.Length];
+                
+                for (int i = 0; i < currentColors.Length; i++)
+                {
+                    PreviousColors[i] = currentColors[i];
+                }
+            }
+            CurrentColors = new byte[currentColors.Length];
+            for (int i = 0; i < currentColors.Length; i++)
+            {
+                CurrentColors[i] = currentColors[i];
+            }
             mainViewModel.UpdateTextures(terrainMainColors, terrainBorderColors);
+            CreateAlbedoMap(terrainMainColors);
+            StartNextLayerCalculation(layer);
+        }
+
+        internal void SingleLayerCalculationComplete(BaseLayer layer, MemoryStream terrainMainColors, byte[] currentColors)
+        {
+            if (layer.Position < currentLayerPosition)
+            {
+                PreviousColors = new byte[currentColors.Length];
+
+                for (int i = 0; i < currentColors.Length; i++)
+                {
+                    PreviousColors[i] = currentColors[i];
+                }
+            }
+            CurrentColors = new byte[currentColors.Length];
+            for (int i = 0; i < currentColors.Length; i++)
+            {
+                CurrentColors[i] = currentColors[i];
+            }
+            mainViewModel.UpdateTexture(terrainMainColors);
             CreateAlbedoMap(terrainMainColors);
             StartNextLayerCalculation(layer);
         }
@@ -250,7 +316,7 @@ namespace Topographer3D.ViewModels
                 Save(HeightMapImage, heightFilePath);
             }
 
-            if (ColorMapImage.IsFrozen)
+            if (ColorMapImage != null && ColorMapImage.IsFrozen)
             {
                 String albedoFilePath = filePath.Insert(index, "_albedo");
                 Save(ColorMapImage, albedoFilePath);

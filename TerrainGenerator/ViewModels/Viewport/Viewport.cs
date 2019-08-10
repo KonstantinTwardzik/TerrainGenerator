@@ -422,13 +422,20 @@ namespace Topographer3D.ViewModels
             TerrainMeshBorderGeometry3D = borderMesh.ToMeshGeometry3D();
         }
 
-        public void UpdateTexture(MemoryStream terrainMainColors, MemoryStream terrainBorderColors)
+        public void UpdateTextures(MemoryStream terrainMainColors, MemoryStream terrainBorderColors)
         {
             TerrainMeshMainTexture = new TextureModel(terrainMainColors);
             TerrainMeshBorderTexture = new TextureModel(terrainBorderColors);
 
             TerrainMeshMainMaterial.DiffuseMap = TerrainMeshMainTexture;
             TerrainMeshBorderMaterial.DiffuseMap = TerrainMeshBorderTexture;
+        }
+
+        public void UpdateTexture(MemoryStream terrainMainColors)
+        {
+            TerrainMeshMainTexture = new TextureModel(terrainMainColors);
+
+            TerrainMeshMainMaterial.DiffuseMap = TerrainMeshMainTexture;
         }
 
         #endregion

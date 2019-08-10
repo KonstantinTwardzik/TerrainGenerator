@@ -72,7 +72,6 @@ namespace Topographer3D.ViewModels.Layers
 
         public void Calculate()
         {
-            Unprocessed();
             LayerManager.Calculate(this);
         }
 
