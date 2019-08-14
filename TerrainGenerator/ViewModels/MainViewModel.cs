@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Forms;
 using Topographer3D.Commands;
 using Topographer3D.Utilities;
+using Topographer3D.Models;
 
 namespace Topographer3D.ViewModels
 {
@@ -19,6 +20,8 @@ namespace Topographer3D.ViewModels
         private double oldTop;
         private double oldWidth;
         private double oldHeight;
+
+
         public string MaxImagePath { get; private set; }
 
         // LOGIC 
@@ -26,6 +29,7 @@ namespace Topographer3D.ViewModels
         public TerrainEngine TerrainEngine { get; private set; }
         public ViewportCamera ViewportCamera { get; private set; }
         public LayerManager LayerManager { get; private set; }
+        public TerrainModel TerrainModel { get; private set; }
 
         // TERRAIN SIZES
         public bool Res16 { get; private set; }
@@ -57,9 +61,10 @@ namespace Topographer3D.ViewModels
 
         private void InitLogic()
         {
-            TerrainEngine = new TerrainEngine();
+            TerrainModel = new TerrainModel();
+            TerrainEngine = new TerrainEngine(TerrainModel);
             ViewportCamera = new ViewportCamera();
-            Viewport = new Viewport(TerrainEngine, ViewportCamera);
+            Viewport = new Viewport(TerrainEngine, ViewportCamera, TerrainModel);
             LayerManager = new LayerManager(TerrainEngine);
             TerrainEngine.InitLogic(LayerManager, this);
         }

@@ -13,6 +13,7 @@ using Color = System.Windows.Media.Color;
 using Colors = System.Windows.Media.Colors;
 using Topographer3D.Commands;
 using Topographer3D.Utilities;
+using Topographer3D.Models;
 
 namespace Topographer3D.ViewModels
 {
@@ -20,10 +21,48 @@ namespace Topographer3D.ViewModels
     {
         #region PROPERTIES
 
+        private TerrainModel terrainModel;
         private TerrainEngine terrainEngine;
         private ViewportCamera viewportCamera;
         private MeshBuilder terrainMesh;
         private MeshBuilder borderMesh;
+
+        public MeshGeometry3D TerrainMeshMainGeometry3D
+        {
+            get { return terrainModel.TerrainMeshMainGeometry3D; }
+            set { terrainModel.TerrainMeshMainGeometry3D = value; }
+        }
+        public MeshGeometry3D TerrainMeshBorderGeometry3D
+        {
+            get { return terrainModel.TerrainMeshBorderGeometry3D; }
+            set { terrainModel.TerrainMeshBorderGeometry3D = value; }
+        }
+        public PhongMaterial TerrainMeshMainMaterial
+        {
+            get { return terrainModel.TerrainMeshMainMaterial; }
+            set { terrainModel.TerrainMeshMainMaterial = value; }
+        }
+        public PhongMaterial TerrainMeshBorderMaterial
+        {
+            get { return terrainModel.TerrainMeshBorderMaterial; }
+            set { terrainModel.TerrainMeshBorderMaterial = value; }
+        }
+        public Transform3D TerrainMeshTransform
+        {
+            get { return terrainModel.TerrainMeshTransform; }
+            set { terrainModel.TerrainMeshTransform = value; }
+        }
+
+        public TextureModel TerrainMeshMainTexture
+        {
+            get { return terrainModel.TerrainMeshMainTexture; }
+            set { terrainModel.TerrainMeshMainTexture = value; }
+        }
+        public TextureModel TerrainMeshBorderTexture
+        {
+            get { return terrainModel.TerrainMeshBorderTexture; }
+            set { terrainModel.TerrainMeshBorderTexture = value; }
+        }
 
         public IEffectsManager EffectsManager
         {
@@ -32,14 +71,7 @@ namespace Topographer3D.ViewModels
 
         public float HeightMultiplicator { get; set; }
         public Color DirectionalLightColor { get; private set; }
-        public MeshGeometry3D TerrainMeshMainGeometry3D { get; private set; }
-        public MeshGeometry3D TerrainMeshBorderGeometry3D { get; private set; }
-        public PhongMaterial TerrainMeshMainMaterial { get; private set; }
-        public PhongMaterial TerrainMeshBorderMaterial { get; private set; }
-        public Transform3D TerrainMeshMainTransform { get; private set; }
-        public Transform3D TerrainMeshBorderTransform { get; private set; }
-        public TextureModel TerrainMeshMainTexture { get; private set; }
-        public TextureModel TerrainMeshBorderTexture { get; private set; }
+
 
 
         public FXAALevel FXAA { get; private set; }
@@ -56,8 +88,9 @@ namespace Topographer3D.ViewModels
         #endregion
 
         #region INITIALIZATION
-        public Viewport(TerrainEngine terrainSettings, ViewportCamera viewportCamera)
+        public Viewport(TerrainEngine terrainSettings, ViewportCamera viewportCamera, TerrainModel terrainModel)
         {
+            this.terrainModel = terrainModel;
             EffectsManager = new DefaultEffectsManager();
             this.terrainEngine = terrainSettings;
             this.viewportCamera = viewportCamera;
@@ -133,7 +166,7 @@ namespace Topographer3D.ViewModels
             TerrainMeshMainMaterial = new PhongMaterial();
 
             TerrainMeshMainMaterial.RenderDiffuseMap = true;
-            TerrainMeshMainTransform = new Media3D.TranslateTransform3D(0, 0, 0);
+            TerrainMeshTransform = new Media3D.TranslateTransform3D(0, 0, 0);
         }
 
         private void GenerateBorder()
@@ -145,7 +178,6 @@ namespace Topographer3D.ViewModels
             TerrainMeshBorderGeometry3D = borderMesh.ToMeshGeometry3D();
             TerrainMeshBorderMaterial = new PhongMaterial();
             TerrainMeshBorderMaterial.RenderDiffuseMap = true;
-            TerrainMeshBorderTransform = new Media3D.TranslateTransform3D(0, 0, 0);
         }
 
         private void GenerateTerrainPositions()

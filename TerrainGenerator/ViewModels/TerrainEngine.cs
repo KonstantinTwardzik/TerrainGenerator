@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Topographer3D.Models;
 using Topographer3D.Utilities;
 using Topographer3D.ViewModels.Layers;
 
@@ -13,16 +14,39 @@ namespace Topographer3D.ViewModels
         // LOGIC
         private LayerManager layerManager;
         private MainViewModel mainViewModel;
+        private TerrainModel terrainModel;
         private int currentLayerPosition;
 
-
         // TERRAIN VALUES
-        public float[] TerrainHeights { get; set; }
-        public float[] PreviousTerrainHeights { get; set; }
+        public float[] TerrainHeights
+        {
+            get { return terrainModel.TerrainHeights; }
+            set { terrainModel.TerrainHeights = value; }
+        }
+        public float[] PreviousTerrainHeights
+        {
+            get { return terrainModel.PreviousTerrainHeights; }
+            set { terrainModel.PreviousTerrainHeights = value; }
+        }
 
-        public byte[] PreviousColors { get; set; }
-        public byte[] CurrentColors { get; set; }
-        public int TerrainSize { get; set; }
+        public byte[] PreviousColors
+        {
+            get { return terrainModel.PreviousColors; }
+            set { terrainModel.PreviousColors = value; }
+        }
+
+        public byte[] CurrentColors
+        {
+            get { return terrainModel.CurrentColors; }
+            set { terrainModel.CurrentColors = value; }
+        }
+
+        public int TerrainSize
+        {
+            get { return terrainModel.TerrainSize; }
+            set { terrainModel.TerrainSize = value; }
+        }
+
 
         // MAP EXPORT
         public BitmapImage HeightMapImage { get; set; }
@@ -31,8 +55,9 @@ namespace Topographer3D.ViewModels
         #endregion
 
         #region INITIALIZATION
-        public TerrainEngine()
+        public TerrainEngine(TerrainModel terrainModel)
         {
+            this.terrainModel = terrainModel;
             currentLayerPosition = 0;
             TerrainSize = 512;
             FlattenTerrain();

@@ -48,8 +48,8 @@
 
         <hx:Viewport3DX Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="#383838" Camera="{Binding ViewportCamera.Camera}" EffectsManager="{Binding Viewport.EffectsManager}" SSAOIntensity="10" ShowViewCube="False" FXAALevel="{Binding Viewport.FXAA}" MSAA="{Binding Viewport.MSAA}" SSAOQuality="{Binding Viewport.SSAO}" EnableSSAO="True" UseDefaultGestures="True" IsZoomEnabled="True" ZoomDistanceLimitFar="{Binding Viewport.MaxZoom}" ZoomDistanceLimitNear="{Binding Viewport.MinZoom}" IsMoveEnabled="False" RotateCursor="None" ShowCameraTarget="False" IsChangeFieldOfViewEnabled="False" IsPanEnabled="False" IsInertiaEnabled="False" EnableAutoOctreeUpdate="False">
             <hx:DirectionalLight3D Direction="{Binding ViewportCamera.DirectionalLightDirection}" Color="{Binding Viewport.DirectionalLightColor}" />
-            <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshMainGeometry3D}" Material="{Binding Viewport.TerrainMeshMainMaterial}" Transform="{Binding Viewport.TerrainMeshMainTransform}" />
-            <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshBorderGeometry3D}" Material="{Binding Viewport.TerrainMeshBorderMaterial}" Transform="{Binding Viewport.TerrainMeshBorderTransform}" />
+            <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshMainGeometry3D}" Material="{Binding Viewport.TerrainMeshMainMaterial}" Transform="{Binding Viewport.TerrainMeshTransform}" />
+            <hx:MeshGeometryModel3D Geometry="{Binding Viewport.TerrainMeshBorderGeometry3D}" Material="{Binding Viewport.TerrainMeshBorderMaterial}" Transform="{Binding Viewport.TerrainMeshTransform}" />
         </hx:Viewport3DX>
 
         <StackPanel VerticalAlignment="Top" Grid.Column="1" Grid.Row="0">

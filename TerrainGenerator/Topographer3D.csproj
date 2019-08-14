@@ -70,7 +70,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -174,13 +174,14 @@
     <Compile Include="Commands\ShowLayerSelectionCommand.cs" />
     <Compile Include="Commands\DetailResolutionCommand.cs" />
     <Compile Include="Models\RestrictedCamera.cs" />
+    <Compile Include="Models\TerrainModel.cs" />
     <Compile Include="Utilities\Application.cs" />
     <Compile Include="Utilities\Enums.cs" />
     <Compile Include="Utilities\ObservableObject.cs" />
     <Compile Include="ViewModels\Layers\BaseLayer.cs" />
-    <Compile Include="Models\DetailColoringAlgorithm.cs" />
-    <Compile Include="Models\HydraulicErosionAlgorithm.cs" />
-    <Compile Include="Models\OpenSimplexNoiseAlgorithm.cs" />
+    <Compile Include="Utilities\DetailColoringAlgorithm.cs" />
+    <Compile Include="Utilities\HydraulicErosionAlgorithm.cs" />
+    <Compile Include="Utilities\OpenSimplexNoiseAlgorithm.cs" />
     <Compile Include="ViewModels\Layers\HeightColorizationLayer.cs" />
     <Compile Include="ViewModels\Layers\HeightLayer.cs" />
     <Compile Include="ViewModels\Layers\DetailColorizationLayer.cs" />
