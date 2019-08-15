@@ -552,7 +552,6 @@ namespace Topographer3D.ViewModels.Layers
 
             Processed();
             terrainEngine.SingleLayerCalculationComplete(this, TerrainMainColors, TerrainBorderColors, rawImage);
-            Dispose();
         }
 
         public void ColorizeCalculate()
@@ -734,12 +733,5 @@ namespace Topographer3D.ViewModels.Layers
 
         #endregion
 
-        #region DISPOSABLE
-        protected override void Dispose()
-        {
-            TerrainPoints = null;
-        }
-
-        #endregion
     }
 }

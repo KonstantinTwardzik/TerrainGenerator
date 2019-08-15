@@ -31,10 +31,5 @@ namespace Topographer3D.ViewModels.Layers
             VoronoiScaleZ = 0.5f;
             VoronoiSeed = 500;
         }
-
-        protected override void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

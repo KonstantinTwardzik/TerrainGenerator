@@ -203,17 +203,9 @@ namespace Topographer3D.ViewModels.Layers
         {
             Processed();
             terrainEngine.SingleLayerCalculationComplete(this, TerrainPoints);
-            Dispose();
         }
 
         #endregion
 
-        #region Disposable
-        protected override void Dispose()
-        {
-            TerrainPoints = null;
-        }
-
-        #endregion
     }
 }

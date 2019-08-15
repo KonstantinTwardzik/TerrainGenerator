@@ -93,11 +93,6 @@ namespace Topographer3D.ViewModels.Layers
 
         #endregion
 
-        #region DISPOSABLE SUPPORT
-        protected abstract void Dispose();
-
-        #endregion
-
         #region ICOMMANDS
         public bool CanExecute { get { return true; } }
         public ICommand ShowLayerDetailsCommand { get; private set; }
