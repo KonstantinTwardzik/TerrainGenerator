@@ -140,14 +140,20 @@ namespace Topographer3D.ViewModels
 
         public void DeleteLayer(BaseLayer layer)
         {
-            Layers.Remove(layer);
-            UpdateLayerView();
+            if (!TerrainEngineIsOccupied)
+            {
+                Layers.Remove(layer);
+                UpdateLayerView();
+            }
         }
 
         public void DeleteAllLayers()
         {
-            Layers.Clear();
-            UpdateLayerView();
+            if (!TerrainEngineIsOccupied)
+            {
+                Layers.Clear();
+                UpdateLayerView();
+            }
         }
 
         public void MoveLayer(BaseLayer layer, bool IsForward)
