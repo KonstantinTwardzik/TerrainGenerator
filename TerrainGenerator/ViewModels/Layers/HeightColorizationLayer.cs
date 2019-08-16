@@ -410,7 +410,7 @@ namespace Topographer3D.ViewModels.Layers
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    float randomizedHeight = TerrainPoints[x + z * TerrainSize] + (float)((osn.Evaluate(x * 0.2 * HeightNoiseScale, z * 0.2 * HeightNoiseScale) - 0.5) * HeightNoiseAmount * 0.15);
+                    float randomizedHeight = TerrainPoints[z + x * TerrainSize] + (float)((osn.Evaluate(x * 0.2 * HeightNoiseScale, z * 0.2 * HeightNoiseScale) - 0.5) * HeightNoiseAmount * 0.15);
                     if (randomizedHeight >= MinHeight && randomizedHeight <= MaxHeight)
                     {
 

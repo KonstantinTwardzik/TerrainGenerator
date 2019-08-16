@@ -402,9 +402,9 @@ namespace Topographer3D.ViewModels
             {
                 for (int z = 0; z < terrainEngine.TerrainSize; z++)
                 {
-                    point = terrainMesh.Positions[x + (z * terrainEngine.TerrainSize)];
-                    point.Y = (float)(terrainEngine.TerrainHeights[x + z * terrainEngine.TerrainSize] * HeightMultiplicator);
-                    terrainMesh.Positions[x + z * terrainEngine.TerrainSize] = point;
+                    point = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize)];
+                    point.Y = (float)(terrainEngine.TerrainHeights[z + x * terrainEngine.TerrainSize] * HeightMultiplicator);
+                    terrainMesh.Positions[z + x * terrainEngine.TerrainSize] = point;
                 }
             }
             TerrainMeshMainGeometry3D = terrainMesh.ToMeshGeometry3D();
@@ -413,13 +413,13 @@ namespace Topographer3D.ViewModels
             {
                 for (int z = 1; z < terrainEngine.TerrainSize - 1; z++)
                 {
-                    Vector3 neighbour0 = terrainMesh.Positions[x + (z * terrainEngine.TerrainSize) - 1];
-                    Vector3 neighbour1 = terrainMesh.Positions[x + (z * terrainEngine.TerrainSize) + 1];
-                    Vector3 neighbour2 = terrainMesh.Positions[x + (z * terrainEngine.TerrainSize) - terrainEngine.TerrainSize];
-                    Vector3 neighbour3 = terrainMesh.Positions[x + (z * terrainEngine.TerrainSize) + terrainEngine.TerrainSize];
+                    Vector3 neighbour0 = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize) - 1];
+                    Vector3 neighbour1 = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize) + 1];
+                    Vector3 neighbour2 = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize) - terrainEngine.TerrainSize];
+                    Vector3 neighbour3 = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize) + terrainEngine.TerrainSize];
                     Vector3 vec0 = neighbour0 - neighbour1;
                     Vector3 vec1 = neighbour2 - neighbour3;
-                    terrainMesh.Normals[x + z * terrainEngine.TerrainSize] = Vector3.Cross(vec0, vec1);
+                    terrainMesh.Normals[z + x * terrainEngine.TerrainSize] = Vector3.Cross(vec0, vec1);
                 }
             }
 

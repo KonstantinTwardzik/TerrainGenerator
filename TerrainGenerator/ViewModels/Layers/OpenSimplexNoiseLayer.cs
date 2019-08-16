@@ -110,7 +110,7 @@ namespace Topographer3D.ViewModels.Layers
                             value = (float)((_openSimplexNoise.Evaluate(xValue, zValue) * octaveWeight) / 2);
                         }
 
-                        helper[x + z * TerrainSize] += value * OSNStrength;
+                        helper[z + x * TerrainSize] += value * OSNStrength;
                     }
                 }
                 octaveWeight /= 2.0f - (OSNOctaveWeight - 0.5f);
@@ -124,7 +124,7 @@ namespace Topographer3D.ViewModels.Layers
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    TerrainPoints[x + z * TerrainSize] = Application.Apply(TerrainPoints[x + z * TerrainSize], helper[x + z * TerrainSize], CurrentApplicationMode);
+                    TerrainPoints[z + x * TerrainSize] = Application.Apply(TerrainPoints[z + x * TerrainSize], helper[z + x * TerrainSize], CurrentApplicationMode);
                 }
             }
         }

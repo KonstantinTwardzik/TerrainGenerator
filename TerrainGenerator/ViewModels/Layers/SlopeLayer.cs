@@ -200,7 +200,7 @@ namespace Topographer3D.ViewModels.Layers
                             break;
 
                     }
-                    TerrainPoints[x + z * TerrainSize] = Application.Apply(TerrainPoints[x + z * TerrainSize], value, CurrentApplicationMode);
+                    TerrainPoints[z + x * TerrainSize] = Application.Apply(TerrainPoints[z + x * TerrainSize], value, CurrentApplicationMode);
                 }
                 int progressPercentage = (int)(((float)x / (float)TerrainSize) * 100);
                 (sender as BackgroundWorker).ReportProgress(progressPercentage);

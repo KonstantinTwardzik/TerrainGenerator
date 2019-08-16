@@ -78,15 +78,11 @@ namespace Topographer3D.ViewModels
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    TerrainHeights[x + z * TerrainSize] = 0;
+                    TerrainHeights[z + x * TerrainSize] = 0;
                 }
             }
         }
 
-        internal void SetTerrainSize(int terrainSize)
-        {
-            TerrainSize = terrainSize;
-        }
         #endregion
 
         #region LAYER HANDLING
@@ -111,7 +107,7 @@ namespace Topographer3D.ViewModels
                     {
                         for (int z = 0; z < TerrainSize; z++)
                         {
-                            TerrainHeights[x + z * TerrainSize] = PreviousTerrainHeights[x + z * TerrainSize];
+                            TerrainHeights[z + x * TerrainSize] = PreviousTerrainHeights[z + x * TerrainSize];
                         }
                     }
                 }
@@ -124,7 +120,7 @@ namespace Topographer3D.ViewModels
                 {
                     for (int z = 0; z < TerrainSize; z++)
                     {
-                        PreviousTerrainHeights[x + z * TerrainSize] = TerrainHeights[x + z * TerrainSize];
+                        PreviousTerrainHeights[z + x * TerrainSize] = TerrainHeights[z + x * TerrainSize];
                     }
                 }
                 if(CurrentColors != null)
@@ -142,11 +138,6 @@ namespace Topographer3D.ViewModels
                 int startCalculationPosition = currentLayerPosition + 1;
                 currentLayerPosition = layer.Position;
                 SingleLayerCalculationStart(startCalculationPosition);
-            }
-            else
-            {
-                Console.WriteLine("Fehler");
-
             }
         }
 
@@ -198,11 +189,11 @@ namespace Topographer3D.ViewModels
                 {
                     for (int z = 0; z < TerrainSize; z++)
                     {
-                        PreviousTerrainHeights[x + z * TerrainSize] = terrainHeights[x + z * TerrainSize];
+                        PreviousTerrainHeights[z + x * TerrainSize] = terrainHeights[z + x * TerrainSize];
                     }
                 }
             }
-            TerrainHeights = terrainHeights;
+            //TerrainHeights = terrainHeights;
             mainViewModel.UpdateMesh();
             StartNextLayerCalculation(layer);
         }
@@ -273,7 +264,6 @@ namespace Topographer3D.ViewModels
             FlattenTerrain();
             mainViewModel.UpdateMesh();
             mainViewModel.ResetTextures();
-
         }
 
         #endregion
@@ -292,7 +282,7 @@ namespace Topographer3D.ViewModels
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    byte[] bytes = BitConverter.GetBytes((float)TerrainHeights[x + z * TerrainSize]);
+                    byte[] bytes = BitConverter.GetBytes((float)TerrainHeights[z + x * TerrainSize]);
                     for (int i = 0; i < 4; i++)
                     {
                         if (count >= rawImage.Length)

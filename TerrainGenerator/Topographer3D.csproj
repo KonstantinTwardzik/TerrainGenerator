@@ -83,7 +83,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>C:\Users\konst\Desktop\Topographer3D\</OutputPath>
+    <OutputPath>..\..\..\..\Desktop\Topographer3D\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <Optimize>true</Optimize>
