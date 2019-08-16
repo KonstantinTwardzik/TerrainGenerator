@@ -275,8 +275,7 @@ namespace Topographer3D.ViewModels
                     Res4096 = false;
                     break;
             }
-
-            TerrainEngine.SetTerrainSize(terrainSize);
+            TerrainModel.TerrainSize = terrainSize;
             Viewport.InitModel();
             Viewport.InitDefaultViewportSettings();
             TerrainEngine.ResetTerrainEngine();

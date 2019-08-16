@@ -46,7 +46,7 @@ namespace Topographer3D.ViewModels.Layers
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    TerrainPoints[x + z * TerrainSize] = Application.Apply(TerrainPoints[x + z * TerrainSize], Height, CurrentApplicationMode);
+                    TerrainPoints[z + x * TerrainSize] = Application.Apply(TerrainPoints[z + x * TerrainSize], Height, CurrentApplicationMode);
                 }
 
                 int progressPercentage = (int)(((float)x / (float)TerrainSize) * 100);
