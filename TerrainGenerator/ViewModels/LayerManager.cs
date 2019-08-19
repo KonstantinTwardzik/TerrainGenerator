@@ -101,13 +101,13 @@ namespace Topographer3D.ViewModels
                     Layers.Add(newOSNLayer);
                     ShowLayerDetails(newOSNLayer);
                     break;
-                case Layer.Voronoi:
-                    VoronoiNoiseLayer newVoronoiLayer = new VoronoiNoiseLayer(this, terrainEngine);
-                    newVoronoiLayer.Name = GetName(Layer.Voronoi, Layers.Count);
-                    newVoronoiLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIcon.png";
-                    newVoronoiLayer.Position = Layers.Count;
-                    Layers.Add(newVoronoiLayer);
-                    ShowLayerDetails(newVoronoiLayer);
+                case Layer.CellNoise:
+                    CellNoiseLayer newCellNoiseLayer = new CellNoiseLayer(this, terrainEngine);
+                    newCellNoiseLayer.Name = GetName(Layer.CellNoise, Layers.Count);
+                    newCellNoiseLayer.ImagePath = "pack://application:,,,/Topographer3D;component/Assets/Icons/RaiseIcon.png";
+                    newCellNoiseLayer.Position = Layers.Count;
+                    Layers.Add(newCellNoiseLayer);
+                    ShowLayerDetails(newCellNoiseLayer);
                     break;
 
                 case Layer.Hydraulic:
@@ -217,8 +217,8 @@ namespace Topographer3D.ViewModels
                 case Layer.OpenSimplex:
                     name = "Open Simplex";
                     break;
-                case Layer.Voronoi:
-                    name = "Voronoi";
+                case Layer.CellNoise:
+                    name = "Cell Noise";
                     break;
                 case Layer.Hydraulic:
                     name = "Hydraulic";

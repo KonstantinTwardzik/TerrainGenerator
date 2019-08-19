@@ -188,7 +188,7 @@
     <Compile Include="ViewModels\Layers\HydraulicErosionLayer.cs" />
     <Compile Include="ViewModels\Layers\IslandLayer.cs" />
     <Compile Include="ViewModels\Layers\SlopeLayer.cs" />
-    <Compile Include="ViewModels\Layers\VoronoiNoiseLayer.cs" />
+    <Compile Include="ViewModels\Layers\CellNoiseLayer.cs" />
     <Compile Include="ViewModels\LayerManager.cs" />
     <Compile Include="ViewModels\Layers\OpenSimplexNoiseLayer.cs" />
     <Compile Include="ViewModels\Viewport\ViewportCamera.cs" />

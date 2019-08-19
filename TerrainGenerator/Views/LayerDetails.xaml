@@ -369,8 +369,8 @@
             </Grid>
         </DataTemplate>
 
-        <!--VORONOI  NOT IMPLEMENTED YET-->
-        <DataTemplate DataType="{x:Type Layer:VoronoiNoiseLayer}">
+        <!--CELL NOISE-->
+        <DataTemplate DataType="{x:Type Layer:CellNoiseLayer}">
             <Grid Margin="12" Height="{Binding LayerManager.LayerDetailHeight, Mode=OneWay}" MinHeight="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -418,34 +418,34 @@
                     </Grid>
                 </Border>
 
-                <!--SCALE-->
-                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale"/>
-                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="2" TickFrequency="0.2" LargeChange="0.2"  Value="{Binding VoronoiScale, Mode=TwoWay}"/>
-                <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding VoronoiScale, Mode=TwoWay}"/>
+                <!--CELL QUANTITY-->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Cell Quantity"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1000" TickFrequency="100" LargeChange="50"  Value="{Binding Quantity, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding Quantity, Mode=TwoWay}"/>
                 <!--SCALE X-->
-                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale X"/>
+                <!--<TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale X"/>
                 <Slider  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding VoronoiScaleX, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="4" Grid.Column="2" Text="{Binding VoronoiScaleX, Mode=TwoWay}"/>
-                <!--SCALE Z-->
+                --><!--SCALE Z--><!--
                 <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale Z"/>
                 <Slider  Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.01" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding VoronoiScaleZ, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="6" Grid.Column="2" Text="{Binding VoronoiScaleZ, Mode=TwoWay}"/>
-                <!--OCTAVES-->
+                --><!--OCTAVES--><!--
                 <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Octaves"/>
                 <Slider  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Minimum="1" Maximum="15" TickFrequency="1" Value="{Binding VoronoiOctaves, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="8" Grid.Column="2" Text="{Binding VoronoiOctaves, Mode=TwoWay}"/>
-                <!--OCTAVE WEIGHT-->
+                --><!--OCTAVE WEIGHT--><!--
                 <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Octave Weight"/>
                 <Slider  Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding VoronoiOctaveWeight, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="10" Grid.Column="2" Text="{Binding VoronoiOctaveWeight, Mode=TwoWay}"/>
-                <!--SEED-->
+                --><!--SEED--><!--
                 <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Seed"/>
                 <Slider  Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding VoronoiSeed, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="12" Grid.Column="2" Text="{Binding VoronoiSeed, Mode=TwoWay}"/>
-                <!--STRENGTH-->
+                --><!--STRENGTH--><!--
                 <TextBlock Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Strength"/>
                 <Slider  Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.2"  Value="{Binding VoronoiStrength, Mode=TwoWay}"/>
-                <TextBox  Grid.Row="14" Grid.Column="2" Text="{Binding VoronoiStrength, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="14" Grid.Column="2" Text="{Binding VoronoiStrength, Mode=TwoWay}"/>-->
 
                 <!--APPLICATION-->
                 <ComboBox Grid.Row="16" Grid.Column="0" ItemsSource="{Binding ApplicationModeEnum}" SelectedItem="{Binding CurrentApplicationMode, Mode=TwoWay}"></ComboBox>
@@ -978,12 +978,6 @@
         </DataTemplate>
     </UserControl.Resources>
 
-
-
-
-
-    <!--LAYERS-->
-
     <ScrollViewer>
         <Grid>
             <ItemsControl Grid.Row="0" ItemsSource="{Binding LayerManager.LayerDetails}"  IsEnabled="{Binding LayerManager.IsShowDetails}" Visibility="{Binding LayerManager.IsShowDetailsVisibility}"/>
@@ -998,7 +992,7 @@
                 <Button Content="Slope" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Slope"/>
                 <Button Content="Island" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Island"/>
                 <Button Content="Open Simplex Noise" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="OpenSimplex"/>
-                <!--<Button Content="Voronoi Noise" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Voronoi"/>-->
+                <Button Content="Cell Noise" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="CellNoise"/>
 
                 <TextBlock Text="Erosion" Margin="0,15,0,5"/>
                 <Button Content="Hydraulic" Command="{Binding LayerManager.AddLayerCommand}" CommandParameter="Hydraulic"/>

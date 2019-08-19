@@ -163,6 +163,10 @@ namespace Topographer3D.ViewModels
                     OpenSimplexNoiseLayer OSNLayer = currentLayer as OpenSimplexNoiseLayer;
                     OSNLayer.StartOpenSimplexNoise(TerrainSize, TerrainHeights);
                     break;
+                case Layer.CellNoise:
+                    CellNoiseLayer CellNoiseLayer = currentLayer as CellNoiseLayer;
+                    CellNoiseLayer.StartCellNoise(TerrainSize, TerrainHeights);
+                    break;
 
                 case Layer.Hydraulic:
                     HydraulicErosionLayer hydraulicErosionLayer = currentLayer as HydraulicErosionLayer;

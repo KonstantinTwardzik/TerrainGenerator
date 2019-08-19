@@ -12,7 +12,7 @@ namespace Topographer3D.Utilities
         Slope,
         Island,
         OpenSimplex,
-        Voronoi,
+        CellNoise,
         Hydraulic,
         DetailColorization, 
         HeightColorization
