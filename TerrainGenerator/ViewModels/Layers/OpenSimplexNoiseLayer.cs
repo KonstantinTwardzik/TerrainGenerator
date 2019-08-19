@@ -124,7 +124,7 @@ namespace Topographer3D.ViewModels.Layers
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-                    TerrainPoints[z + x * TerrainSize] = Application.Apply(TerrainPoints[z + x * TerrainSize], helper[z + x * TerrainSize], CurrentApplicationMode);
+                    TerrainPoints[z + x * TerrainSize] = TerrainUtilities.Apply(TerrainPoints[z + x * TerrainSize], helper[z + x * TerrainSize], CurrentApplicationMode);
                 }
             }
         }

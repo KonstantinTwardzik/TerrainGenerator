@@ -175,11 +175,11 @@
     <Compile Include="Commands\DetailResolutionCommand.cs" />
     <Compile Include="Models\RestrictedCamera.cs" />
     <Compile Include="Models\TerrainModel.cs" />
-    <Compile Include="Utilities\Application.cs" />
+    <Compile Include="Utilities\TerrainUtilities.cs" />
     <Compile Include="Utilities\Enums.cs" />
     <Compile Include="Utilities\ObservableObject.cs" />
     <Compile Include="ViewModels\Layers\BaseLayer.cs" />
-    <Compile Include="Utilities\DetailColoringAlgorithm.cs" />
+    <Compile Include="Utilities\DetailColorizationAlgorithm.cs" />
     <Compile Include="Utilities\HydraulicErosionAlgorithm.cs" />
     <Compile Include="Utilities\OpenSimplexNoiseAlgorithm.cs" />
     <Compile Include="ViewModels\Layers\HeightColorizationLayer.cs" />

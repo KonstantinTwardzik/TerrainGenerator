@@ -184,7 +184,7 @@
                 <MenuItem Header="_2048" InputGestureText="Ctrl+7" Command="{Binding DetailResolutionCommand}" CommandParameter="2048" IsEnabled="{Binding Res2048}"/>
                 <MenuItem Header="_4096" InputGestureText="Ctrl+8" Command="{Binding DetailResolutionCommand}" CommandParameter="4096" IsEnabled="{Binding Res4096}"/>
             </MenuItem>
-            <MenuItem Header="_Height">
+            <MenuItem Header="_Preview Height">
                 <MenuItem Header="_25%" InputGestureText="Alt+1" Command="{Binding ChangeHeightCommand}" CommandParameter="25" IsEnabled="{Binding Height25}"/>
                 <MenuItem Header="_50%" InputGestureText="Alt+2" Command="{Binding ChangeHeightCommand}" CommandParameter="50" IsEnabled="{Binding Height50}"/>
                 <MenuItem Header="_75%" InputGestureText="Alt+3" Command="{Binding ChangeHeightCommand}" CommandParameter="75" IsEnabled="{Binding Height75}"/>

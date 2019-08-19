@@ -20,13 +20,19 @@ namespace Topographer3D.ViewModels
     internal class Viewport : ObservableObject, IDisposable
     {
         #region PROPERTIES
-
+        // Logic
         private TerrainModel terrainModel;
         private TerrainEngine terrainEngine;
         private ViewportCamera viewportCamera;
         private MeshBuilder terrainMesh;
         private MeshBuilder borderMesh;
 
+        // Terrain Model Properties
+        public int TerrainSize
+        {
+            get { return terrainModel.TerrainSize; }
+            set { terrainModel.TerrainSize = value; }
+        }
         public MeshGeometry3D TerrainMeshMainGeometry3D
         {
             get { return terrainModel.TerrainMeshMainGeometry3D; }
@@ -52,7 +58,6 @@ namespace Topographer3D.ViewModels
             get { return terrainModel.TerrainMeshTransform; }
             set { terrainModel.TerrainMeshTransform = value; }
         }
-
         public TextureModel TerrainMeshMainTexture
         {
             get { return terrainModel.TerrainMeshMainTexture; }
@@ -63,16 +68,18 @@ namespace Topographer3D.ViewModels
             get { return terrainModel.TerrainMeshBorderTexture; }
             set { terrainModel.TerrainMeshBorderTexture = value; }
         }
+        public float[] TerrainHeights
+        {
+            get { return terrainModel.TerrainHeights; }
+        }
 
+        // Other Stuff
         public IEffectsManager EffectsManager
         {
             get; protected set;
         }
-
         public float HeightMultiplicator { get; set; }
         public Color DirectionalLightColor { get; private set; }
-
-
 
         public FXAALevel FXAA { get; private set; }
         public MSAALevel MSAA { get; private set; }
@@ -139,7 +146,7 @@ namespace Topographer3D.ViewModels
 
         public void InitDefaultViewportSettings()
         {
-            if (terrainEngine.TerrainSize <= 256)
+            if (TerrainSize <= 256)
             {
                 ChangeMaterial(0);
                 ChangeShading(0);
@@ -184,13 +191,13 @@ namespace Topographer3D.ViewModels
         {
             Vector3 point = new Vector3();
             // Terrain Points
-            for (int x = 0; x < terrainEngine.TerrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                for (int z = 0; z < terrainEngine.TerrainSize; z++)
+                for (int z = 0; z < TerrainSize; z++)
                 {
-                    point.X = (float)((float)x / ((float)terrainEngine.TerrainSize - 1) - 0.5) * 2;
+                    point.X = (float)((float)x / ((float)TerrainSize - 1) - 0.5) * 2;
                     point.Y = 0;
-                    point.Z = (float)((float)z / ((float)terrainEngine.TerrainSize - 1) - 0.5) * 2;
+                    point.Z = (float)((float)z / ((float)TerrainSize - 1) - 0.5) * 2;
                     terrainMesh.Positions.Add(point);
                     terrainMesh.Normals.Add(new Vector3(0, 1, 0));
 
@@ -202,11 +209,11 @@ namespace Topographer3D.ViewModels
         {
             var value = 0;
             // Terrain Indices
-            for (int i = 0; i < terrainEngine.TerrainSize * terrainEngine.TerrainSize - terrainEngine.TerrainSize; i++)
+            for (int i = 0; i < TerrainSize * TerrainSize - TerrainSize; i++)
             {
                 for (int trianglePoint = 0; trianglePoint < 3; trianglePoint++)
                 {
-                    if (i % terrainEngine.TerrainSize == 0)
+                    if (i % TerrainSize == 0)
                     {
                         break;
                     }
@@ -216,18 +223,18 @@ namespace Topographer3D.ViewModels
                     }
                     else if (trianglePoint == 1)
                     {
-                        value = i + terrainEngine.TerrainSize;
+                        value = i + TerrainSize;
 
                     }
                     else if (trianglePoint == 2)
                     {
-                        value = i + terrainEngine.TerrainSize - 1;
+                        value = i + TerrainSize - 1;
                     }
                     terrainMesh.TriangleIndices.Add(value);
                 }
                 for (int trianglePoint = 0; trianglePoint < 3; trianglePoint++)
                 {
-                    if (i > 0 && ((i + 1) % terrainEngine.TerrainSize) == 0)
+                    if (i > 0 && ((i + 1) % TerrainSize) == 0)
                     {
                         break;
                     }
@@ -242,7 +249,7 @@ namespace Topographer3D.ViewModels
                     }
                     else if (trianglePoint == 2)
                     {
-                        value = i + terrainEngine.TerrainSize;
+                        value = i + TerrainSize;
                     }
                     terrainMesh.TriangleIndices.Add(value);
                 }
@@ -252,12 +259,12 @@ namespace Topographer3D.ViewModels
         private void GenerateTerrainUVCoordinates()
         {
             Vector2 point = new Vector2();
-            for (int x = 0; x < terrainEngine.TerrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                for (int z = 0; z < terrainEngine.TerrainSize; z++)
+                for (int z = 0; z < TerrainSize; z++)
                 {
-                    point.X = (float)((float)x / (float)terrainEngine.TerrainSize);
-                    point.Y = (float)((float)z / (float)terrainEngine.TerrainSize);
+                    point.Y = (float)((float)x / (float)TerrainSize);
+                    point.X = (float)((float)z / (float)TerrainSize);
                     terrainMesh.TextureCoordinates.Add(point);
                 }
             }
@@ -268,9 +275,9 @@ namespace Topographer3D.ViewModels
             Vector3 point = new Vector3(-1, 0, 0);
 
             // Border Points
-            for (int z = 0; z < terrainEngine.TerrainSize; z++)
+            for (int z = 0; z < TerrainSize; z++)
             {
-                point.Z = (float)((float)z / ((float)terrainEngine.TerrainSize - 1) - 0.5) * 2;
+                point.Z = (float)((float)z / ((float)TerrainSize - 1) - 0.5) * 2;
                 borderMesh.Positions.Add(point);
                 borderMesh.Positions.Add(point);
                 borderMesh.Normals.Add(new Vector3(-1, 0, 0));
@@ -278,9 +285,9 @@ namespace Topographer3D.ViewModels
             }
 
             point.Z = 1;
-            for (int x = 0; x < terrainEngine.TerrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                point.X = (float)((float)x / ((float)terrainEngine.TerrainSize - 1) - 0.5) * 2;
+                point.X = (float)((float)x / ((float)TerrainSize - 1) - 0.5) * 2;
                 borderMesh.Positions.Add(point);
                 borderMesh.Positions.Add(point);
                 borderMesh.Normals.Add(new Vector3(0, 0, 1));
@@ -288,9 +295,9 @@ namespace Topographer3D.ViewModels
             }
 
             point.X = 1;
-            for (int z = terrainEngine.TerrainSize - 1; z >= 0; z--)
+            for (int z = TerrainSize - 1; z >= 0; z--)
             {
-                point.Z = (float)((float)z / ((float)terrainEngine.TerrainSize - 1) - 0.5) * 2;
+                point.Z = (float)((float)z / ((float)TerrainSize - 1) - 0.5) * 2;
                 borderMesh.Positions.Add(point);
                 borderMesh.Positions.Add(point);
                 borderMesh.Normals.Add(new Vector3(1, 0, 0));
@@ -298,9 +305,9 @@ namespace Topographer3D.ViewModels
             }
 
             point.Z = -1;
-            for (int x = terrainEngine.TerrainSize - 1; x >= 0; x--)
+            for (int x = TerrainSize - 1; x >= 0; x--)
             {
-                point.X = (float)((float)x / ((float)terrainEngine.TerrainSize - 1) - 0.5) * 2;
+                point.X = (float)((float)x / ((float)TerrainSize - 1) - 0.5) * 2;
                 borderMesh.Positions.Add(point);
                 borderMesh.Positions.Add(point);
                 borderMesh.Normals.Add(new Vector3(0, 0, -1));
@@ -393,86 +400,88 @@ namespace Topographer3D.ViewModels
         #endregion
 
         #region UPDATING 3D MODEL
+
         public void UpdateMesh()
         {
             Vector3 point = new Vector3();
-            //Update Terrainmesh
+            //Updates Terrainmesh
 
-            for (int x = 0; x < terrainEngine.TerrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                for (int z = 0; z < terrainEngine.TerrainSize; z++)
+                for (int z = 0; z < TerrainSize; z++)
                 {
-                    point = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize)];
-                    point.Y = (float)(terrainEngine.TerrainHeights[z + x * terrainEngine.TerrainSize] * HeightMultiplicator);
-                    terrainMesh.Positions[z + x * terrainEngine.TerrainSize] = point;
+                    point = terrainMesh.Positions[z + (x * TerrainSize)];
+                    point.Y = (TerrainHeights[z + x * TerrainSize] * HeightMultiplicator);
+                    terrainMesh.Positions[z + x * TerrainSize] = point;
                 }
             }
             TerrainMeshMainGeometry3D = terrainMesh.ToMeshGeometry3D();
 
-            for (int x = 1; x < terrainEngine.TerrainSize - 1; x++)
+            for (int x = 1; x < TerrainSize - 1; x++)
             {
-                for (int z = 1; z < terrainEngine.TerrainSize - 1; z++)
+                for (int z = 1; z < TerrainSize - 1; z++)
                 {
-                    Vector3 neighbour0 = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize) - 1];
-                    Vector3 neighbour1 = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize) + 1];
-                    Vector3 neighbour2 = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize) - terrainEngine.TerrainSize];
-                    Vector3 neighbour3 = terrainMesh.Positions[z + (x * terrainEngine.TerrainSize) + terrainEngine.TerrainSize];
+                    Vector3 neighbour0 = terrainMesh.Positions[z + (x * TerrainSize) - 1];
+                    Vector3 neighbour1 = terrainMesh.Positions[z + (x * TerrainSize) + 1];
+                    Vector3 neighbour2 = terrainMesh.Positions[z + (x * TerrainSize) - TerrainSize];
+                    Vector3 neighbour3 = terrainMesh.Positions[z + (x * TerrainSize) + TerrainSize];
                     Vector3 vec0 = neighbour0 - neighbour1;
                     Vector3 vec1 = neighbour2 - neighbour3;
-                    terrainMesh.Normals[z + x * terrainEngine.TerrainSize] = Vector3.Cross(vec0, vec1);
+                    terrainMesh.Normals[z + x * TerrainSize] = Vector3.Cross(vec0, vec1);
                 }
             }
 
-            //Update Bordermesh
-            for (int z = 0; z < terrainEngine.TerrainSize; z++)
+            //Updates Bordermesh
+            for (int z = 0; z < TerrainSize; z++)
             {
                 point = borderMesh.Positions[(z * 2) + 1];
-                point.Y = (float)(terrainEngine.TerrainHeights[z] * HeightMultiplicator);
+                point.Y = (TerrainHeights[z] * HeightMultiplicator);
                 borderMesh.Positions[(z * 2) + 1] = point;
             }
 
-            for (int x = 0; x < terrainEngine.TerrainSize; x++)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                point = borderMesh.Positions[(x * 2) + 1 + (2 * terrainEngine.TerrainSize)];
-                point.Y = (float)(terrainEngine.TerrainHeights[x * terrainEngine.TerrainSize + terrainEngine.TerrainSize - 1] * HeightMultiplicator);
-                borderMesh.Positions[(x * 2) + 1 + (2 * terrainEngine.TerrainSize)] = point;
+                point = borderMesh.Positions[(x * 2) + 1 + (2 * TerrainSize)];
+                point.Y = (TerrainHeights[x * TerrainSize + TerrainSize - 1] * HeightMultiplicator);
+                borderMesh.Positions[(x * 2) + 1 + (2 * TerrainSize)] = point;
             }
 
-            for (int z = terrainEngine.TerrainSize; z > 0; z--)
+            for (int z = TerrainSize; z > 0; z--)
             {
-                point = borderMesh.Positions[(z * 2) - 1 + (4 * terrainEngine.TerrainSize)];
-                point.Y = (float)(terrainEngine.TerrainHeights[(terrainEngine.TerrainSize * terrainEngine.TerrainSize) - z] * HeightMultiplicator);
-                borderMesh.Positions[(z * 2) - 1 + (4 * terrainEngine.TerrainSize)] = point;
+                point = borderMesh.Positions[(z * 2) - 1 + (4 * TerrainSize)];
+                point.Y = (TerrainHeights[(TerrainSize * TerrainSize) - z] * HeightMultiplicator);
+                borderMesh.Positions[(z * 2) - 1 + (4 * TerrainSize)] = point;
             }
 
-            for (int x = terrainEngine.TerrainSize; x > 0; x--)
+            for (int x = TerrainSize; x > 0; x--)
             {
-                point = borderMesh.Positions[(x * 2) - 1 + (6 * terrainEngine.TerrainSize)];
-                point.Y = (float)(terrainEngine.TerrainHeights[(terrainEngine.TerrainSize - x) * terrainEngine.TerrainSize] * HeightMultiplicator);
-                borderMesh.Positions[(x * 2) - 1 + (6 * terrainEngine.TerrainSize)] = point;
+                point = borderMesh.Positions[(x * 2) - 1 + (6 * TerrainSize)];
+                point.Y = (TerrainHeights[(TerrainSize - x) * TerrainSize] * HeightMultiplicator);
+                borderMesh.Positions[(x * 2) - 1 + (6 * TerrainSize)] = point;
             }
             TerrainMeshBorderGeometry3D = borderMesh.ToMeshGeometry3D();
         }
 
+        // Updates Terrain and Border Texture
         public void UpdateTextures(MemoryStream terrainMainColors, MemoryStream terrainBorderColors)
         {
             TerrainMeshMainTexture = new TextureModel(terrainMainColors);
             TerrainMeshBorderTexture = new TextureModel(terrainBorderColors);
-
             TerrainMeshMainMaterial.DiffuseMap = TerrainMeshMainTexture;
             TerrainMeshBorderMaterial.DiffuseMap = TerrainMeshBorderTexture;
         }
 
+        // Updates Only Terrain Texture
         public void UpdateTexture(MemoryStream terrainMainColors)
         {
             TerrainMeshMainTexture = new TextureModel(terrainMainColors);
-
             TerrainMeshMainMaterial.DiffuseMap = TerrainMeshMainTexture;
         }
 
         #endregion
 
         #region VIEWPORT SETTINGS
+        // Changes Viewport Quality and Updates View
         public void ChangeViewportQuality(int quality)
         {
             switch (quality)
@@ -523,6 +532,7 @@ namespace Topographer3D.ViewModels
             }
         }
 
+        // Switchs between Orthographic and Perspective Camera
         public void ChangeViewMode(int viewMode)
         {
             switch (viewMode)
@@ -543,6 +553,7 @@ namespace Topographer3D.ViewModels
             }
         }
 
+        // Changes Materialproperties of Terrain
         public void ChangeMaterial(int material)
         {
             switch (material)
@@ -571,6 +582,7 @@ namespace Topographer3D.ViewModels
             }
         }
 
+        // Switchs between Flat- and Phongshading
         public void ChangeShading(int shadingMode)
         {
             switch (shadingMode)

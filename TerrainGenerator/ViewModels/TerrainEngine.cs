@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -15,9 +16,9 @@ namespace Topographer3D.ViewModels
         private LayerManager layerManager;
         private MainViewModel mainViewModel;
         private TerrainModel terrainModel;
-        private int currentLayerPosition;
+        private int requestedLayerPosition;
 
-        // TERRAIN VALUES
+        // TERRAIN MODEL PROPERTIES
         public float[] TerrainHeights
         {
             get { return terrainModel.TerrainHeights; }
@@ -25,40 +26,41 @@ namespace Topographer3D.ViewModels
         }
         public float[] PreviousTerrainHeights
         {
-            get { return terrainModel.PreviousTerrainHeights; }
-            set { terrainModel.PreviousTerrainHeights = value; }
+            get { return terrainModel.PrevTerrainHeights; }
+            set { terrainModel.PrevTerrainHeights = value; }
         }
-
-        public byte[] PreviousColors
+        public byte[] PreviousTerrainColors
         {
-            get { return terrainModel.PreviousColors; }
-            set { terrainModel.PreviousColors = value; }
+            get { return terrainModel.PreviousTerrainColors; }
+            set { terrainModel.PreviousTerrainColors = value; }
         }
-
-        public byte[] CurrentColors
+        public byte[] TerrainColors
         {
-            get { return terrainModel.CurrentColors; }
-            set { terrainModel.CurrentColors = value; }
+            get { return terrainModel.TerrainColors; }
+            set { terrainModel.TerrainColors = value; }
         }
-
         public int TerrainSize
         {
             get { return terrainModel.TerrainSize; }
             set { terrainModel.TerrainSize = value; }
         }
-
-
-        // MAP EXPORT
-        public BitmapImage HeightMapImage { get; set; }
-        public BitmapImage ColorMapImage { get; set; }
-
+        public BitmapImage HeightMapImage
+        {
+            get { return terrainModel.HeightMapImage; }
+            set { terrainModel.HeightMapImage = value; }
+        }
+        public BitmapImage ColorMapImage
+        {
+            get { return terrainModel.ColorMapImage; }
+            set { terrainModel.ColorMapImage = value; }
+        }
         #endregion
 
         #region INITIALIZATION
         public TerrainEngine(TerrainModel terrainModel)
         {
             this.terrainModel = terrainModel;
-            currentLayerPosition = 0;
+            requestedLayerPosition = 0;
             TerrainSize = 512;
             FlattenTerrain();
         }
@@ -68,12 +70,32 @@ namespace Topographer3D.ViewModels
             this.layerManager = layerManager;
             this.mainViewModel = mainViewModel;
         }
+        #endregion
 
+        #region RESETTING TERRAIN
+        // Reset all States and Data to Default Values
+        internal void ResetTerrainEngine()
+        {
+            requestedLayerPosition = 0;
+            foreach (BaseLayer layer in layerManager.Layers)
+            {
+                layer.Unprocessed();
+            }
+            FlattenTerrain();
+        }
+
+        // Set all TerrainHeights to 0
         internal void FlattenTerrain()
         {
-            TerrainHeights = new float[TerrainSize * TerrainSize];
-            PreviousTerrainHeights = new float[TerrainSize * TerrainSize];
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += FlattenCalculation;
+            worker.RunWorkerCompleted += FlattenFinished;
+            worker.RunWorkerAsync(100000);
+        }
 
+        private void FlattenCalculation(object sender, DoWorkEventArgs e)
+        {
             for (int x = 0; x < TerrainSize; x++)
             {
                 for (int z = 0; z < TerrainSize; z++)
@@ -83,6 +105,13 @@ namespace Topographer3D.ViewModels
             }
         }
 
+        private void FlattenFinished(object sender, RunWorkerCompletedEventArgs e)
+        {
+            TerrainHeights = new float[TerrainSize * TerrainSize];
+            PreviousTerrainHeights = new float[TerrainSize * TerrainSize];
+            mainViewModel.UpdateMesh();
+            mainViewModel.ResetTextures();
+        }
         #endregion
 
         #region LAYER HANDLING
@@ -90,77 +119,53 @@ namespace Topographer3D.ViewModels
         public void StartCalculationToLayer(BaseLayer layer)
         {
             layerManager.SetStatusBar(true);
-            if (layer.Position < currentLayerPosition || currentLayerPosition == 0)
+
+            if (layer.Position < requestedLayerPosition || requestedLayerPosition == 0)
             {
-                Console.WriteLine("layer.Position < currentLayerPosition || currentLayerPosition == 0");
                 ResetTerrainEngine();
-                currentLayerPosition = layer.Position;
-                SingleLayerCalculationStart(0);
+                requestedLayerPosition = layer.Position;
+                SingleLayerCalculationStart(layerManager.Layers[0]);
             }
-
-            else if (layer.Position == currentLayerPosition && layerManager.Layers[currentLayerPosition - 1].IsProcessed == true)
+            else if (layer.Position == requestedLayerPosition && layerManager.Layers[requestedLayerPosition - 1].IsProcessed == true)
             {
-                Console.WriteLine("layer.Position == currentLayerPosition && layerManager.Layers[currentLayerPosition - 1].IsProcessed == true");
-                if (layer.LayerType != Layer.DetailColorization)
+                if (layer.LayerType != Layer.DetailColorization || layer.LayerType != Layer.HeightColorization)
                 {
-                    for (int x = 0; x < TerrainSize; x++)
-                    {
-                        for (int z = 0; z < TerrainSize; z++)
-                        {
-                            TerrainHeights[z + x * TerrainSize] = PreviousTerrainHeights[z + x * TerrainSize];
-                        }
-                    }
+                    UpdateHeights(PreviousTerrainHeights);
                 }
-                SingleLayerCalculationStart(layer.Position);
+                SingleLayerCalculationStart(layer);
             }
-            else if (layer.Position > currentLayerPosition)
+            else if (layer.Position > requestedLayerPosition)
             {
-                Console.WriteLine("layer.Position > currentLayerPosition");
-                for (int x = 0; x < TerrainSize; x++)
+                UpdatePreviousHeights(TerrainHeights);
+                if (TerrainColors != null)
                 {
-                    for (int z = 0; z < TerrainSize; z++)
-                    {
-                        PreviousTerrainHeights[z + x * TerrainSize] = TerrainHeights[z + x * TerrainSize];
-                    }
+                    UpdatePreviousColors(TerrainColors);
                 }
-                if(CurrentColors != null)
-                {
-                    PreviousColors = new byte[CurrentColors.Length];
-                    for (int i = 0; i < CurrentColors.Length; i++)
-                    {
-                        PreviousColors[i] = CurrentColors[i];
-                        
-                    }
-
-                }
-
-
-                int startCalculationPosition = currentLayerPosition + 1;
-                currentLayerPosition = layer.Position;
-                SingleLayerCalculationStart(startCalculationPosition);
+                int startLayerPosition = requestedLayerPosition + 1;
+                requestedLayerPosition = layer.Position;
+                SingleLayerCalculationStart(layerManager.Layers[startLayerPosition]);
             }
         }
 
-        private void SingleLayerCalculationStart(int layerPosition)
+        private void SingleLayerCalculationStart(BaseLayer layer)
         {
-            BaseLayer currentLayer = layerManager.Layers[layerPosition];
-
-            switch (currentLayer.LayerType)
+            switch (layer.LayerType)
             {
+                // Elevation Layers
                 case Layer.Height:
-                    HeightLayer heightLayer = currentLayer as HeightLayer;
+                    HeightLayer heightLayer = layer as HeightLayer;
                     heightLayer.StartHeight(TerrainSize, TerrainHeights);
                     break;
                 case Layer.Slope:
-                    SlopeLayer slopeLayer = currentLayer as SlopeLayer;
+                    SlopeLayer slopeLayer = layer as SlopeLayer;
                     slopeLayer.StartSlope(TerrainSize, TerrainHeights);
                     break;
                 case Layer.Island:
-                    IslandLayer islandLayer = currentLayer as IslandLayer;
+                    IslandLayer islandLayer = layer as IslandLayer;
                     islandLayer.StartIsland(TerrainSize, TerrainHeights);
                     break;
                 case Layer.OpenSimplex:
-                    OpenSimplexNoiseLayer OSNLayer = currentLayer as OpenSimplexNoiseLayer;
+                    OpenSimplexNoiseLayer OSNLayer = layer as OpenSimplexNoiseLayer;
                     OSNLayer.StartOpenSimplexNoise(TerrainSize, TerrainHeights);
                     break;
                 case Layer.CellNoise:
@@ -168,106 +173,107 @@ namespace Topographer3D.ViewModels
                     CellNoiseLayer.StartCellNoise(TerrainSize, TerrainHeights);
                     break;
 
+                // Erosion Layers
                 case Layer.Hydraulic:
-                    HydraulicErosionLayer hydraulicErosionLayer = currentLayer as HydraulicErosionLayer;
+                    HydraulicErosionLayer hydraulicErosionLayer = layer as HydraulicErosionLayer;
                     hydraulicErosionLayer.StartErosion(TerrainSize, TerrainHeights);
                     break;
 
+                // Colorization Layers
                 case Layer.DetailColorization:
-                    DetailColorizationLayer detailColorizationLayer = currentLayer as DetailColorizationLayer;
+                    DetailColorizationLayer detailColorizationLayer = layer as DetailColorizationLayer;
                     detailColorizationLayer.StartColorization(TerrainSize, TerrainHeights);
                     break;
                 case Layer.HeightColorization:
-                    HeightColorizationLayer heightColorizationLayer = currentLayer as HeightColorizationLayer;
-                    heightColorizationLayer.StartColorization(TerrainSize, TerrainHeights, PreviousColors);
+                    HeightColorizationLayer heightColorizationLayer = layer as HeightColorizationLayer;
+                    heightColorizationLayer.StartColorization(TerrainSize, TerrainHeights, PreviousTerrainColors);
                     break;
             }
-
         }
 
         internal void SingleLayerCalculationComplete(BaseLayer layer, float[] terrainHeights)
         {
-            if (layer.Position < currentLayerPosition)
+            if (layer.Position < requestedLayerPosition)
             {
-                for (int x = 0; x < TerrainSize; x++)
-                {
-                    for (int z = 0; z < TerrainSize; z++)
-                    {
-                        PreviousTerrainHeights[z + x * TerrainSize] = terrainHeights[z + x * TerrainSize];
-                    }
-                }
+                UpdatePreviousHeights(terrainHeights);
             }
-            //TerrainHeights = terrainHeights;
+            UpdateHeights(terrainHeights);
             mainViewModel.UpdateMesh();
             StartNextLayerCalculation(layer);
         }
 
         internal void SingleLayerCalculationComplete(BaseLayer layer, MemoryStream terrainMainColors, MemoryStream terrainBorderColors, byte[] currentColors)
         {
-            if (layer.Position < currentLayerPosition)
+            if (layer.Position < requestedLayerPosition)
             {
-                PreviousColors = new byte[currentColors.Length];
-                
-                for (int i = 0; i < currentColors.Length; i++)
-                {
-                    PreviousColors[i] = currentColors[i];
-                }
+                UpdatePreviousColors(currentColors);
             }
-            CurrentColors = new byte[currentColors.Length];
-            for (int i = 0; i < currentColors.Length; i++)
+            if(terrainBorderColors != null)
             {
-                CurrentColors[i] = currentColors[i];
+                mainViewModel.UpdateTextures(terrainMainColors, terrainBorderColors);
+            } else
+            {
+                mainViewModel.UpdateTexture(terrainMainColors);
             }
-            mainViewModel.UpdateTextures(terrainMainColors, terrainBorderColors);
+            UpdateColors(currentColors);
             CreateAlbedoMap(terrainMainColors);
             StartNextLayerCalculation(layer);
         }
 
-        internal void SingleLayerCalculationComplete(BaseLayer layer, MemoryStream terrainMainColors, byte[] currentColors)
-        {
-            if (layer.Position < currentLayerPosition)
-            {
-                PreviousColors = new byte[currentColors.Length];
-
-                for (int i = 0; i < currentColors.Length; i++)
-                {
-                    PreviousColors[i] = currentColors[i];
-                }
-            }
-            CurrentColors = new byte[currentColors.Length];
-            for (int i = 0; i < currentColors.Length; i++)
-            {
-                CurrentColors[i] = currentColors[i];
-            }
-            mainViewModel.UpdateTexture(terrainMainColors);
-            CreateAlbedoMap(terrainMainColors);
-            StartNextLayerCalculation(layer);
-        }
-
+        //Checks if next Layer should be Calculated and starts calculation if so.
         private void StartNextLayerCalculation(BaseLayer layer)
         {
-            int currentLayer = layer.Position + 1;
-            if (currentLayer <= currentLayerPosition)
+            int nextLayer = layer.Position + 1;
+            if (nextLayer <= requestedLayerPosition)
             {
-                SingleLayerCalculationStart(currentLayer);
-
+                SingleLayerCalculationStart(layerManager.Layers[nextLayer]);
             }
             else
             {
                 layerManager.SetStatusBar(false);
             }
         }
-
-        internal void ResetTerrainEngine()
+      
+        // Updates the Heights Array
+        private void UpdateHeights(float[] heights)
         {
-            currentLayerPosition = 0;
-            foreach (BaseLayer layer in layerManager.Layers)
+            for (int x = 0; x < TerrainSize; x++)
             {
-                layer.Unprocessed();
+                for (int z = 0; z < TerrainSize; z++)
+                {
+                    TerrainHeights[z + x * TerrainSize] = heights[z + x * TerrainSize];
+                }
             }
-            FlattenTerrain();
-            mainViewModel.UpdateMesh();
-            mainViewModel.ResetTextures();
+        }
+
+        // Updates the PreviousHeights Array
+        private void UpdatePreviousHeights(float[] heights)
+        {
+            for (int x = 0; x < TerrainSize; x++)
+            {
+                for (int z = 0; z < TerrainSize; z++)
+                {
+                    PreviousTerrainHeights[z + x * TerrainSize] = heights[z + x * TerrainSize];
+                }
+            }
+        }
+
+        // Updates the Colors Array
+        private void UpdateColors(byte[] colors)
+        {
+            for (int i = 0; i < colors.Length; i++)
+            {
+                TerrainColors[i] = colors[i];
+            }
+        }
+
+        // Updates the PreviousColors Array
+        private void UpdatePreviousColors(byte[] colors)
+        {
+            for (int i = 0; i < colors.Length; i++)
+            {
+                PreviousTerrainColors[i] = colors[i];
+            }
         }
 
         #endregion

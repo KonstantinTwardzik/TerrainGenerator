@@ -392,7 +392,7 @@ namespace Topographer3D.ViewModels.Layers
             ColorizeCalculate();
 
             Processed();
-            terrainEngine.SingleLayerCalculationComplete(this, TerrainMainColors, ColorMap);
+            terrainEngine.SingleLayerCalculationComplete(this, TerrainMainColors, null, ColorMap);
         }
 
         public void ColorizeCalculate()

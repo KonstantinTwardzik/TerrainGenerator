@@ -14,7 +14,7 @@ namespace Topographer3D.ViewModels.Layers
     class DetailColorizationLayer : BaseLayer
     {
         #region ATTRIBUTES & PROPERTIES
-        private DetailColoringAlgorithm _coloringAlgorithm;
+        private DetailColorizationAlgorithm _coloringAlgorithm;
         private int TerrainSize;
         private float[] TerrainPoints;
         private byte[] rawImage;
@@ -46,6 +46,7 @@ namespace Topographer3D.ViewModels.Layers
         public bool Gradient7RB { get; set; }
 
         public float ColorShift { get; set; }
+        public float ColorRange { get; set; }
 
         public IEnumerable<ColorApplicationMode> ColorApplicationModeEnum { get { return Enum.GetValues(typeof(ColorApplicationMode)).Cast<ColorApplicationMode>(); } }
         public ColorApplicationMode CurrentColorApplicationMode { get; set; }
@@ -55,7 +56,7 @@ namespace Topographer3D.ViewModels.Layers
         #region INITIALIZATION
         public DetailColorizationLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
-            _coloringAlgorithm = new DetailColoringAlgorithm();
+            _coloringAlgorithm = new DetailColorizationAlgorithm();
 
             _gradientBorder = new LinearGradientBrush();
             _gradientBorder.StartPoint = new System.Windows.Point(0, 0);
@@ -76,6 +77,7 @@ namespace Topographer3D.ViewModels.Layers
             LayerType = Layer.DetailColorization;
             HasApplicationMode = Visibility.Hidden;
             ColorShift = 0.0f;
+            ColorRange = 1.0f;
             CurrentColorApplicationMode = ColorApplicationMode.Normal;
             Gradient1RB = true;
             Gradient2RB = false;
@@ -611,7 +613,7 @@ namespace Topographer3D.ViewModels.Layers
             int rawStride = (TerrainSize * pixelFormat.BitsPerPixel + 7) / 8;
             rawImage = new byte[rawStride * TerrainSize];
 
-            _coloringAlgorithm.UpdateValues(currentSelectedGradient, TerrainPoints, TerrainSize, ColorShift, ColorInvert);
+            _coloringAlgorithm.UpdateValues(currentSelectedGradient, TerrainPoints, TerrainSize, ColorShift, ColorInvert, ColorRange);
             _coloringAlgorithm.calculateMinMax();
 
             int count = 0;
@@ -644,7 +646,7 @@ namespace Topographer3D.ViewModels.Layers
             int height = 1;
             int rawStrideBorder = (width * pixelFormat.BitsPerPixel + 7) / 8;
             byte[] rawImageBorder = new byte[rawStrideBorder * height];
-            _coloringAlgorithm.UpdateValues(_gradientBorder.GradientStops, TerrainPoints, TerrainSize, ColorShift, ColorInvert);
+            _coloringAlgorithm.UpdateValues(_gradientBorder.GradientStops, TerrainPoints, TerrainSize, ColorShift, ColorInvert, ColorRange);
             int count2 = 0;
             for (int x = 0; x < width * height; x++)
             {
