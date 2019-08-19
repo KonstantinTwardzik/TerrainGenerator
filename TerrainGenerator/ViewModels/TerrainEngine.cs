@@ -122,7 +122,6 @@ namespace Topographer3D.ViewModels
 
             if (layer.Position < requestedLayerPosition || requestedLayerPosition == 0)
             {
-                ResetTerrainEngine();
                 requestedLayerPosition = layer.Position;
                 SingleLayerCalculationStart(layerManager.Layers[0]);
             }
@@ -169,7 +168,7 @@ namespace Topographer3D.ViewModels
                     OSNLayer.StartOpenSimplexNoise(TerrainSize, TerrainHeights);
                     break;
                 case Layer.CellNoise:
-                    CellNoiseLayer CellNoiseLayer = currentLayer as CellNoiseLayer;
+                    CellNoiseLayer CellNoiseLayer = layer as CellNoiseLayer;
                     CellNoiseLayer.StartCellNoise(TerrainSize, TerrainHeights);
                     break;
 
@@ -197,7 +196,6 @@ namespace Topographer3D.ViewModels
             {
                 UpdatePreviousHeights(terrainHeights);
             }
-            UpdateHeights(terrainHeights);
             mainViewModel.UpdateMesh();
             StartNextLayerCalculation(layer);
         }
@@ -237,13 +235,13 @@ namespace Topographer3D.ViewModels
         // Updates the Heights Array
         private void UpdateHeights(float[] heights)
         {
-            for (int x = 0; x < TerrainSize; x++)
-            {
-                for (int z = 0; z < TerrainSize; z++)
-                {
-                    TerrainHeights[z + x * TerrainSize] = heights[z + x * TerrainSize];
-                }
-            }
+            //for (int x = 0; x < TerrainSize; x++)
+            //{
+            //    for (int z = 0; z < 1; z++)
+            //    {
+            //        TerrainHeights[z + x * TerrainSize] = heights[z + x * TerrainSize];
+            //    }
+            //}
         }
 
         // Updates the PreviousHeights Array

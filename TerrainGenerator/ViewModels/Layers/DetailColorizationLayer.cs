@@ -77,7 +77,7 @@ namespace Topographer3D.ViewModels.Layers
             LayerType = Layer.DetailColorization;
             HasApplicationMode = Visibility.Hidden;
             ColorShift = 0.0f;
-            ColorRange = 1.0f;
+            ColorRange = 0.5f;
             CurrentColorApplicationMode = ColorApplicationMode.Normal;
             Gradient1RB = true;
             Gradient2RB = false;

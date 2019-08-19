@@ -20,7 +20,6 @@ namespace Topographer3D.Utilities
 
     public enum ApplicationMode
     {
-        Normal,
         Add,
         Subtract,
         Multiply,

@@ -8,6 +8,8 @@ namespace Topographer3D.Utilities
 {
     internal static class TerrainUtilities
     {
+
+
         internal static int[] GetNeighbours(int x, int z, int terrainSize)
         {
             int[] neighbours = new int[0];
@@ -29,8 +31,8 @@ namespace Topographer3D.Utilities
             {
                 neighbours = new int[3];
                 neighbours[0] = (z + x * terrainSize) + terrainSize;
-                neighbours[1] = (z + x * terrainSize) + terrainSize;
-                neighbours[2] = (z + x * terrainSize) + terrainSize - 1;
+                neighbours[1] = (z + x * terrainSize) + terrainSize - 1;
+                neighbours[2] = (z + x * terrainSize) - 1;
             }
             else if (x == terrainSize - 1 && z == 0)
             {
@@ -54,7 +56,7 @@ namespace Topographer3D.Utilities
                 neighbours[0] = (z + x * terrainSize) - terrainSize;
                 neighbours[1] = (z + x * terrainSize) - terrainSize + 1;
                 neighbours[2] = (z + x * terrainSize) + 1;
-                neighbours[3] = (z + x * terrainSize) - terrainSize + 1;
+                neighbours[3] = (z + x * terrainSize) + terrainSize + 1;
                 neighbours[4] = (z + x * terrainSize) + terrainSize;
             }
             else if (x == terrainSize - 1)
@@ -91,24 +93,38 @@ namespace Topographer3D.Utilities
             return neighbours;
         }
 
+        internal static int[] GetPositionAndNeighbours(int x, int z, int terrainSize)
+        {
+            int[] neighbours = GetNeighbours(x, z, terrainSize);
+            int[] PositionAndNeighbours = new int[neighbours.Length + 1];
+            PositionAndNeighbours[0] = (z + x * terrainSize);
+            for (int i = 0; i < neighbours.Length; i++)
+            {
+                PositionAndNeighbours[i + 1] = neighbours[i];
+            }
+            return PositionAndNeighbours;
+        }
+
         internal static float Apply(float oldValue, float applyValue, ApplicationMode CurrentApplicationMode)
         {
             float newValue = 0;
-            switch (CurrentApplicationMode)
+            if (CurrentApplicationMode == ApplicationMode.Multiply)
             {
-                case ApplicationMode.Normal:
-                    newValue = applyValue;
-                    break;
-                case ApplicationMode.Add:
-                    newValue = oldValue + applyValue;
-                    break;
-                case ApplicationMode.Multiply:
-                    newValue = oldValue * applyValue;
-                    break;
-                case ApplicationMode.Subtract:
-                    newValue = oldValue - applyValue;
-                    break;
+                newValue = oldValue * applyValue;
             }
+            else if (CurrentApplicationMode == ApplicationMode.Add)
+            {
+                newValue = oldValue + applyValue;
+            }
+            else if (CurrentApplicationMode == ApplicationMode.Subtract)
+            {
+                newValue = oldValue - applyValue;
+            }
+            else
+            {
+                newValue = applyValue;
+            }
+
             if (newValue < 0)
             {
                 newValue = 0;

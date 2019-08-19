@@ -420,7 +420,7 @@
 
                 <!--CELL QUANTITY-->
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Cell Quantity"/>
-                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1000" TickFrequency="100" LargeChange="50"  Value="{Binding Quantity, Mode=TwoWay}"/>
+                <Slider  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="25" Maximum="1000" TickFrequency="100" LargeChange="50"  Value="{Binding Quantity, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="2" Grid.Column="2" Text="{Binding Quantity, Mode=TwoWay}"/>
                 <!--SCALE X-->
                 <!--<TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Scale X"/>
@@ -434,15 +434,15 @@
                 <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Octaves"/>
                 <Slider  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Minimum="1" Maximum="15" TickFrequency="1" Value="{Binding VoronoiOctaves, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="8" Grid.Column="2" Text="{Binding VoronoiOctaves, Mode=TwoWay}"/>
-                --><!--OCTAVE WEIGHT--><!--
-                <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Octave Weight"/>
+                --><!--OCTAVE WEIGHT-->
+                <!--<TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Octave Weight"/>
                 <Slider  Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0.5" Maximum="1" TickFrequency="0.1" LargeChange="0.1" Value="{Binding VoronoiOctaveWeight, Mode=TwoWay}"/>
-                <TextBox  Grid.Row="10" Grid.Column="2" Text="{Binding VoronoiOctaveWeight, Mode=TwoWay}"/>
-                --><!--SEED--><!--
+                <TextBox  Grid.Row="10" Grid.Column="2" Text="{Binding VoronoiOctaveWeight, Mode=TwoWay}"/>-->
+                <!--SEED-->
                 <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,45,0,0" FontSize="16" FontWeight="DemiBold" Text="Seed"/>
-                <Slider  Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding VoronoiSeed, Mode=TwoWay}"/>
-                <TextBox  Grid.Row="12" Grid.Column="2" Text="{Binding VoronoiSeed, Mode=TwoWay}"/>
-                --><!--STRENGTH--><!--
+                <Slider  Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="9999" TickFrequency="1000" LargeChange="1000" Value="{Binding Seed, Mode=TwoWay}"/>
+                <TextBox  Grid.Row="12" Grid.Column="2" Text="{Binding Seed, Mode=TwoWay}"/>
+                <!--STRENGTH--><!--
                 <TextBlock Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0" FontSize="16" FontWeight="DemiBold" Text="Strength"/>
                 <Slider  Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.1" LargeChange="0.2"  Value="{Binding VoronoiStrength, Mode=TwoWay}"/>
                 <TextBox  Grid.Row="14" Grid.Column="2" Text="{Binding VoronoiStrength, Mode=TwoWay}"/>-->
@@ -656,7 +656,7 @@
 
                 <!--COLOR RANGE-->
                 <Label Grid.Row="17">Color Range</Label>
-                <Slider Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="5" TickFrequency="0.1" LargeChange="0.1" Value="{Binding ColorRange, Mode=TwoWay}"/>
+                <Slider Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="1" TickFrequency="0.2" LargeChange="0.2" Value="{Binding ColorRange, Mode=TwoWay}"/>
                 <TextBox Grid.Row="18" Grid.Column="3" Text="{Binding ColorRange}"/>
 
                 <!--COLOR MODE-->

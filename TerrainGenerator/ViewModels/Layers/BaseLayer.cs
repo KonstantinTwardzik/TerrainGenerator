@@ -41,7 +41,7 @@ namespace Topographer3D.ViewModels.Layers
         private void InitProperties()
         {
             Unprocessed();
-            CurrentApplicationMode = ApplicationMode.Normal;
+            CurrentApplicationMode = ApplicationMode.Add;
             HasApplicationMode = Visibility.Visible;
         }
 

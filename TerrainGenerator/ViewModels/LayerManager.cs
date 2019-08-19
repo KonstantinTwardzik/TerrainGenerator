@@ -67,6 +67,8 @@ namespace Topographer3D.ViewModels
         #region LAYER LOGIC
         public void AddNewLayer(Layer layerType)
         {
+
+            BaseLayer newLayer = null;
             switch (layerType)
             {
                 case Layer.Height:
@@ -76,6 +78,7 @@ namespace Topographer3D.ViewModels
                     newHeightLayer.Position = Layers.Count;
                     Layers.Add(newHeightLayer);
                     ShowLayerDetails(newHeightLayer);
+                    newLayer = newHeightLayer;
                     break;
                 case Layer.Slope:
                     SlopeLayer newSlopeLayer = new SlopeLayer(this, terrainEngine);
@@ -84,6 +87,7 @@ namespace Topographer3D.ViewModels
                     newSlopeLayer.Position = Layers.Count;
                     Layers.Add(newSlopeLayer);
                     ShowLayerDetails(newSlopeLayer);
+                    newLayer = newSlopeLayer;
                     break;
                 case Layer.Island:
                     IslandLayer newIslandLayer = new IslandLayer(this, terrainEngine);
@@ -92,6 +96,7 @@ namespace Topographer3D.ViewModels
                     newIslandLayer.Position = Layers.Count;
                     Layers.Add(newIslandLayer);
                     ShowLayerDetails(newIslandLayer);
+                    newLayer = newIslandLayer;
                     break;
                 case Layer.OpenSimplex:
                     OpenSimplexNoiseLayer newOSNLayer = new OpenSimplexNoiseLayer(this, terrainEngine);
@@ -100,6 +105,7 @@ namespace Topographer3D.ViewModels
                     newOSNLayer.Position = Layers.Count;
                     Layers.Add(newOSNLayer);
                     ShowLayerDetails(newOSNLayer);
+                    newLayer = newOSNLayer;
                     break;
                 case Layer.CellNoise:
                     CellNoiseLayer newCellNoiseLayer = new CellNoiseLayer(this, terrainEngine);
@@ -108,6 +114,7 @@ namespace Topographer3D.ViewModels
                     newCellNoiseLayer.Position = Layers.Count;
                     Layers.Add(newCellNoiseLayer);
                     ShowLayerDetails(newCellNoiseLayer);
+                    newLayer = newCellNoiseLayer;
                     break;
 
                 case Layer.Hydraulic:
@@ -117,6 +124,7 @@ namespace Topographer3D.ViewModels
                     newHydrauliceErosionLayer.Position = Layers.Count;
                     Layers.Add(newHydrauliceErosionLayer);
                     ShowLayerDetails(newHydrauliceErosionLayer);
+                    newLayer = newHydrauliceErosionLayer;
                     break;
 
                 case Layer.DetailColorization:
@@ -126,6 +134,7 @@ namespace Topographer3D.ViewModels
                     newDetailColorizationLayer.Position = Layers.Count;
                     Layers.Add(newDetailColorizationLayer);
                     ShowLayerDetails(newDetailColorizationLayer);
+                    newLayer = newDetailColorizationLayer;
                     break;
                 case Layer.HeightColorization:
                     HeightColorizationLayer newHeightColorizationLayer = new HeightColorizationLayer(this, terrainEngine);
@@ -134,8 +143,16 @@ namespace Topographer3D.ViewModels
                     newHeightColorizationLayer.Position = Layers.Count;
                     Layers.Add(newHeightColorizationLayer);
                     ShowLayerDetails(newHeightColorizationLayer);
+                    newLayer = newHeightColorizationLayer;
                     break;
             }
+
+            if (newLayer.Position == 0)
+            {
+                newLayer.HasApplicationMode = Visibility.Hidden;
+                newLayer.CurrentApplicationMode = (ApplicationMode)100;
+            }
+
         }
 
         public void DeleteLayer(BaseLayer layer)
