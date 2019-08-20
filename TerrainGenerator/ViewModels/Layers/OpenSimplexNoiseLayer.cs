@@ -60,37 +60,10 @@ namespace Topographer3D.ViewModels.Layers
         {
             float octaveWeight = 1;
             float octaveMultiplier = 1;
-            int sizeCompensator = 1;
+            int sizeCompensator = TerrainUtilities.GetReversedSizeCompensator(TerrainSize);
             float[] helper = new float[TerrainPoints.Length];
 
-            switch (TerrainSize)
-            {
-                case 16:
-                    sizeCompensator = 256;
-                    break;
-                case 32:
-                    sizeCompensator = 128;
-                    break;
-                case 64:
-                    sizeCompensator = 64;
-                    break;
-                case 128:
-                    sizeCompensator = 32;
-                    break;
 
-                case 512:
-                    sizeCompensator = 8;
-                    break;
-                case 1024:
-                    sizeCompensator = 4;
-                    break;
-                case 2048:
-                    sizeCompensator = 2;
-                    break;
-                case 4096:
-                    sizeCompensator = 1;
-                    break;
-            }
 
             for (int octaves = 0; octaves < OSNOctaves; octaves++)
             {

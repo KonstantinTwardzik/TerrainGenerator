@@ -120,8 +120,19 @@ namespace Topographer3D.ViewModels
         {
             layerManager.SetStatusBar(true);
 
-            if (layer.Position < requestedLayerPosition || requestedLayerPosition == 0)
+            if (layer.Position < requestedLayerPosition || layer.Position == 0)
             {
+                mainViewModel.ResetTextures();
+                foreach (BaseLayer existingLayer in layerManager.Layers)
+                {
+                    existingLayer.Unprocessed();
+                }
+                requestedLayerPosition = layer.Position;
+                SingleLayerCalculationStart(layerManager.Layers[0]);
+            }
+            else if (layer.Position > requestedLayerPosition && requestedLayerPosition == 0)
+            {
+                mainViewModel.ResetTextures();
                 requestedLayerPosition = layer.Position;
                 SingleLayerCalculationStart(layerManager.Layers[0]);
             }
@@ -235,13 +246,13 @@ namespace Topographer3D.ViewModels
         // Updates the Heights Array
         private void UpdateHeights(float[] heights)
         {
-            //for (int x = 0; x < TerrainSize; x++)
-            //{
-            //    for (int z = 0; z < 1; z++)
-            //    {
-            //        TerrainHeights[z + x * TerrainSize] = heights[z + x * TerrainSize];
-            //    }
-            //}
+            for (int x = 0; x < TerrainSize; x++)
+            {
+                for (int z = 0; z < TerrainSize; z++)
+                {
+                    TerrainHeights[z + x * TerrainSize] = heights[z + x * TerrainSize];
+                }
+            }
         }
 
         // Updates the PreviousHeights Array

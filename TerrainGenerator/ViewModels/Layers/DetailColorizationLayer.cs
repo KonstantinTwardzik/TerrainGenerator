@@ -48,8 +48,8 @@ namespace Topographer3D.ViewModels.Layers
         public float ColorShift { get; set; }
         public float ColorRange { get; set; }
 
-        public IEnumerable<ColorApplicationMode> ColorApplicationModeEnum { get { return Enum.GetValues(typeof(ColorApplicationMode)).Cast<ColorApplicationMode>(); } }
-        public ColorApplicationMode CurrentColorApplicationMode { get; set; }
+        public IEnumerable<Mode> ColorApplicationModeEnum { get { return Enum.GetValues(typeof(Mode)).Cast<Mode>(); } }
+        public Mode CurrentColorApplicationMode { get; set; }
 
         #endregion
 
@@ -78,7 +78,7 @@ namespace Topographer3D.ViewModels.Layers
             HasApplicationMode = Visibility.Hidden;
             ColorShift = 0.0f;
             ColorRange = 0.5f;
-            CurrentColorApplicationMode = ColorApplicationMode.Normal;
+            CurrentColorApplicationMode = Mode.Normal;
             Gradient1RB = true;
             Gradient2RB = false;
             Gradient3RB = false;
@@ -603,7 +603,7 @@ namespace Topographer3D.ViewModels.Layers
             #endregion
 
             bool ColorInvert = false; 
-            if (CurrentColorApplicationMode == ColorApplicationMode.Normal)
+            if (CurrentColorApplicationMode == Mode.Normal)
             {
                 ColorInvert = true;
             }

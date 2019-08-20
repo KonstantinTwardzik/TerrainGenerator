@@ -144,8 +144,8 @@ namespace Topographer3D.ViewModels.Layers
         #endregion
 
 
-        public IEnumerable<ColorApplicationMode> ColorApplicationModeEnum { get { return Enum.GetValues(typeof(ColorApplicationMode)).Cast<ColorApplicationMode>(); } }
-        public ColorApplicationMode CurrentColorApplicationMode { get; set; }
+        public IEnumerable<Mode> ColorApplicationModeEnum { get { return Enum.GetValues(typeof(Mode)).Cast<Mode>(); } }
+        public Mode CurrentColorApplicationMode { get; set; }
         public bool ColorInvert { get; private set; }
 
         #endregion
@@ -161,7 +161,7 @@ namespace Topographer3D.ViewModels.Layers
         {
             LayerType = Layer.HeightColorization;
             HasApplicationMode = Visibility.Hidden;
-            CurrentColorApplicationMode = ColorApplicationMode.Normal;
+            CurrentColorApplicationMode = Mode.Normal;
             osn = new OpenSimplexNoiseAlgorithm();
 
             MinHeight = 0.0f;

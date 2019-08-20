@@ -8,8 +8,6 @@ namespace Topographer3D.Utilities
 {
     internal static class TerrainUtilities
     {
-
-
         internal static int[] GetNeighbours(int x, int z, int terrainSize)
         {
             int[] neighbours = new int[0];
@@ -134,6 +132,74 @@ namespace Topographer3D.Utilities
                 newValue = 1;
             }
             return newValue;
+        }
+
+        internal static int GetReversedSizeCompensator(int TerrainSize)
+        {
+            int sizeCompensator = 0;
+            switch (TerrainSize)
+            {
+                case 16:
+                    sizeCompensator = 256;
+                    break;
+                case 32:
+                    sizeCompensator = 128;
+                    break;
+                case 64:
+                    sizeCompensator = 64;
+                    break;
+                case 128:
+                    sizeCompensator = 32;
+                    break;
+
+                case 512:
+                    sizeCompensator = 8;
+                    break;
+                case 1024:
+                    sizeCompensator = 4;
+                    break;
+                case 2048:
+                    sizeCompensator = 2;
+                    break;
+                case 4096:
+                    sizeCompensator = 1;
+                    break;
+            }
+            return sizeCompensator;
+        }
+
+        internal static int GetSizeCompensator(int TerrainSize)
+        {
+            int sizeCompensator = 0;
+            switch (TerrainSize)
+            {
+                case 16:
+                    sizeCompensator = 1;
+                    break;
+                case 32:
+                    sizeCompensator = 2;
+                    break;
+                case 64:
+                    sizeCompensator = 4;
+                    break;
+                case 128:
+                    sizeCompensator = 8;
+                    break;
+
+                case 512:
+                    sizeCompensator = 32;
+                    break;
+                case 1024:
+                    sizeCompensator = 64;
+                    break;
+                case 2048:
+                    sizeCompensator = 128;
+                    break;
+                case 4096:
+                    sizeCompensator = 256;
+                    break;
+            }
+            return sizeCompensator;
         }
     }
 }

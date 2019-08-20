@@ -175,6 +175,7 @@
     <Compile Include="Commands\DetailResolutionCommand.cs" />
     <Compile Include="Models\RestrictedCamera.cs" />
     <Compile Include="Models\TerrainModel.cs" />
+    <Compile Include="Utilities\CellNoiseAlgortihm.cs" />
     <Compile Include="Utilities\TerrainUtilities.cs" />
     <Compile Include="Utilities\Enums.cs" />
     <Compile Include="Utilities\ObservableObject.cs" />

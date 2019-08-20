@@ -37,7 +37,7 @@ namespace Topographer3D.Utilities
         Smooth
     }
 
-    public enum ColorApplicationMode
+    public enum Mode
     {
         Normal,
         Inverted

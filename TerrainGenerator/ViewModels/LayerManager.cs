@@ -177,13 +177,16 @@ namespace Topographer3D.ViewModels
         {
             if (!TerrainEngineIsOccupied)
             {
+                bool changedSequence = false;
                 if (IsForward)
                 {
                     if (layer.Position != 0)
                     {
                         Layers.RemoveAt(layer.Position);
                         Layers.Insert(layer.Position - 1, layer);
+                        changedSequence = true;
                     }
+
                 }
                 else
                 {
@@ -191,8 +194,21 @@ namespace Topographer3D.ViewModels
                     {
                         Layers.RemoveAt(layer.Position);
                         Layers.Insert(layer.Position + 1, layer);
+                        changedSequence = true;
                     }
                 }
+
+                if ((layer.Position == 0 || layer.Position == 1) && changedSequence)
+                {
+                    Layers[0].HasApplicationMode = Visibility.Hidden;
+                    Layers[0].CurrentApplicationMode = (ApplicationMode)100;
+                    if (Layers[1].LayerType != Layer.DetailColorization && Layers[1].LayerType != Layer.HeightColorization && Layers[1].LayerType != Layer.Hydraulic)
+                    {
+                        Layers[1].HasApplicationMode = Visibility.Visible;
+                        Layers[1].CurrentApplicationMode = ApplicationMode.Add;
+                    }
+                }
+
                 UpdateLayerView();
             }
         }

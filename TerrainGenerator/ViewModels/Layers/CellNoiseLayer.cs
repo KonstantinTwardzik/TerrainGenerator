@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Topographer3D.Utilities;
 
 namespace Topographer3D.ViewModels.Layers
@@ -9,14 +11,21 @@ namespace Topographer3D.ViewModels.Layers
     {
         private float[] TerrainPoints;
         private int TerrainSize;
-        private Random rng;
+        private CellNoiseAlgortihm cellNoiseAlgorithm;
 
         public int Quantity { get; set; }
         public int Seed { get; set; }
+        public int Distance { get; set; }
+        public float Height { get; set; }
+        public int Octaves { get; set; }
+
+
+
 
         public CellNoiseLayer(LayerManager layerManager, TerrainEngine terrainEngine) : base(layerManager, terrainEngine)
         {
             InitProperties();
+            cellNoiseAlgorithm = new CellNoiseAlgortihm();
         }
 
         private void InitProperties()
@@ -24,7 +33,9 @@ namespace Topographer3D.ViewModels.Layers
             LayerType = Layer.CellNoise;
             Quantity = 100;
             Seed = 100;
-
+            Height = 0.3f;
+            Distance = 1;
+            Octaves = 1;
         }
 
         public void StartCellNoise(int TerrainSize, float[] TerrainPoints)
@@ -42,64 +53,25 @@ namespace Topographer3D.ViewModels.Layers
 
         private void CellNoiseCalculation(object sender, DoWorkEventArgs e)
         {
-            rng = new Random(Seed);
-            int cellQuantity = (int)Math.Sqrt((float)Quantity);
+            float[] helper = new float[TerrainPoints.Length];
 
-            int cellSize = TerrainSize / cellQuantity;
-            cellQuantity += 1;
-            int completeSize = cellSize * cellQuantity;
-
-            int[,] featurePoints = new int[cellQuantity * cellQuantity, 2];
-            for (int CellX = 0; CellX < cellQuantity; CellX++)
+            for (int octave = 1; octave <= Octaves; octave++)
             {
-                for (int CellZ = 0; CellZ < cellQuantity; CellZ++)
-                {
-                    int randomX = rng.Next(CellX * cellSize, (CellX + 1) * cellSize);
-                    int randomZ = rng.Next(CellZ * cellSize, (CellZ + 1) * cellSize);
-                    featurePoints[CellZ + CellX * cellQuantity, 0] = randomX;
-                    featurePoints[CellZ + CellX * cellQuantity, 1] = randomZ;
-                }
-            }
+                float height = Height * (1 / (float)octave);
+                int quantity = Quantity * octave + 1;
+                cellNoiseAlgorithm.PrepareValues(Seed, TerrainSize, quantity, Distance, octave);
 
-            for (int x = 0; x < TerrainSize; x++)
-            {
-                for (int z = 0; z < TerrainSize; z++)
+                // Calculate Heights depending on Distance to the next FeaturePoint
+                for (int x = 0; x < TerrainSize; x++)
                 {
-                    int[] CellAndNeighbourCells = TerrainUtilities.GetPositionAndNeighbours(x / cellSize, z / cellSize, cellQuantity);
-                    float m_dist = 100f;
-                    for (int i = 0; i < CellAndNeighbourCells.Length; i++)
+                    for (int z = 0; z < TerrainSize; z++)
                     {
-                        int lengthX = 0;
-                        int lengthZ = 0;
-                        if (x > featurePoints[CellAndNeighbourCells[i], 0])
-                        {
-                            lengthX = x - featurePoints[CellAndNeighbourCells[i], 0];
-                        }
-                        else
-                        {
-                            lengthX = featurePoints[CellAndNeighbourCells[i], 0] - x;
-                        }
-                        if (z > featurePoints[CellAndNeighbourCells[i], 1])
-                        {
-                            lengthZ = z - featurePoints[CellAndNeighbourCells[i], 1];
-                        }
-                        else
-                        {
-                            lengthZ = featurePoints[CellAndNeighbourCells[i], 1] - z;
-                        }
-
-                        float dist = (float)Math.Sqrt((double)(lengthX * lengthX + lengthZ * lengthZ));
-                        m_dist = Math.Min(m_dist, dist);
+                        float value = cellNoiseAlgorithm.Evaluate(x, z);
+                        value *= height;
+                        helper[z + x * TerrainSize] = TerrainUtilities.Apply(helper[z + x * TerrainSize], value, ApplicationMode.Add);
                     }
-                    float value = m_dist / 100;
-                    TerrainPoints[z + x * TerrainSize] = TerrainUtilities.Apply(TerrainPoints[z + x * TerrainSize], value, CurrentApplicationMode);
-                    //DRAW GRID INTO 3D MODEL
-                    //if (x % (int)cellSize == 0 || z % (int)cellSize == 0)
-                    //{
-                    //    TerrainPoints[z + x * TerrainSize] = 0;
-                    //}
                 }
-                int progressPercentage = (int)(((float)x / (float)TerrainSize) * 100);
+                int progressPercentage = (int)(((float)octave / (float)Octaves) * 100);
                 (sender as BackgroundWorker).ReportProgress(progressPercentage);
             }
 
@@ -107,21 +79,7 @@ namespace Topographer3D.ViewModels.Layers
             {
                 for (int z = 0; z < TerrainSize; z++)
                 {
-
-                    if (x > completeSize)
-                    {
-                        //float value = TerrainPoints[z+x*];
-                        //TerrainPoints[z + x * TerrainSize] = TerrainUtilities.Apply(TerrainPoints[z + x * TerrainSize], value, CurrentApplicationMode);
-                        TerrainPoints[z + x * TerrainSize] = 0;
-                    }
-                    if (z > completeSize)
-                    {
-                        //float value = TerrainPoints[];
-                        //TerrainPoints[z + x * TerrainSize] = TerrainUtilities.Apply(TerrainPoints[z + x * TerrainSize], value, CurrentApplicationMode);
-                        TerrainPoints[z + x * TerrainSize] = 0;
-                    }
-
-
+                    TerrainPoints[z + x * TerrainSize] = TerrainUtilities.Apply(TerrainPoints[z + x * TerrainSize], helper[z + x * TerrainSize], CurrentApplicationMode);
                 }
             }
 
