@@ -23,6 +23,8 @@ namespace Topographer3D.Utilities
         Add,
         Subtract,
         Multiply,
+        Lighten,
+        Darken
     }
 
     internal enum Direction

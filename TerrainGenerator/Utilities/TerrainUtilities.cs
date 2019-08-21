@@ -118,6 +118,26 @@ namespace Topographer3D.Utilities
             {
                 newValue = oldValue - applyValue;
             }
+            else if (CurrentApplicationMode == ApplicationMode.Darken)
+            {
+                if (oldValue > applyValue)
+                {
+                    newValue = applyValue;
+                } else
+                {
+                    newValue = oldValue;
+                }
+            }
+            else if (CurrentApplicationMode == ApplicationMode.Lighten)
+            {
+                if(oldValue < applyValue)
+                {
+                    newValue = applyValue;
+                } else
+                {
+                    newValue = oldValue;
+                }
+            }
             else
             {
                 newValue = applyValue;

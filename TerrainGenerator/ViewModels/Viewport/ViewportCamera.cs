@@ -50,14 +50,14 @@ namespace Topographer3D.ViewModels
                 case 0:
                     if (IsOrthographic)
                     {
-                        Camera.Position = new Point3D(8, 8, 8);
-                        Camera.LookDirection = new Vector3D(-8, -7.7, -8);
+                        Camera.Position = new Point3D(-8, 8, -8);
+                        Camera.LookDirection = new Vector3D(8, -7.7, 8);
                         Camera.UpDirection = new Vector3D(0, 1, 0);
                     }
                     else
                     {
-                        Camera.Position = new Point3D(2, 1, 2);
-                        Camera.LookDirection = new Vector3D(-2, -0.7, -2);
+                        Camera.Position = new Point3D(-2, 1, -2);
+                        Camera.LookDirection = new Vector3D(2, -0.7, 2);
                         Camera.UpDirection = new Vector3D(0, 1, 0);
                     }
                     break;
@@ -66,14 +66,14 @@ namespace Topographer3D.ViewModels
                 case 1:
                     if (IsOrthographic)
                     {
-                        Camera.Position = new Point3D(9, 6, 0);
-                        Camera.LookDirection = new Vector3D(-9, -5.7, 0);
+                        Camera.Position = new Point3D(0, 6, -9);
+                        Camera.LookDirection = new Vector3D(0, -5.7, 9);
                         Camera.UpDirection = new Vector3D(0, 1, 0);
                     }
                     else
                     {
-                        Camera.Position = new Point3D(2, 1, 0);
-                        Camera.LookDirection = new Vector3D(-2, -0.7, 0);
+                        Camera.Position = new Point3D(0, 1, -2);
+                        Camera.LookDirection = new Vector3D(0, -0.7, 2);
                         Camera.UpDirection = new Vector3D(0, 1, 0);
                     }
                     break;
@@ -84,13 +84,13 @@ namespace Topographer3D.ViewModels
                     {
                         Camera.Position = new Point3D(0, 15, 0);
                         Camera.LookDirection = new Vector3D(0, -14.3, 0);
-                        Camera.UpDirection = new Vector3D(1, 0, 0);
+                        Camera.UpDirection = new Vector3D(0, 0, 1);
                     }
                     else
                     {
                         Camera.Position = new Point3D(0, 3, 0);
                         Camera.LookDirection = new Vector3D(0, -2.7, 0);
-                        Camera.UpDirection = new Vector3D(1, 0, 0);
+                        Camera.UpDirection = new Vector3D(0, 0, 1);
                     }
                     break;
 
@@ -98,14 +98,14 @@ namespace Topographer3D.ViewModels
                 case 3:
                     if (IsOrthographic)
                     {
-                        Camera.Position = new Point3D(15, 0.3, 0);
-                        Camera.LookDirection = new Vector3D(-15, 0, 0);
+                        Camera.Position = new Point3D(0, 0.3, -15);
+                        Camera.LookDirection = new Vector3D(0, 0, 15);
                         Camera.UpDirection = new Vector3D(0, 1, 0);
                     }
                     else
                     {
-                        Camera.Position = new Point3D(3.0, 0.3, 0.0);
-                        Camera.LookDirection = new Vector3D(-3.0, 0.0, 0.0);
+                        Camera.Position = new Point3D(0, 0.3, -3);
+                        Camera.LookDirection = new Vector3D(0, 0.0, 3);
                         Camera.UpDirection = new Vector3D(0, 1, 0);
                     }
                     break;
@@ -146,7 +146,7 @@ namespace Topographer3D.ViewModels
 
         public void UpdateLight(Vector3D LookAt)
         {
-            if(isDynamicLighting)
+            if (isDynamicLighting)
             {
                 DirectionalLightDirection = LookAt;
             }
